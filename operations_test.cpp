@@ -175,7 +175,7 @@ ATF_TEST_CASE_BODY(do_file__not_found)
 {
     lutok::state state;
     stack_balance_checker checker(state);
-    ATF_REQUIRE_THROW_RE(lutok::error, "Failed to load Lua file 'missing.lua'",
+    ATF_REQUIRE_THROW_RE(lutok::file_not_found_error, "missing.lua",
                          lutok::do_file(state, "missing.lua"));
 }
 

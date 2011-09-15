@@ -26,6 +26,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+extern "C" {
+#include <unistd.h>
+}
+
 #include <cassert>
 #include <cstring>
 
@@ -360,11 +364,14 @@ lutok::state::is_userdata(const int index)
 /// \param file The second parameter to luaL_loadfile.
 ///
 /// \throw api_error If luaL_loadfile returns an error.
+/// \throw file_not_found_error If the file cannot be accessed.
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
 lutok::state::load_file(const std::string& file)
 {
+    if (!::access(file.c_str(), R_OK) == 0)
+        throw lutok::file_not_found_error(file);
     if (luaL_loadfile(_pimpl->lua_state, file.c_str()) != 0)
         throw lutok::api_error::from_stack(_pimpl->lua_state, "luaL_loadfile");
 }

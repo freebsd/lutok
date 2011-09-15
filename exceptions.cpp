@@ -94,3 +94,30 @@ lutok::api_error::api_function(void) const
 {
     return _api_function;
 }
+ 
+
+/// Constructs a new error.
+///
+/// \param filename_ The file that count not be found.
+lutok::file_not_found_error::file_not_found_error(
+    const std::string& filename_) :
+    error("File '" + filename_ + "' not found"),
+    _filename(filename_)
+{
+}
+
+
+/// Destructor for the error.
+lutok::file_not_found_error::~file_not_found_error(void) throw()
+{
+}
+
+
+/// Gets the name of the file that could not be found.
+///
+/// \return The name of the file.
+const std::string&
+lutok::file_not_found_error::filename(void) const
+{
+    return _filename;
+}

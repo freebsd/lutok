@@ -65,6 +65,18 @@ public:
 };
 
 
+/// File not found error.
+class file_not_found_error : public error {
+    std::string _filename;
+
+public:
+    explicit file_not_found_error(const std::string&);
+    virtual ~file_not_found_error(void) throw();
+
+    const std::string& filename(void) const;
+};
+
+
 }  // namespace lutok
 
 
