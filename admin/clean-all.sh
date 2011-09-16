@@ -29,7 +29,7 @@
 
 Prog_Name=${0##*/}
 
-if [ ! -f ./wrap.hpp ]; then
+if [ ! -f ./state.hpp ]; then
     echo "${Prog_Name}: must be run from the source top directory" 1>&2
     exit 1
 fi
