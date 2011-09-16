@@ -26,14 +26,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// \file wrap.hpp
-/// Wrapper classes and utilities for the Lua C library.
-///
-/// This module contains thin RAII wrappers around the Lua structures and
-/// lightweight, safer wrapper methods around the Lua C API.
+/// \file state.hpp
+/// Provides the state wrapper class for the Lua C state.
 
-#if !defined(LUTOK_WRAP_HPP)
-#define LUTOK_WRAP_HPP
+#if !defined(LUTOK_STATE_HPP)
+#define LUTOK_STATE_HPP
 
 #include <memory>
 #include <string>
@@ -128,47 +125,6 @@ public:
 };
 
 
-/// A RAII model for values on the Lua stack.
-///
-/// At creation time, the object records the current depth of the Lua stack and,
-/// during destruction, restores the recorded depth by popping as many stack
-/// entries as required.  As a corollary, the stack can only grow during the
-/// lifetime of a stack_cleaner object (or shrink, but cannot become shorter
-/// than the depth recorded at creation time).
-///
-/// Use this class as follows:
-///
-/// state s;
-/// {
-///     stack_cleaner cleaner1(s);
-///     s.push_integer(3);
-///     s.push_integer(5);
-///     ... do stuff here ...
-///     for (...) {
-///         stack_cleaner cleaner2(s);
-///         s.load_string("...");
-///         s.pcall(0, 1, 0);
-///         ... do stuff here ...
-///     }
-///     // cleaner2 destroyed; the result of pcall is gone.
-/// }
-/// // cleaner1 destroyed; the integers 3 and 5 are gone.
-///
-/// You must give a name to the instantiated objects even if they cannot be
-/// accessed later.  Otherwise, the instance will be destroyed right away and
-/// will not have the desired effect.
-class stack_cleaner : noncopyable {
-    struct impl;
-    std::auto_ptr< impl > _pimpl;
-
-public:
-    stack_cleaner(state&);
-    ~stack_cleaner(void);
-
-    void forget(void);
-};
-
-
 }  // namespace lutok
 
-#endif  // !defined(LUTOK_WRAP_HPP)
+#endif  // !defined(LUTOK_STATE_HPP)

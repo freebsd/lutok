@@ -26,12 +26,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if !defined(LUTOK_WRAP_IPP)
-#define LUTOK_WRAP_IPP
+#if !defined(LUTOK_STATE_IPP)
+#define LUTOK_STATE_IPP
 
 #include <lua.hpp>
 
-#include <lutok/wrap.hpp>
+#include <lutok/state.hpp>
 
 namespace lutok {
 
@@ -103,4 +103,4 @@ state::to_userdata(const int index)
 
 }  // namespace lutok
 
-#endif  // !defined(LUTOK_WRAP_IPP)
+#endif  // !defined(LUTOK_STATE_IPP)

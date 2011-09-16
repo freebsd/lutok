@@ -31,7 +31,7 @@
 #include <lua.hpp>
 
 #include "exceptions.hpp"
-#include "wrap.hpp"
+#include "state.hpp"
 
 
 /// Constructs a new error with a plain-text message.

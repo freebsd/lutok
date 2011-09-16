@@ -30,7 +30,8 @@
 
 #include "exceptions.hpp"
 #include "operations.hpp"
-#include "wrap.hpp"
+#include "stack_cleaner.hpp"
+#include "state.hpp"
 
 
 /// Creates a module: i.e. a table with a set of methods in it.

@@ -34,7 +34,7 @@ extern "C" {
 #include <cstring>
 
 #include "exceptions.hpp"
-#include "wrap.ipp"
+#include "state.ipp"
 
 
 namespace {
@@ -715,67 +715,6 @@ lua_State*
 lutok::state::raw_state_for_testing(void)
 {
     return _pimpl->lua_state;
-}
-
-
-/// Internal implementation for lutok::stack_cleaner.
-struct lutok::stack_cleaner::impl {
-    /// Reference to the Lua state this stack_cleaner refers to.
-    state& state_ref;
-
-    /// The depth of the Lua stack to be restored.
-    unsigned int original_depth;
-
-    /// Constructor.
-    ///
-    /// \param state_ref_ Reference to the Lua state.
-    /// \param original_depth_ The depth of the Lua stack.
-    impl(state& state_ref_, const unsigned int original_depth_) :
-        state_ref(state_ref_),
-        original_depth(original_depth_)
-    {
-    }
-};
-
-
-/// Creates a new stack cleaner.
-///
-/// This gathers the current height of the stack so that extra elements can be
-/// popped during destruction.
-///
-/// \param state_ The Lua state.
-lutok::stack_cleaner::stack_cleaner(state& state_) :
-    _pimpl(new impl(state_, state_.get_top()))
-{
-}
-
-
-/// Pops any values from the stack not known at construction time.
-///
-/// \pre The current height of the stack must be equal or greater to the height
-/// of the stack when this object was instantiated.
-lutok::stack_cleaner::~stack_cleaner(void)
-{
-    const unsigned int current_depth = _pimpl->state_ref.get_top();
-    //assert(current_depth >= _pimpl->original_depth,
-    //       F("Unbalanced scope: current stack depth %d < original %d") %
-    //       current_depth % _pimpl->original_depth);
-    assert(current_depth >= _pimpl->original_depth);
-    const unsigned int diff = current_depth - _pimpl->original_depth;
-    if (diff > 0)
-        _pimpl->state_ref.pop(diff);
-}
-
-
-/// Forgets about any elements currently in the stack.
-///
-/// This allows a function to return values on the stack because all the
-/// elements that are currently in the stack will not be touched during
-/// destruction when the function is called.
-void
-lutok::stack_cleaner::forget(void)
-{
-    _pimpl->original_depth = _pimpl->state_ref.get_top();
 }
 
 

@@ -4,4 +4,5 @@ test_suite("lutok")
 
 atf_test_program{name="exceptions_test"}
 atf_test_program{name="operations_test"}
-atf_test_program{name="wrap_test"}
+atf_test_program{name="stack_cleaner_test"}
+atf_test_program{name="state_test"}

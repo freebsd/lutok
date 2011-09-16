@@ -4,4 +4,5 @@ prop: test-suite = lutok
 
 tp: exceptions_test
 tp: operations_test
-tp: wrap_test
+tp: stack_cleaner_test
+tp: state_test

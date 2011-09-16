@@ -32,8 +32,8 @@
 
 #include "exceptions.hpp"
 #include "operations.hpp"
+#include "state.ipp"
 #include "test_utils.hpp"
-#include "wrap.ipp"
 
 
 namespace {

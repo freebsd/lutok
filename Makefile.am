@@ -41,9 +41,10 @@ LUTOK_LIBS = liblutok.la $(LUA_LIBS)
 pkginclude_HEADERS  = exceptions.hpp
 pkginclude_HEADERS += noncopyable.hpp
 pkginclude_HEADERS += operations.hpp
+pkginclude_HEADERS += stack_cleaner.hpp
+pkginclude_HEADERS += state.hpp
+pkginclude_HEADERS += state.ipp
 pkginclude_HEADERS += test_utils.hpp
-pkginclude_HEADERS += wrap.hpp
-pkginclude_HEADERS += wrap.ipp
 
 lib_LTLIBRARIES = liblutok.la
 liblutok_la_SOURCES  = exceptions.cpp
@@ -51,10 +52,12 @@ liblutok_la_SOURCES += exceptions.hpp
 liblutok_la_SOURCES += noncopyable.hpp
 liblutok_la_SOURCES += operations.cpp
 liblutok_la_SOURCES += operations.hpp
+liblutok_la_SOURCES += stack_cleaner.cpp
+liblutok_la_SOURCES += stack_cleaner.hpp
+liblutok_la_SOURCES += state.cpp
+liblutok_la_SOURCES += state.hpp
+liblutok_la_SOURCES += state.ipp
 liblutok_la_SOURCES += test_utils.hpp
-liblutok_la_SOURCES += wrap.cpp
-liblutok_la_SOURCES += wrap.hpp
-liblutok_la_SOURCES += wrap.ipp
 liblutok_la_CPPFLAGS = -I$(srcdir)/include $(LUA_CFLAGS)
 liblutok_la_LDFLAGS = -version-info 0:0:0
 liblutok_la_LIBADD = $(LUA_LIBS)
@@ -88,10 +91,15 @@ operations_test_SOURCES = operations_test.cpp test_utils.hpp
 operations_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
 operations_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
 
-tests_PROGRAMS += wrap_test
-wrap_test_SOURCES = test_utils.hpp wrap_test.cpp
-wrap_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
-wrap_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+tests_PROGRAMS += stack_cleaner_test
+stack_cleaner_test_SOURCES = stack_cleaner_test.cpp test_utils.hpp
+stack_cleaner_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
+stack_cleaner_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+
+tests_PROGRAMS += state_test
+state_test_SOURCES = state_test.cpp test_utils.hpp
+state_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
+state_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
 
 check-local: check-kyua
 PHONY_TARGETS += check-kyua

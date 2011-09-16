@@ -26,28 +26,61 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// \file operations.hpp
-/// Extra generic functions to interact with Lua.
+/// \file stack_cleaner.hpp
+/// Provides the stack_cleaner class.
 
-#if !defined(LUTOK_OPERATIONS_HPP)
-#define LUTOK_OPERATIONS_HPP
+#if !defined(LUTOK_STACK_CLEANER_HPP)
+#define LUTOK_STACK_CLEANER_HPP
 
-#include <map>
-#include <string>
-#include <vector>
+#include <memory>
 
+#include <lutok/noncopyable.hpp>
 #include <lutok/state.hpp>
 
 namespace lutok {
 
 
-void create_module(state&, const std::string&,
-                   const std::map< std::string, c_function >&);
-unsigned int do_file(state&, const std::string&, const int = 0);
-unsigned int do_string(state&, const std::string&, const int = 0);
-void eval(state&, const std::string&, const int = 1);
+/// A RAII model for values on the Lua stack.
+///
+/// At creation time, the object records the current depth of the Lua stack and,
+/// during destruction, restores the recorded depth by popping as many stack
+/// entries as required.  As a corollary, the stack can only grow during the
+/// lifetime of a stack_cleaner object (or shrink, but cannot become shorter
+/// than the depth recorded at creation time).
+///
+/// Use this class as follows:
+///
+/// state s;
+/// {
+///     stack_cleaner cleaner1(s);
+///     s.push_integer(3);
+///     s.push_integer(5);
+///     ... do stuff here ...
+///     for (...) {
+///         stack_cleaner cleaner2(s);
+///         s.load_string("...");
+///         s.pcall(0, 1, 0);
+///         ... do stuff here ...
+///     }
+///     // cleaner2 destroyed; the result of pcall is gone.
+/// }
+/// // cleaner1 destroyed; the integers 3 and 5 are gone.
+///
+/// You must give a name to the instantiated objects even if they cannot be
+/// accessed later.  Otherwise, the instance will be destroyed right away and
+/// will not have the desired effect.
+class stack_cleaner : noncopyable {
+    struct impl;
+    std::auto_ptr< impl > _pimpl;
+
+public:
+    stack_cleaner(state&);
+    ~stack_cleaner(void);
+
+    void forget(void);
+};
 
 
 }  // namespace lutok
 
-#endif  // !defined(LUTOK_OPERATIONS_HPP)
+#endif  // !defined(LUTOK_STACK_CLEANER_HPP)

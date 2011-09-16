@@ -37,7 +37,7 @@ AC_CONFIG_AUX_DIR([admin])
 AC_CONFIG_FILES([Doxyfile Makefile])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([wrap.hpp])
+AC_CONFIG_SRCDIR([state.hpp])
 
 
 AM_INIT_AUTOMAKE([1.9 check-news foreign subdir-objects -Wall])

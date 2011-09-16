@@ -42,7 +42,7 @@
 #include <atf-c++.hpp>
 
 #include "exceptions.hpp"
-#include "wrap.hpp"
+#include "state.hpp"
 
 
 namespace {
