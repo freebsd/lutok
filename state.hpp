@@ -32,16 +32,13 @@
 #if !defined(LUTOK_STATE_HPP)
 #define LUTOK_STATE_HPP
 
-#include <memory>
 #include <string>
-
-#include <lua.hpp>
-
-#include <lutok/noncopyable.hpp>
+#include <tr1/memory>
 
 namespace lutok {
 
 
+class c_gate;
 class debug;
 class state;
 
@@ -68,16 +65,19 @@ typedef int (*cxx_function)(state&);
 /// situations, they are pretty complex because they need to do extra work to
 /// capture the errors reported by the Lua C API.  We prefer having fine-grained
 /// error control rather than efficiency, so this is OK.
-class state : noncopyable {
+class state {
     struct impl;
-    std::auto_ptr< impl > _pimpl;
+    std::tr1::shared_ptr< impl > _pimpl;
 
     void* new_userdata_voidp(const size_t);
     void* to_userdata_voidp(const int);
 
+    friend class state_c_gate;
+    explicit state(void*);
+    void* raw_state(void);
+
 public:
     state(void);
-    explicit state(lua_State*);
     ~state(void);
 
     void close(void);
@@ -115,8 +115,6 @@ public:
     template< typename Type > Type* to_userdata(const int = -1);
     std::string to_string(const int = -1);
     int upvalue_index(const int);
-
-    lua_State* raw_state_for_testing(void);
 };
 
 

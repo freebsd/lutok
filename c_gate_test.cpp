@@ -26,42 +26,48 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if !defined(LUTOK_STATE_IPP)
-#define LUTOK_STATE_IPP
+#include <atf-c++.hpp>
+#include <lua.hpp>
 
-#include <lutok/state.hpp>
+#include "c_gate.hpp"
+#include "state.ipp"
+#include "test_utils.hpp"
 
-namespace lutok {
 
-
-/// Wrapper around lua_newuserdata.
-///
-/// This allocates an object as big as the size of the provided Type.
-///
-/// \return The pointer to the allocated userdata object.
-///
-/// \warning Terminates execution if there is not enough memory.
-template< typename Type >
-Type*
-state::new_userdata(void)
+ATF_TEST_CASE_WITHOUT_HEAD(connect);
+ATF_TEST_CASE_BODY(connect)
 {
-    return static_cast< Type* >(new_userdata_voidp(sizeof(Type)));
+    lua_State* raw_state = lua_open();
+    ATF_REQUIRE(raw_state != NULL);
+
+    {
+        lutok::state state = lutok::state_c_gate::connect(raw_state);
+        lua_pushinteger(raw(state), 123);
+    }
+    // If the wrapper object had closed the Lua state, we could very well crash
+    // here.
+    ATF_REQUIRE_EQ(123, lua_tointeger(raw_state, -1));
+
+    lua_close(raw_state);
 }
 
 
-/// Wrapper around lua_touserdata.
-///
-/// \param index The second parameter to lua_touserdata.
-///
-/// \return The return value of lua_touserdata.
-template< typename Type >
-Type*
-state::to_userdata(const int index)
+ATF_TEST_CASE_WITHOUT_HEAD(c_state);
+ATF_TEST_CASE_BODY(c_state)
 {
-    return static_cast< Type* >(to_userdata_voidp(index));
+    lutok::state state;
+    state.push_integer(5);
+    {
+        lutok::state_c_gate gate(state);
+        lua_State* raw_state = gate.c_state();
+        ATF_REQUIRE_EQ(5, lua_tointeger(raw_state, -1));
+    }
+    state.pop(1);
 }
 
 
-}  // namespace lutok
-
-#endif  // !defined(LUTOK_STATE_IPP)
+ATF_INIT_TEST_CASES(tcs)
+{
+    ATF_ADD_TEST_CASE(tcs, c_state);
+    ATF_ADD_TEST_CASE(tcs, connect);
+}

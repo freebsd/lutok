@@ -26,42 +26,51 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if !defined(LUTOK_STATE_IPP)
-#define LUTOK_STATE_IPP
-
-#include <lutok/state.hpp>
-
-namespace lutok {
+#include "c_gate.hpp"
+#include "state.ipp"
 
 
-/// Wrapper around lua_newuserdata.
+/// Creates a new gateway to an existing C++ Lua state.
 ///
-/// This allocates an object as big as the size of the provided Type.
-///
-/// \return The pointer to the allocated userdata object.
-///
-/// \warning Terminates execution if there is not enough memory.
-template< typename Type >
-Type*
-state::new_userdata(void)
+/// \param state_ The state to connect to.  This object must remain alive while
+///     the newly-constructed state_c_gate is alive.
+lutok::state_c_gate::state_c_gate(state& state_) :
+    _state(state_)
 {
-    return static_cast< Type* >(new_userdata_voidp(sizeof(Type)));
 }
 
 
-/// Wrapper around lua_touserdata.
+/// Destructor.
 ///
-/// \param index The second parameter to lua_touserdata.
-///
-/// \return The return value of lua_touserdata.
-template< typename Type >
-Type*
-state::to_userdata(const int index)
+/// Destroying this object has no implications on the life cycle of the Lua
+/// state.  Only the corresponding state object controls when the Lua state is
+/// closed.
+lutok::state_c_gate::~state_c_gate(void)
 {
-    return static_cast< Type* >(to_userdata_voidp(index));
 }
 
 
-}  // namespace lutok
+/// Creates a C++ state for a C Lua state.
+///
+/// \warning The created state object does NOT own the C state.  You must take
+/// care to properly destroy the input lua_State when you are done with it to
+/// not leak resources.
+///
+/// \param raw_state The raw state to wrap temporarily.
+///
+/// \return The wrapped state without strong ownership on the input state.
+lutok::state
+lutok::state_c_gate::connect(lua_State* raw_state)
+{
+    return state(static_cast< void* >(raw_state));
+}
 
-#endif  // !defined(LUTOK_STATE_IPP)
+
+/// Returns the C native Lua state.
+///
+/// \return A native lua_State object holding the Lua C API state.
+lua_State*
+lutok::state_c_gate::c_state(void)
+{
+    return static_cast< lua_State* >(_state.raw_state());
+}

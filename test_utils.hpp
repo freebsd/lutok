@@ -41,6 +41,7 @@
 
 #include <atf-c++.hpp>
 
+#include "c_gate.hpp"
 #include "exceptions.hpp"
 #include "state.hpp"
 
@@ -79,7 +80,7 @@ namespace {
 static inline lua_State*
 raw(lutok::state& state)
 {
-    return state.raw_state_for_testing();
+    return lutok::state_c_gate(state).c_state();
 }
 
 

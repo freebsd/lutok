@@ -33,6 +33,7 @@ extern "C" {
 #include <cassert>
 #include <cstring>
 
+#include "c_gate.hpp"
 #include "exceptions.hpp"
 #include "state.ipp"
 
@@ -141,7 +142,7 @@ call_cxx_function_from_c(lutok::cxx_function function,
     char error_buf[1024];
 
     try {
-        lutok::state state(raw_state);
+        lutok::state state = lutok::state_c_gate::connect(raw_state);
         return function(state);
     } catch (const std::exception& e) {
         std::strncpy(error_buf, e.what(), sizeof(error_buf));
@@ -172,7 +173,7 @@ call_cxx_function_from_c(lutok::cxx_function function,
 static int
 cxx_closure_trampoline(lua_State* raw_state)
 {
-    lutok::state state(raw_state);
+    lutok::state state = lutok::state_c_gate::connect(raw_state);
 
     int nupvalues;
     {
@@ -201,7 +202,7 @@ cxx_closure_trampoline(lua_State* raw_state)
 static int
 cxx_function_trampoline(lua_State* raw_state)
 {
-    lutok::state state(raw_state);
+    lutok::state state = lutok::state_c_gate::connect(raw_state);
     lutok::cxx_function* function = state.to_userdata< lutok::cxx_function >(
         state.upvalue_index(1));
     return call_cxx_function_from_c(*function, raw_state);
@@ -250,8 +251,8 @@ lutok::state::state(void)
 /// means that, on exit, the state will not be destroyed.
 ///
 /// \param raw_state The raw Lua state to wrap.
-lutok::state::state(lua_State* raw_state) :
-    _pimpl(new impl(raw_state, false))
+lutok::state::state(void* raw_state) :
+    _pimpl(new impl(reinterpret_cast< lua_State* >(raw_state), false))
 {
 }
 
@@ -777,8 +778,8 @@ lutok::state::upvalue_index(const int index)
 /// Gets the internal lua_State object for testing purposes only.
 ///
 /// \return The raw Lua state.
-lua_State*
-lutok::state::raw_state_for_testing(void)
+void*
+lutok::state::raw_state(void)
 {
     return _pimpl->lua_state;
 }

@@ -34,6 +34,7 @@
 #include <atf-c++.hpp>
 #include <lua.hpp>
 
+#include "c_gate.hpp"
 #include "exceptions.hpp"
 #include "state.ipp"
 #include "test_utils.hpp"
@@ -104,12 +105,13 @@ check_modules(lutok::state& state, const std::string& expected)
 ///
 /// \return The number of result values, i.e. 2.
 static int
-c_get_upvalues(lua_State* state)
+c_get_upvalues(lua_State* raw_state)
 {
-    const int i1 = lua_tointeger(state, lutok::state(state).upvalue_index(1));
-    const int i2 = lua_tointeger(state, lutok::state(state).upvalue_index(2));
-    lua_pushinteger(state, i1);
-    lua_pushinteger(state, i2);
+    lutok::state state = lutok::state_c_gate::connect(raw_state);
+    const int i1 = lua_tointeger(raw_state, state.upvalue_index(1));
+    const int i2 = lua_tointeger(raw_state, state.upvalue_index(2));
+    lua_pushinteger(raw_state, i1);
+    lua_pushinteger(raw_state, i2);
     return 2;
 }
 
@@ -181,24 +183,6 @@ raise_long_error(lutok::state& state)
 
 
 }  // anonymous namespace
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(ctor_only_wrap);
-ATF_TEST_CASE_BODY(ctor_only_wrap)
-{
-    lua_State* raw_state = lua_open();
-    ATF_REQUIRE(raw_state != NULL);
-
-    {
-        lutok::state state(raw_state);
-        lua_pushinteger(raw(state), 123);
-    }
-    // If the wrapper object had closed the Lua state, we could very well crash
-    // here.
-    ATF_REQUIRE_EQ(123, lua_tointeger(raw_state, -1));
-
-    lua_close(raw_state);
-}
 
 
 ATF_TEST_CASE_WITHOUT_HEAD(close);
@@ -1119,7 +1103,6 @@ ATF_TEST_CASE_BODY(upvalue_index)
 
 ATF_INIT_TEST_CASES(tcs)
 {
-    ATF_ADD_TEST_CASE(tcs, ctor_only_wrap);
     ATF_ADD_TEST_CASE(tcs, close);
     ATF_ADD_TEST_CASE(tcs, get_global__ok);
     ATF_ADD_TEST_CASE(tcs, get_global__fail);

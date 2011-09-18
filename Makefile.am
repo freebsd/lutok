@@ -38,7 +38,8 @@ include include/Makefile.am.inc
 LUTOK_CFLAGS = -I$(srcdir)/include $(LUA_CFLAGS)
 LUTOK_LIBS = liblutok.la $(LUA_LIBS)
 
-pkginclude_HEADERS  = debug.hpp
+pkginclude_HEADERS  = c_gate.hpp
+pkginclude_HEADERS += debug.hpp
 pkginclude_HEADERS += exceptions.hpp
 pkginclude_HEADERS += noncopyable.hpp
 pkginclude_HEADERS += operations.hpp
@@ -48,7 +49,9 @@ pkginclude_HEADERS += state.ipp
 pkginclude_HEADERS += test_utils.hpp
 
 lib_LTLIBRARIES = liblutok.la
-liblutok_la_SOURCES  = debug.cpp
+liblutok_la_SOURCES  = c_gate.cpp
+liblutok_la_SOURCES += c_gate.hpp
+liblutok_la_SOURCES += debug.cpp
 liblutok_la_SOURCES += debug.hpp
 liblutok_la_SOURCES += exceptions.cpp
 liblutok_la_SOURCES += exceptions.hpp
@@ -84,7 +87,12 @@ if WITH_ATF
 tests_DATA = Atffile Kyuafile
 EXTRA_DIST += $(tests_DATA)
 
-tests_PROGRAMS = debug_test
+tests_PROGRAMS = c_gate_test
+c_gate_test_SOURCES = c_gate_test.cpp test_utils.hpp
+c_gate_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
+c_gate_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+
+tests_PROGRAMS += debug_test
 debug_test_SOURCES = debug_test.cpp test_utils.hpp
 debug_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
 debug_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)

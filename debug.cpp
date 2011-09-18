@@ -30,6 +30,7 @@
 
 #include <lua.hpp>
 
+#include <lutok/c_gate.hpp>
 #include <lutok/debug.hpp>
 #include <lutok/exceptions.hpp>
 #include <lutok/state.ipp>
@@ -65,7 +66,7 @@ lutok::debug::~debug(void)
 void
 lutok::debug::get_info(state& s, const std::string& what)
 {
-    lua_State* raw_state = s.raw_state_for_testing();
+    lua_State* raw_state = state_c_gate(s).c_state();
 
     if (lua_getinfo(raw_state, what.c_str(), &_pimpl->lua_debug) == 0)
         throw lutok::api_error::from_stack(raw_state, "lua_getinfo");
@@ -79,7 +80,7 @@ lutok::debug::get_info(state& s, const std::string& what)
 void
 lutok::debug::get_stack(state& s, const int level)
 {
-    lua_State* raw_state = s.raw_state_for_testing();
+    lua_State* raw_state = state_c_gate(s).c_state();
 
     lua_getstack(raw_state, level, &_pimpl->lua_debug);
 }

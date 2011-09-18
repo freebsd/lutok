@@ -26,6 +26,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+EXTRA_DIST+=    include/lutok/c_gate.hpp
 EXTRA_DIST+=    include/lutok/debug.hpp
 EXTRA_DIST+=    include/lutok/exceptions.hpp
 EXTRA_DIST+=    include/lutok/noncopyable.hpp
