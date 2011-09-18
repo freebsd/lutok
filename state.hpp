@@ -42,6 +42,7 @@
 namespace lutok {
 
 
+class debug;
 class state;
 
 
@@ -51,10 +52,6 @@ class state;
 /// propagate into the Lua C API.  However, any such exceptions will be reported
 /// as a Lua error and their type will be lost.
 typedef int (*cxx_function)(state&);
-
-
-/// Synonym for lua_Debug.
-typedef lua_Debug debug;
 
 
 /// A RAII model for the Lua state.
@@ -85,8 +82,6 @@ public:
 
     void close(void);
     void get_global(const std::string&);
-    void get_info(const char*, debug*);
-    void get_stack(const int, debug*);
     void get_table(const int = -2);
     int get_top(void);
     bool is_boolean(const int = -1);

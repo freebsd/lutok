@@ -2,6 +2,7 @@ Content-Type: application/X-atf-atffile; version="1"
 
 prop: test-suite = lutok
 
+tp: debug_test
 tp: exceptions_test
 tp: operations_test
 tp: stack_cleaner_test
