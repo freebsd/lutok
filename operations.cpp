@@ -41,14 +41,14 @@
 /// \param members The list of member functions to add to the module.
 void
 lutok::create_module(state& s, const std::string& name,
-                     const std::map< std::string, c_function >& members)
+                     const std::map< std::string, cxx_function >& members)
 {
     stack_cleaner cleaner(s);
     s.new_table();
-    for (std::map< std::string, c_function >::const_iterator
+    for (std::map< std::string, cxx_function >::const_iterator
          iter = members.begin(); iter != members.end(); iter++) {
         s.push_string((*iter).first);
-        s.push_c_function((*iter).second);
+        s.push_cxx_function((*iter).second);
         s.set_table(-3);
     }
     s.set_global(name);

@@ -36,43 +36,6 @@
 namespace lutok {
 
 
-/// The type of a C++ function that can be bound into Lua.
-///
-/// To pass such a function to Lua, convert it to a C function with the
-/// wrap_cxx_function template and pass it to, e.g. state::push_cfunction.
-///
-/// Functions of this type are free to raise exceptions.  These will not
-/// propagate into the Lua C API.
-typedef int (*cxx_function)(state&);
-
-
-namespace detail {
-int call_cxx_function_from_c(cxx_function, lua_State*) throw();
-}  // namespace detail
-
-
-/// Wraps a C++ Lua function into a C function.
-///
-/// You can pass the generated function to, e.g. state::push_cfunction.
-/// This wrapper ensures that exceptions do not propagate out of the C++ world
-/// into the C realm.  Exceptions are reported as Lua errors to the caller.
-///
-/// \param raw_state The raw Lua state.
-///
-/// \return The number of return values pushed onto the Lua stack by the
-/// function.
-///
-/// \warning Due to C++ standard and/or compiler oddities, functions passed to
-/// this template must have external linkage.  In other words, static methods
-/// cannot be passed to this if you want your code to build.
-template< cxx_function Function >
-int
-wrap_cxx_function(lua_State* raw_state)
-{
-    return detail::call_cxx_function_from_c(Function, raw_state);
-}
-
-
 /// Wrapper around lua_newuserdata.
 ///
 /// This allocates an object as big as the size of the provided Type.

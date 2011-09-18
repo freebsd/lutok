@@ -48,7 +48,7 @@ namespace {
 /// \param state The Lua state.
 ///
 /// \return The number of results (1).
-int  // Not static because it needs external linkage for wrap_cxx_function.
+static int
 hook_add(lutok::state& state)
 {
     state.push_integer(state.to_integer(-1) + state.to_integer(-2));
@@ -65,7 +65,7 @@ hook_add(lutok::state& state)
 /// \param state The Lua state.
 ///
 /// \return The number of results (1).
-int  // Not static because it needs external linkage for wrap_cxx_function.
+static int
 hook_multiply(lutok::state& state)
 {
     state.push_integer(state.to_integer(-1) * state.to_integer(-2));
@@ -80,7 +80,7 @@ ATF_TEST_CASE_WITHOUT_HEAD(create_module__empty);
 ATF_TEST_CASE_BODY(create_module__empty)
 {
     lutok::state state;
-    std::map< std::string, lutok::c_function > members;
+    std::map< std::string, lutok::cxx_function > members;
     lutok::create_module(state, "my_math", members);
 
     state.open_base();
@@ -94,8 +94,8 @@ ATF_TEST_CASE_WITHOUT_HEAD(create_module__one);
 ATF_TEST_CASE_BODY(create_module__one)
 {
     lutok::state state;
-    std::map< std::string, lutok::c_function > members;
-    members["add"] = lutok::wrap_cxx_function< hook_add >;
+    std::map< std::string, lutok::cxx_function > members;
+    members["add"] = hook_add;
     lutok::create_module(state, "my_math", members);
 
     lutok::do_string(state, "return my_math.add(10, 20)", 1);
@@ -108,10 +108,10 @@ ATF_TEST_CASE_WITHOUT_HEAD(create_module__many);
 ATF_TEST_CASE_BODY(create_module__many)
 {
     lutok::state state;
-    std::map< std::string, lutok::c_function > members;
-    members["add"] = lutok::wrap_cxx_function< hook_add >;
-    members["multiply"] = lutok::wrap_cxx_function< hook_multiply >;
-    members["add2"] = lutok::wrap_cxx_function< hook_add >;
+    std::map< std::string, lutok::cxx_function > members;
+    members["add"] = hook_add;
+    members["multiply"] = hook_multiply;
+    members["add2"] = hook_add;
     lutok::create_module(state, "my_math", members);
 
     lutok::do_string(state, "return my_math.add(10, 20)", 1);

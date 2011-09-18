@@ -42,15 +42,15 @@
 namespace lutok {
 
 
-/// Synonym for lua_CFunction.
+class state;
+
+
+/// The type of a C++ function that can be bound into Lua.
 ///
-/// This is pure syntactic sugar to prevent C++ code from ever using the C lua_*
-/// methods.  Ideally we would do this simply by not importing lua.hpp, but we
-/// can't because the user must be able to define Lua C hooks, and those take a
-/// lua_State* pointer as their argument.  (Users don't see this because they
-/// just use wrap_cxx_function, but for implementation reasons we must do the
-/// import.  Oh well.)
-typedef lua_CFunction c_function;
+/// Functions of this type are free to raise exceptions.  These will not
+/// propagate into the Lua C API.  However, any such exceptions will be reported
+/// as a Lua error and their type will be lost.
+typedef int (*cxx_function)(state&);
 
 
 /// Synonym for lua_Debug.
@@ -107,8 +107,8 @@ public:
     void pcall(const int, const int, const int);
     void pop(const int);
     void push_boolean(const bool);
-    void push_c_closure(c_function, const int);
-    void push_c_function(c_function);
+    void push_cxx_closure(cxx_function, const int);
+    void push_cxx_function(cxx_function);
     void push_integer(const int);
     void push_nil(void);
     void push_string(const std::string&);

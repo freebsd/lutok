@@ -124,6 +124,90 @@ protected_settable(lua_State* state)
 }
 
 
+/// Calls a C++ Lua function from a C calling environment.
+///
+/// Any errors reported by the C++ function are caught and reported to the
+/// caller as Lua errors.
+///
+/// \param function The C++ function to call.
+/// \param raw_state The raw Lua state.
+///
+/// \return The number of return values pushed onto the Lua stack by the
+/// function.
+static int
+call_cxx_function_from_c(lutok::cxx_function function,
+                         lua_State* raw_state) throw()
+{
+    char error_buf[1024];
+
+    try {
+        lutok::state state(raw_state);
+        return function(state);
+    } catch (const std::exception& e) {
+        std::strncpy(error_buf, e.what(), sizeof(error_buf));
+    } catch (...) {
+        std::strncpy(error_buf, "Unhandled exception in Lua C++ hook",
+                     sizeof(error_buf));
+    }
+    error_buf[sizeof(error_buf) - 1] = '\0';
+    // We raise the Lua error from outside the try/catch context and we use
+    // a stack-based buffer to hold the message to ensure that we do not leak
+    // any C++ objects (and, as a likely result, memory) when Lua performs its
+    // longjmp.
+    return luaL_error(raw_state, "%s", error_buf);
+}
+
+
+/// Lua glue to call a C++ closure.
+///
+/// This Lua binding is actually a closure that we have constructed from the
+/// state.push_cxx_closure() method.  The closure contains the same upvalues
+/// provided by the user plus an extra upvalue that contains the address of the
+/// C++ function we have to call.  All we do here is safely delegate the
+/// execution to the wrapped C++ closure.
+///
+/// \param raw_state The Lua C API state.
+///
+/// \return The number of return values of the called closure.
+static int
+cxx_closure_trampoline(lua_State* raw_state)
+{
+    lutok::state state(raw_state);
+
+    int nupvalues;
+    {
+        lua_Debug debug;
+        lua_getstack(raw_state, 0, &debug);
+        lua_getinfo(raw_state, "u", &debug);
+        nupvalues = debug.nups;
+    }
+
+    lutok::cxx_function* function = state.to_userdata< lutok::cxx_function >(
+        state.upvalue_index(nupvalues));
+    return call_cxx_function_from_c(*function, raw_state);
+}
+
+
+/// Lua glue to call a C++ function.
+///
+/// This Lua binding is actually a closure that we have constructed from the
+/// state.push_cxx_function() method.  The closure has a single upvalue that
+/// contains the address of the C++ function we have to call.  All we do here is
+/// safely delegate the execution to the wrapped C++ function.
+///
+/// \param raw_state The Lua C API state.
+///
+/// \return The number of return values of the called function.
+static int
+cxx_function_trampoline(lua_State* raw_state)
+{
+    lutok::state state(raw_state);
+    lutok::cxx_function* function = state.to_userdata< lutok::cxx_function >(
+        state.upvalue_index(1));
+    return call_cxx_function_from_c(*function, raw_state);
+}
+
+
 }  // anonymous namespace
 
 
@@ -527,28 +611,34 @@ lutok::state::push_boolean(const bool value)
 
 /// Wrapper around lua_pushcclosure.
 ///
-/// \param function The second parameter to lua_pushcclosure.  Use the
-///     wrap_cxx_function wrapper to provide C++ functions to this parameter.
-/// \param nvalues The third parameter to lua_pushcclosure.
+/// This is not a pure wrapper around lua_pushcclosure because this has to do
+/// extra magic to allow passing C++ functions instead of plain C functions.
 ///
-/// \warning Terminates execution if there is not enough memory.
+/// \param function The C++ function to be pushed as a closure.
+/// \param nvalues The number of upvalues that the function receives.
 void
-lutok::state::push_c_closure(c_function function, const int nvalues)
+lutok::state::push_cxx_closure(cxx_function function, const int nvalues)
 {
-    lua_pushcclosure(_pimpl->lua_state, function, nvalues);
+    cxx_function *data = static_cast< cxx_function* >(
+        lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
+    *data = function;
+    lua_pushcclosure(_pimpl->lua_state, cxx_closure_trampoline, nvalues + 1);
 }
 
 
 /// Wrapper around lua_pushcfunction.
 ///
-/// \param function The second parameter to lua_pushcfunction.  Use the
-///     wrap_cxx_function wrapper to provide C++ functions to this parameter.
+/// This is not a pure wrapper around lua_pushcfunction because this has to do
+/// extra magic to allow passing C++ functions instead of plain C functions.
 ///
-/// \warning Terminates execution if there is not enough memory.
+/// \param function The C++ function to be pushed.
 void
-lutok::state::push_c_function(c_function function)
+lutok::state::push_cxx_function(cxx_function function)
 {
-    lua_pushcfunction(_pimpl->lua_state, function);
+    cxx_function *data = static_cast< cxx_function* >(
+        lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
+    *data = function;
+    lua_pushcclosure(_pimpl->lua_state, cxx_function_trampoline, 1);
 }
 
 
@@ -715,38 +805,4 @@ lua_State*
 lutok::state::raw_state_for_testing(void)
 {
     return _pimpl->lua_state;
-}
-
-
-/// Calls a C++ Lua function from a C calling environment.
-///
-/// Any errors reported by the C++ function are caught and reported to the
-/// caller as Lua errors.
-///
-/// \param function The C++ function to call.
-/// \param raw_state The raw Lua state.
-///
-/// \return The number of return values pushed onto the Lua stack by the
-/// function.
-int
-lutok::detail::call_cxx_function_from_c(cxx_function function,
-                                          lua_State* raw_state) throw()
-{
-    char error_buf[1024];
-
-    try {
-        lutok::state state(raw_state);
-        return function(state);
-    } catch (const std::exception& e) {
-        std::strncpy(error_buf, e.what(), sizeof(error_buf));
-    } catch (...) {
-        std::strncpy(error_buf, "Unhandled exception in Lua C++ hook",
-                     sizeof(error_buf));
-    }
-    error_buf[sizeof(error_buf) - 1] = '\0';
-    // We raise the Lua error from outside the try/catch context and we use
-    // a stack-based buffer to hold the message to ensure that we do not leak
-    // any C++ objects (and, as a likely result, memory) when Lua performs its
-    // longjmp.
-    return luaL_error(raw_state, "%s", error_buf);
 }

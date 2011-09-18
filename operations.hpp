@@ -42,7 +42,7 @@ namespace lutok {
 
 
 void create_module(state&, const std::string&,
-                   const std::map< std::string, c_function >&);
+                   const std::map< std::string, cxx_function >&);
 unsigned int do_file(state&, const std::string&, const int = 0);
 unsigned int do_string(state&, const std::string&, const int = 0);
 void eval(state&, const std::string&, const int = 1);

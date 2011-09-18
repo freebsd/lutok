@@ -114,39 +114,20 @@ c_get_upvalues(lua_State* state)
 }
 
 
-/// A custom C multiply function with one of its factors on its closure.
+/// A custom C++ multiply function with one of its factors on its closure.
 ///
 /// \pre stack(-1) contains the second factor.
 /// \post stack(-1) contains the product of the two input factors.
 ///
-/// \param state The raw Lua state.
+/// \param state The Lua state.
 ///
 /// \return The number of result values, i.e. 1.
 static int
-c_multiply_closure(lua_State* state)
+cxx_multiply_closure(lutok::state& state)
 {
-    const int f1 = lua_tointeger(state, lua_upvalueindex(1));
-    const int f2 = lua_tointeger(state, -1);
-    lua_pushinteger(state, f1 * f2);
-    return 1;
-}
-
-
-/// A custom C multiply function for Lua.
-///
-/// \pre stack(-2) contains the first factor.
-/// \pre stack(-1) contains the second factor.
-/// \post stack(-1) contains the product of the two input factors.
-///
-/// \param state The raw Lua state.
-///
-/// \return The number of result values, i.e. 1.
-static int
-c_multiply(lua_State* state)
-{
-    const int f1 = lua_tointeger(state, -2);
-    const int f2 = lua_tointeger(state, -1);
-    lua_pushinteger(state, f1 * f2);
+    const int f1 = lua_tointeger(raw(state), lua_upvalueindex(1));
+    const int f2 = lua_tointeger(raw(state), -1);
+    lua_pushinteger(raw(state), f1 * f2);
     return 1;
 }
 
@@ -166,7 +147,7 @@ c_multiply(lua_State* state)
 /// \throw std::string If the dividend or the divisor are negative.  This is an
 ///     exception not derived from std::exception on purpose to ensure that the
 ///     C++ wrapping correctly captures any exception regardless of its type.
-int  // Not static because it needs external linkage for wrap_cxx_function.
+static int
 cxx_divide(lutok::state& state)
 {
     const int dividend = state.to_integer(-2);
@@ -191,7 +172,7 @@ cxx_divide(lutok::state& state)
 ///
 /// \throw std::runtime_error Unconditionally, with an error message formed by
 ///     the repetition of 'A' as many times as requested.
-int  // Not static because it needs external linkage for wrap_cxx_function.
+static int
 raise_long_error(lutok::state& state)
 {
     const int length = state.to_integer();
@@ -807,39 +788,26 @@ ATF_TEST_CASE_BODY(push_boolean)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(push_c_closure);
-ATF_TEST_CASE_BODY(push_c_closure)
+ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_closure);
+ATF_TEST_CASE_BODY(push_cxx_closure)
 {
     lutok::state state;
     state.push_integer(15);
-    state.push_c_closure(c_multiply_closure, 1);
-    lua_setglobal(raw(state), "c_multiply_closure");
+    state.push_cxx_closure(cxx_multiply_closure, 1);
+    lua_setglobal(raw(state), "cxx_multiply_closure");
 
     ATF_REQUIRE(luaL_dostring(raw(state),
-                              "return c_multiply_closure(10)") == 0);
+                              "return cxx_multiply_closure(10)") == 0);
     ATF_REQUIRE_EQ(150, lua_tointeger(raw(state), -1));
     lua_pop(raw(state), 1);
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(push_c_function__c_ok);
-ATF_TEST_CASE_BODY(push_c_function__c_ok)
+ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_function__ok);
+ATF_TEST_CASE_BODY(push_cxx_function__ok)
 {
     lutok::state state;
-    state.push_c_function(c_multiply);
-    lua_setglobal(raw(state), "c_multiply");
-
-    ATF_REQUIRE(luaL_dostring(raw(state), "return c_multiply(3, 4)") == 0);
-    ATF_REQUIRE_EQ(12, lua_tointeger(raw(state), -1));
-    lua_pop(raw(state), 1);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(push_c_function__cxx_ok);
-ATF_TEST_CASE_BODY(push_c_function__cxx_ok)
-{
-    lutok::state state;
-    state.push_c_function(lutok::wrap_cxx_function< cxx_divide >);
+    state.push_cxx_function(cxx_divide);
     lua_setglobal(raw(state), "cxx_divide");
 
     ATF_REQUIRE(luaL_dostring(raw(state), "return cxx_divide(17, 3)") == 0);
@@ -849,11 +817,11 @@ ATF_TEST_CASE_BODY(push_c_function__cxx_ok)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(push_c_function__cxx_fail_exception);
-ATF_TEST_CASE_BODY(push_c_function__cxx_fail_exception)
+ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_function__fail_exception);
+ATF_TEST_CASE_BODY(push_cxx_function__fail_exception)
 {
     lutok::state state;
-    state.push_c_function(lutok::wrap_cxx_function< cxx_divide >);
+    state.push_cxx_function(cxx_divide);
     lua_setglobal(raw(state), "cxx_divide");
 
     ATF_REQUIRE(luaL_dostring(raw(state), "return cxx_divide(15, 0)") != 0);
@@ -862,11 +830,11 @@ ATF_TEST_CASE_BODY(push_c_function__cxx_fail_exception)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(push_c_function__cxx_fail_anything);
-ATF_TEST_CASE_BODY(push_c_function__cxx_fail_anything)
+ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_function__fail_anything);
+ATF_TEST_CASE_BODY(push_cxx_function__fail_anything)
 {
     lutok::state state;
-    state.push_c_function(lutok::wrap_cxx_function< cxx_divide >);
+    state.push_cxx_function(cxx_divide);
     lua_setglobal(raw(state), "cxx_divide");
 
     ATF_REQUIRE(luaL_dostring(raw(state), "return cxx_divide(-3, -1)") != 0);
@@ -875,11 +843,11 @@ ATF_TEST_CASE_BODY(push_c_function__cxx_fail_anything)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(push_c_function__cxx_fail_overflow);
-ATF_TEST_CASE_BODY(push_c_function__cxx_fail_overflow)
+ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_function__fail_overflow);
+ATF_TEST_CASE_BODY(push_cxx_function__fail_overflow)
 {
     lutok::state state;
-    state.push_c_function(lutok::wrap_cxx_function< raise_long_error >);
+    state.push_cxx_function(raise_long_error);
     lua_setglobal(raw(state), "fail");
 
     ATF_REQUIRE(luaL_dostring(raw(state), "return fail(900)") != 0);
@@ -1226,12 +1194,11 @@ ATF_INIT_TEST_CASES(tcs)
     ATF_ADD_TEST_CASE(tcs, pop__one);
     ATF_ADD_TEST_CASE(tcs, pop__many);
     ATF_ADD_TEST_CASE(tcs, push_boolean);
-    ATF_ADD_TEST_CASE(tcs, push_c_closure);
-    ATF_ADD_TEST_CASE(tcs, push_c_function__c_ok);
-    ATF_ADD_TEST_CASE(tcs, push_c_function__cxx_ok);
-    ATF_ADD_TEST_CASE(tcs, push_c_function__cxx_fail_exception);
-    ATF_ADD_TEST_CASE(tcs, push_c_function__cxx_fail_anything);
-    ATF_ADD_TEST_CASE(tcs, push_c_function__cxx_fail_overflow);
+    ATF_ADD_TEST_CASE(tcs, push_cxx_closure);
+    ATF_ADD_TEST_CASE(tcs, push_cxx_function__ok);
+    ATF_ADD_TEST_CASE(tcs, push_cxx_function__fail_exception);
+    ATF_ADD_TEST_CASE(tcs, push_cxx_function__fail_anything);
+    ATF_ADD_TEST_CASE(tcs, push_cxx_function__fail_overflow);
     ATF_ADD_TEST_CASE(tcs, push_integer);
     ATF_ADD_TEST_CASE(tcs, push_nil);
     ATF_ADD_TEST_CASE(tcs, push_string);
