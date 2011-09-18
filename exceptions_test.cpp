@@ -29,9 +29,9 @@
 #include <cstring>
 
 #include <atf-c++.hpp>
-#include <lua.hpp>
 
 #include "exceptions.hpp"
+#include "state.ipp"
 
 
 ATF_TEST_CASE_WITHOUT_HEAD(error);
@@ -54,13 +54,14 @@ ATF_TEST_CASE_BODY(api_error__explicit)
 ATF_TEST_CASE_WITHOUT_HEAD(api_error__from_stack);
 ATF_TEST_CASE_BODY(api_error__from_stack)
 {
-    lua_State* s = lua_open();
-    lua_pushinteger(s, 123);
-    lua_pushstring(s, "The error message");
-    const lutok::api_error e = lutok::api_error::from_stack(s, "the_function");
-    ATF_REQUIRE_EQ(1, lua_gettop(s));
-    ATF_REQUIRE_EQ(123, lua_tointeger(s, -1));
-    lua_pop(s, 1);
+    lutok::state state;
+    state.push_integer(123);
+    state.push_string("The error message");
+    const lutok::api_error e = lutok::api_error::from_stack(state,
+                                                            "the_function");
+    ATF_REQUIRE_EQ(1, state.get_top());
+    ATF_REQUIRE_EQ(123, state.to_integer());
+    state.pop(1);
     ATF_REQUIRE(std::strcmp("The error message", e.what()) == 0);
     ATF_REQUIRE_EQ("the_function", e.api_function());
 }

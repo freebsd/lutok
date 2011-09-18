@@ -30,8 +30,9 @@
 
 #include <lua.hpp>
 
+#include "c_gate.hpp"
 #include "exceptions.hpp"
-#include "state.hpp"
+#include "state.ipp"
 
 
 /// Constructs a new error with a plain-text message.
@@ -72,16 +73,18 @@ lutok::api_error::~api_error(void) throw()
 /// \pre There is an error message on the top of the stack.
 /// \post The error message is popped from the stack.
 ///
-/// \param s The Lua state.
+/// \param state_ The Lua state.
 /// \param api_function_ The name of the Lua API function that caused the error.
 ///
 /// \return A new api_error with the popped message.
 lutok::api_error
-lutok::api_error::from_stack(lua_State* s, const std::string& api_function_)
+lutok::api_error::from_stack(state& state_, const std::string& api_function_)
 {
-    assert(lua_isstring(s, -1));
-    const std::string message = lua_tostring(s, -1);
-    lua_pop(s, 1);
+    lua_State* raw_state = lutok::state_c_gate(state_).c_state();
+
+    assert(lua_isstring(raw_state, -1));
+    const std::string message = lua_tostring(raw_state, -1);
+    lua_pop(raw_state, 1);
     return lutok::api_error(api_function_, message);
 }
 

@@ -301,7 +301,7 @@ lutok::state::get_global(const std::string& name)
     lua_pushcfunction(_pimpl->lua_state, protected_getglobal);
     lua_pushstring(_pimpl->lua_state, name.c_str());
     if (lua_pcall(_pimpl->lua_state, 1, 1, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "lua_getglobal");
+        throw lutok::api_error::from_stack(*this, "lua_getglobal");
 }
 
 
@@ -321,7 +321,7 @@ lutok::state::get_table(const int index)
     lua_pushvalue(_pimpl->lua_state, index < 0 ? index - 1 : index);
     lua_pushvalue(_pimpl->lua_state, -3);
     if (lua_pcall(_pimpl->lua_state, 2, 1, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "lua_gettable");
+        throw lutok::api_error::from_stack(*this, "lua_gettable");
     lua_remove(_pimpl->lua_state, -2);
 }
 
@@ -434,7 +434,7 @@ lutok::state::load_file(const std::string& file)
     if (!::access(file.c_str(), R_OK) == 0)
         throw lutok::file_not_found_error(file);
     if (luaL_loadfile(_pimpl->lua_state, file.c_str()) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "luaL_loadfile");
+        throw lutok::api_error::from_stack(*this, "luaL_loadfile");
 }
 
 
@@ -449,7 +449,7 @@ void
 lutok::state::load_string(const std::string& str)
 {
     if (luaL_loadstring(_pimpl->lua_state, str.c_str()) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "luaL_loadstring");
+        throw lutok::api_error::from_stack(*this, "luaL_loadstring");
 }
 
 
@@ -496,7 +496,7 @@ lutok::state::next(const int index)
     lua_pushvalue(_pimpl->lua_state, index < 0 ? index - 1 : index);
     lua_pushvalue(_pimpl->lua_state, -3);
     if (lua_pcall(_pimpl->lua_state, 2, LUA_MULTRET, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "lua_next");
+        throw lutok::api_error::from_stack(*this, "lua_next");
     const bool more = lua_toboolean(_pimpl->lua_state, -1);
     lua_pop(_pimpl->lua_state, 1);
     if (more)
@@ -517,7 +517,7 @@ lutok::state::open_base(void)
 {
     lua_pushcfunction(_pimpl->lua_state, luaopen_base);
     if (lua_pcall(_pimpl->lua_state, 0, 0, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "luaopen_base");
+        throw lutok::api_error::from_stack(*this, "luaopen_base");
 }
 
 
@@ -531,7 +531,7 @@ lutok::state::open_string(void)
 {
     lua_pushcfunction(_pimpl->lua_state, luaopen_string);
     if (lua_pcall(_pimpl->lua_state, 0, 0, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "luaopen_string");
+        throw lutok::api_error::from_stack(*this, "luaopen_string");
 }
 
 
@@ -545,7 +545,7 @@ lutok::state::open_table(void)
 {
     lua_pushcfunction(_pimpl->lua_state, luaopen_table);
     if (lua_pcall(_pimpl->lua_state, 0, 0, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "luaopen_table");
+        throw lutok::api_error::from_stack(*this, "luaopen_table");
 }
 
 
@@ -560,7 +560,7 @@ void
 lutok::state::pcall(const int nargs, const int nresults, const int errfunc)
 {
     if (lua_pcall(_pimpl->lua_state, nargs, nresults, errfunc) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "lua_pcall");
+        throw lutok::api_error::from_stack(*this, "lua_pcall");
 }
 
 
@@ -664,7 +664,7 @@ lutok::state::set_global(const std::string& name)
     lua_pushstring(_pimpl->lua_state, name.c_str());
     lua_pushvalue(_pimpl->lua_state, -3);
     if (lua_pcall(_pimpl->lua_state, 2, 0, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "lua_setglobal");
+        throw lutok::api_error::from_stack(*this, "lua_setglobal");
     lua_pop(_pimpl->lua_state, 1);
 }
 
@@ -695,7 +695,7 @@ lutok::state::set_table(const int index)
     lua_pushvalue(_pimpl->lua_state, -4);
     lua_pushvalue(_pimpl->lua_state, -4);
     if (lua_pcall(_pimpl->lua_state, 3, 0, 0) != 0)
-        throw lutok::api_error::from_stack(_pimpl->lua_state, "lua_settable");
+        throw lutok::api_error::from_stack(*this, "lua_settable");
     lua_pop(_pimpl->lua_state, 2);
 }
 

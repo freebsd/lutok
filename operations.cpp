@@ -28,6 +28,8 @@
 
 #include <cassert>
 
+#include <lua.hpp>
+
 #include "exceptions.hpp"
 #include "operations.hpp"
 #include "stack_cleaner.hpp"

@@ -35,8 +35,6 @@
 #include <stdexcept>
 #include <string>
 
-#include <lua.hpp>
-
 namespace lutok {
 
 
@@ -59,7 +57,7 @@ public:
     explicit api_error(const std::string&, const std::string&);
     virtual ~api_error(void) throw();
 
-    static api_error from_stack(lua_State*, const std::string&);
+    static api_error from_stack(state&, const std::string&);
 
     const std::string& api_function(void) const;
 };
