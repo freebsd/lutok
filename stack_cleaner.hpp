@@ -34,7 +34,6 @@
 
 #include <memory>
 
-#include <lutok/noncopyable.hpp>
 #include <lutok/state.hpp>
 
 namespace lutok {
@@ -69,9 +68,13 @@ namespace lutok {
 /// You must give a name to the instantiated objects even if they cannot be
 /// accessed later.  Otherwise, the instance will be destroyed right away and
 /// will not have the desired effect.
-class stack_cleaner : noncopyable {
+class stack_cleaner {
     struct impl;
     std::auto_ptr< impl > _pimpl;
+
+    // Disallow copying.
+    stack_cleaner(const stack_cleaner&);
+    stack_cleaner& operator=(const stack_cleaner&);
 
 public:
     stack_cleaner(state&);
