@@ -59,16 +59,16 @@ lutok::debug::~debug(void)
 /// Wrapper around lua_getinfo.
 ///
 /// \param s The Lua state.
-/// \param what The second parameter to lua_getinfo.
+/// \param what_ The second parameter to lua_getinfo.
 ///
 /// \warning Terminates execution if there is not enough memory to manipulate
 /// the Lua stack.
 void
-lutok::debug::get_info(state& s, const std::string& what)
+lutok::debug::get_info(state& s, const std::string& what_)
 {
     lua_State* raw_state = state_c_gate(s).c_state();
 
-    if (lua_getinfo(raw_state, what.c_str(), &_pimpl->lua_debug) == 0)
+    if (lua_getinfo(raw_state, what_.c_str(), &_pimpl->lua_debug) == 0)
         throw lutok::api_error::from_stack(s, "lua_getinfo");
 }
 

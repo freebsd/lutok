@@ -250,9 +250,9 @@ lutok::state::state(void)
 /// Instances constructed using this method do NOT own the raw state.  This
 /// means that, on exit, the state will not be destroyed.
 ///
-/// \param raw_state The raw Lua state to wrap.
-lutok::state::state(void* raw_state) :
-    _pimpl(new impl(reinterpret_cast< lua_State* >(raw_state), false))
+/// \param raw_state_ The raw Lua state to wrap.
+lutok::state::state(void* raw_state_) :
+    _pimpl(new impl(reinterpret_cast< lua_State* >(raw_state_), false))
 {
 }
 
