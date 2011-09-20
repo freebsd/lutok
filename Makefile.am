@@ -72,11 +72,11 @@ pkgconfig_DATA = lutok.pc
 CLEANFILES = lutok.pc
 EXTRA_DIST += lutok.pc.in
 lutok.pc: $(srcdir)/lutok.pc.in Makefile
-	sed -e 's,__INCLUDEDIR__,$(includedir),g' \
-	    -e 's,__LIBDIR__,$(libdir),g' \
-	    -e 's,__LUA_CFLAGS__,$(LUA_CFLAGS),g' \
-	    -e 's,__LUA_LIBS__,$(LUA_LIBS),g' \
-	    -e 's,__VERSION__,$(PACKAGE_VERSION),g' \
+	sed -e 's#__INCLUDEDIR__#$(includedir)#g' \
+	    -e 's#__LIBDIR__#$(libdir)#g' \
+	    -e 's#__LUA_CFLAGS__#$(LUA_CFLAGS)#g' \
+	    -e 's#__LUA_LIBS__#$(LUA_LIBS)#g' \
+	    -e 's#__VERSION__#$(PACKAGE_VERSION)#g' \
 	    <$(srcdir)/lutok.pc.in >lutok.pc.tmp
 	mv lutok.pc.tmp lutok.pc
 
