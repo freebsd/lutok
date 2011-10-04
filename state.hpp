@@ -38,7 +38,6 @@
 namespace lutok {
 
 
-class c_gate;
 class debug;
 class state;
 
