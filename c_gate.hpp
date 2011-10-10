@@ -51,7 +51,7 @@ class state;
 /// entering the world of unsafety.  Anything you do through the objects exposed
 /// through this class will not be controlled by RAII patterns not validated in
 /// any other way, so you can end up corrupting the Lua state and later get
-/// crashes on otherwise perfectly-valud C++ code.
+/// crashes on otherwise perfectly-valid C++ code.
 class state_c_gate {
     /// The C++ state that this class wraps.
     state& _state;

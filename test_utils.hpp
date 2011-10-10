@@ -49,12 +49,11 @@
 namespace {
 
 
-/// Checks that a given expression raises a particular lua::api_error.
+/// Checks that a given expression raises a particular lutok::api_error.
 ///
 /// We cannot make any assumptions regarding the error text provided by Lua, so
 /// we resort to checking only which API function raised the error (because our
 /// code is the one hardcoding these strings).
-///
 ///
 /// \param exp_api_function The name of the Lua C API function that causes the
 ///     error.

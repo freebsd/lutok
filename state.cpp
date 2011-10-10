@@ -775,9 +775,12 @@ lutok::state::upvalue_index(const int index)
 }
 
 
-/// Gets the internal lua_State object for testing purposes only.
+/// Gets the internal lua_State object.
 ///
-/// \return The raw Lua state.
+/// \return The raw Lua state.  This is returned as a void pointer to prevent
+/// including the lua.hpp header file from our public interface.  The only way
+/// to call this method is by using the c_gate module, and c_gate takes care of
+/// casting this object to the appropriate type.
 void*
 lutok::state::raw_state(void)
 {
