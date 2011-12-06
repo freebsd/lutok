@@ -66,6 +66,8 @@ typedef int (*cxx_function)(state&);
 /// error control rather than efficiency, so this is OK.
 class state {
     struct impl;
+
+    /// Pointer to the shared internal implementation.
     std::tr1::shared_ptr< impl > _pimpl;
 
     void* new_userdata_voidp(const size_t);

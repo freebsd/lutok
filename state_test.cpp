@@ -101,7 +101,7 @@ check_modules(lutok::state& state, const std::string& expected)
 /// \post stack(-2) contains the first upvalue.
 /// \post stack(-1) contains the second upvalue.
 ///
-/// \param state The raw Lua state.
+/// \param raw_state The raw Lua state.
 ///
 /// \return The number of result values, i.e. 2.
 static int

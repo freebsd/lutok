@@ -70,10 +70,14 @@ namespace lutok {
 /// will not have the desired effect.
 class stack_cleaner {
     struct impl;
+
+    /// Pointer to the shared internal implementation.
     std::auto_ptr< impl > _pimpl;
 
-    // Disallow copying.
+    /// Disallow copies.
     stack_cleaner(const stack_cleaner&);
+
+    /// Disallow assignment.
     stack_cleaner& operator=(const stack_cleaner&);
 
 public:

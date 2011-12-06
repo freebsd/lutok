@@ -54,6 +54,8 @@ class state;
 /// its result is really mutating a debug object, not the state object.
 class debug {
     struct impl;
+
+    /// Pointer to the shared internal implementation.
     std::tr1::shared_ptr< impl > _pimpl;
 
 public:

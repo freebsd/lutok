@@ -90,8 +90,13 @@ raw(lutok::state& state)
 ///
 /// To be used within a test case only.
 class stack_balance_checker {
+    /// The Lua state.
     lutok::state& _state;
+
+    /// Whether to install a sentinel on the stack for balance enforcement.
     bool _with_sentinel;
+
+    /// The height of the stack on creation.
     unsigned int _old_count;
 
 public:
