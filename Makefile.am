@@ -158,7 +158,11 @@ clean-api-docs:
 	rm -rf api-docs
 
 install-data-local: install-api-docs
-install-api-docs:
+# The following target depends on the installation of the plain-text
+# documents so that docdir gets created beforehand.  This should not be
+# necessary because pax ought to create any missing directories.  However,
+# this does not appear to be the case in, at least, Ubuntu 10.04.1 LTS.
+install-api-docs: install-docDATA
 	cd api-docs && pax -rwpp html $(docdir)
 endif
 
