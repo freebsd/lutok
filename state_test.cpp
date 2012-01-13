@@ -26,6 +26,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "state.ipp"
+
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -36,7 +38,6 @@
 
 #include "c_gate.hpp"
 #include "exceptions.hpp"
-#include "state.ipp"
 #include "test_utils.hpp"
 
 

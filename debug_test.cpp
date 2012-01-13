@@ -26,10 +26,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "debug.hpp"
+
 #include <atf-c++.hpp>
 #include <lua.hpp>
 
-#include "debug.hpp"
 #include "state.ipp"
 #include "test_utils.hpp"
 
