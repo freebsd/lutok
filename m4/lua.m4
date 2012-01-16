@@ -41,8 +41,8 @@ AC_DEFUN([KYUA_LUA], [
     fi
 
     if test "${lua_found}" = no; then
-        AC_PATH_PROGS([LUA_CONFIG], [lua-config])
-        if test "${LUA_CONFIG-unset}" != unset; then
+        AC_PATH_PROGS([LUA_CONFIG], [lua-config], [unset])
+        if test "${LUA_CONFIG}" != unset; then
             AC_SUBST([LUA_CFLAGS], [$(${LUA_CONFIG} --include)])
             AC_SUBST([LUA_LIBS], [$(${LUA_CONFIG} --libs)])
             lua_found=yes
