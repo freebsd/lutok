@@ -150,21 +150,36 @@ if WITH_DOXYGEN
 all-local: api-docs/api-docs.tag
 
 api-docs/api-docs.tag: $(srcdir)/Doxyfile $(SOURCES)
+	rm -rf api-docs
 	mkdir -p api-docs
 	${DOXYGEN} $(srcdir)/Doxyfile 2>&1 | tee api-docs/warnings
+api-docs/html: api-docs/api-docs.tag
 
 CLEAN_TARGETS += clean-api-docs
 clean-api-docs:
 	rm -rf api-docs
+endif
+EXTRA_DIST += api-docs/html
 
 install-data-local: install-api-docs
-# The following target depends on the installation of the plain-text
-# documents so that docdir gets created beforehand.  This should not be
-# necessary because pax ought to create any missing directories.  However,
-# this does not appear to be the case in, at least, Ubuntu 10.04.1 LTS.
 install-api-docs: install-docDATA
-	cd api-docs && pax -rwpp html $(docdir)
-endif
+	@echo "Installing HTML documentation into $(DESTDIR)$(htmldir)"
+	@if [ -d api-docs/html ]; then \
+	    test -z "$(htmldir)" || $(MKDIR_P) "$(DESTDIR)$(htmldir)"; \
+	    ( cd api-docs/html && tar cf - . ) | \
+                ( cd "$(DESTDIR)$(htmldir)" && tar xf - ); \
+	elif [ -d "$(srcdir)/api-docs/html" ]; then \
+	    test -z "$(htmldir)" || $(MKDIR_P) "$(DESTDIR)$(htmldir)"; \
+	    ( cd "$(srcdir)/api-docs/html" && tar cf - . ) | \
+                ( cd "$(DESTDIR)$(htmldir)" && tar xf - ); \
+	else \
+	    echo "Doxygen not installed and prebuilt documents not found"; \
+	fi
+
+uninstall-local: uninstall-api-docs
+uninstall-api-docs:
+	find "$(DESTDIR)$(htmldir)" -type d -exec chmod 755 {} \;
+	rm -rf "$(DESTDIR)$(htmldir)"
 
 clean-local: $(CLEAN_TARGETS)
 
