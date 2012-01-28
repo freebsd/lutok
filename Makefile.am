@@ -81,6 +81,14 @@ lutok.pc: $(srcdir)/lutok.pc.in Makefile
 CLEAN_TARGETS =
 PHONY_TARGETS =
 
+examplesdir = $(docdir)/examples
+examples_DATA  = examples/Makefile
+examples_DATA += examples/bindings.cpp
+examples_DATA += examples/hello.cpp
+examples_DATA += examples/interpreter.cpp
+examples_DATA += examples/raii.cpp
+EXTRA_DIST += $(examples_DATA)
+
 if WITH_ATF
 tests_DATA = Atffile Kyuafile
 EXTRA_DIST += $(tests_DATA)
@@ -94,6 +102,17 @@ tests_PROGRAMS += debug_test
 debug_test_SOURCES = debug_test.cpp test_utils.hpp
 debug_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
 debug_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+
+tests_SCRIPTS = examples_test
+CLEANFILES += examples_test
+EXTRA_DIST += examples_test.sh
+examples_test: $(srcdir)/examples_test.sh
+	sed -e 's,__ATF_SH__,$(ATF_SH),g' \
+	    -e 's,__EXAMPLESDIR__,$(examplesdir),g' \
+	    <examples_test.sh >examples_test.tmp
+	chmod +x examples_test.tmp
+	rm -f examples_test
+	mv examples_test.tmp examples_test
 
 tests_PROGRAMS += exceptions_test
 exceptions_test_SOURCES = exceptions_test.cpp
