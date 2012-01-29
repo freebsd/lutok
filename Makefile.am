@@ -173,6 +173,7 @@ api-docs/api-docs.tag: $(srcdir)/Doxyfile $(SOURCES)
 	rm -rf api-docs
 	mkdir -p api-docs
 	${DOXYGEN} $(srcdir)/Doxyfile 2>&1 | tee api-docs/warnings
+	rm -f api-docs/html/installdox
 api-docs/html: api-docs/api-docs.tag
 
 CLEAN_TARGETS += clean-api-docs
