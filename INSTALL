@@ -38,7 +38,7 @@ Optionally, if you want to build and run the tests (recommended), you
 need:
 
 * Kyua 0.2 or greater.
-* ATF 0.14 or greater.
+* ATF 0.15 or greater.
 
 If you are building Lutok from the code on the repository, you will also
 need the following tools:
@@ -127,6 +127,23 @@ The following flags are specific to Lutok's 'configure' script:
   detection features regardless of the value of this flag.  However, such
   warnings are only fatal when --enable-developer is 'yes'.
 
+* --with-atf
+  Possible values: yes, no, auto.
+  Default: auto.
+
+  Enables usage of ATF to build (and later install) the tests.
+
+  Setting this to 'yes' causes the configure script to look for ATF
+  unconditionally and abort if not found.  Setting this to 'auto' lets
+  configure perform the best decision based on availability of ATF.
+  Setting this to 'no' explicitly disables ATF usage.
+
+  When support for tests is enabled, the build process will generate the
+  test programs and will later install them into the tests tree.
+  Running 'make check' or 'make installcheck' from within the source
+  directory will cause these tests to be run with Kyua (assuming it is
+  also installed).
+
 * --with-doxygen
   Possible values: yes, no, auto or a path.
   Default: auto.
@@ -140,15 +157,22 @@ The following flags are specific to Lutok's 'configure' script:
   setting this to a path forces configure to use a specific Doxygen
   binary, which must exist.
 
+  When support for Doxygen is enabled, the build process will generate
+  HTML documentation for the Lutok API.  This documentation will later
+  be installed in the HTML directory specified by the configure script.
+  You can change the location of the HTML documents by providing your
+  desired override with the '--htmldir' flag to the configure script.
+
 
 Run the tests!
 ==============
 
-Lastly, after a successful installation, you should periodically run the
-tests from the final location to ensure things remain stable.  Do so as
+Lastly, after a successful installation (and assuming you built the
+sources with support for ATF), you should periodically run the tests
+from the final location to ensure things remain stable.  Do so as
 follows:
 
-    $ cd /usr/local/tests/lutok && kyua test
+    $ kyua test -k /usr/local/tests/lutok/Kyuafile
 
 And if you see any tests fail, do not hesitate to report them in:
 
