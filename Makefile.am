@@ -109,7 +109,7 @@ EXTRA_DIST += examples_test.sh
 examples_test: $(srcdir)/examples_test.sh
 	sed -e 's,__ATF_SH__,$(ATF_SH),g' \
 	    -e 's,__EXAMPLESDIR__,$(examplesdir),g' \
-	    <examples_test.sh >examples_test.tmp
+	    <$(srcdir)/examples_test.sh >examples_test.tmp
 	chmod +x examples_test.tmp
 	rm -f examples_test
 	mv examples_test.tmp examples_test
