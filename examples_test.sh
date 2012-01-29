@@ -28,11 +28,29 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ExamplesDir="__EXAMPLESDIR__"
+LibDir="__LIBDIR__"
 
 
 make_example() {
     cp "${ExamplesDir}/Makefile" "${ExamplesDir}/${1}.cpp" .
     make "${1}"
+
+    # Ensure that the binary we just built can find liblutok.  This is
+    # needed because the lutok.pc file (which the Makefile used above
+    # queries) does not provide rpaths to the installed library and
+    # therefore the binary may not be able to locate it.  Hardcoding the
+    # rpath flags into lutok.pc is non-trivial because we simply don't
+    # have any knowledge about what the correct flag to set an rpath is.
+    #
+    # Additionally, setting rpaths is not always the right thing to do.
+    # For example, pkgsrc will automatically change lutok.pc to add the
+    # missing rpath, in which case this is unnecessary.  But in the case
+    # of Fedora, adding rpaths goes against the packaging guidelines.
+    if [ -n "${LD_LIBRARY_PATH}" ]; then
+        export LD_LIBRARY_PATH="${LibDir}:${LD_LIBRARY_PATH}"
+    else
+        export LD_LIBRARY_PATH="${LibDir}"
+    fi
 }
 
 

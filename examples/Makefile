@@ -34,7 +34,8 @@ LIBS ?=
 
 LUTOK_CPPFLAGS = $$(pkg-config --cflags-only-I lutok)
 LUTOK_CXXFLAGS = $$(pkg-config --cflags-only-other lutok)
-LUTOK_LDFLAGS = $$(pkg-config --libs-only-L --libs-only-other lutok)
+LUTOK_LDFLAGS = $$(pkg-config --libs-only-L lutok) \
+                $$(pkg-config --libs-only-other lutok)
 LUTOK_LIBS = $$(pkg-config --libs-only-l lutok)
 
 BUILD = $(CXX) \
