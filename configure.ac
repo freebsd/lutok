@@ -55,6 +55,7 @@ ATF_CHECK_SH([>= 0.15])
 ATF_ARG_WITH
 KYUA_DOXYGEN
 KYUA_LUA
+AC_PATH_PROG([GIT], [git])
 
 
 AC_SUBST(pkgconfigdir, \${libdir}/pkgconfig)
