@@ -305,6 +305,34 @@ lutok::state::get_global(const std::string& name)
 }
 
 
+/// Wrapper around luaL_getmetafield.
+///
+/// \param index The second parameter to luaL_getmetafield.
+/// \param name The third parameter to luaL_getmetafield.
+///
+/// \return The return value of luaL_getmetafield.
+///
+/// \warning Terminates execution if there is not enough memory to manipulate
+/// the Lua stack.
+bool
+lutok::state::get_metafield(const int index, const std::string& name)
+{
+    return luaL_getmetafield(_pimpl->lua_state, index, name.c_str()) != 0;
+}
+
+
+/// Wrapper around lua_getmetatable.
+///
+/// \param index The second parameter to lua_getmetatable.
+///
+/// \return The return value of lua_getmetatable.
+bool
+lutok::state::get_metatable(const int index)
+{
+    return lua_getmetatable(_pimpl->lua_state, index) != 0;
+}
+
+
 /// Wrapper around lua_gettable.
 ///
 /// \param index The second parameter to lua_gettable.
@@ -333,6 +361,16 @@ int
 lutok::state::get_top(void)
 {
     return lua_gettop(_pimpl->lua_state);
+}
+
+
+/// Wrapper around lua_insert.
+///
+/// \param index The second parameter to lua_insert.
+void
+lutok::state::insert(const int index)
+{
+    lua_insert(_pimpl->lua_state, index);
 }
 
 
@@ -646,6 +684,39 @@ void
 lutok::state::push_string(const std::string& str)
 {
     lua_pushstring(_pimpl->lua_state, str.c_str());
+}
+
+
+/// Wrapper around lua_pushvalue.
+///
+/// \param index The second parameter to lua_pushvalue.
+void
+lutok::state::push_value(const int index)
+{
+    lua_pushvalue(_pimpl->lua_state, index);
+}
+
+
+/// Wrapper around lua_rawget.
+///
+/// \param index The second parameter to lua_rawget.
+void
+lutok::state::raw_get(const int index)
+{
+    lua_rawget(_pimpl->lua_state, index);
+}
+
+
+/// Wrapper around lua_rawset.
+///
+/// \param index The second parameter to lua_rawset.
+///
+/// \warning Terminates execution if there is not enough memory to manipulate
+/// the Lua stack.
+void
+lutok::state::raw_set(const int index)
+{
+    lua_rawset(_pimpl->lua_state, index);
 }
 
 

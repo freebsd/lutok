@@ -83,8 +83,11 @@ public:
 
     void close(void);
     void get_global(const std::string&);
+    bool get_metafield(const int, const std::string&);
+    bool get_metatable(const int = -1);
     void get_table(const int = -2);
     int get_top(void);
+    void insert(const int);
     bool is_boolean(const int = -1);
     bool is_function(const int = -1);
     bool is_nil(const int = -1);
@@ -108,6 +111,9 @@ public:
     void push_integer(const int);
     void push_nil(void);
     void push_string(const std::string&);
+    void push_value(const int = -1);
+    void raw_get(const int = -2);
+    void raw_set(const int = -3);
     void set_global(const std::string&);
     void set_metatable(const int = -2);
     void set_table(const int = -3);
