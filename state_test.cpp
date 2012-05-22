@@ -356,6 +356,20 @@ ATF_TEST_CASE_BODY(get_top)
 }
 
 
+ATF_TEST_CASE_WITHOUT_HEAD(globals_index);
+ATF_TEST_CASE_BODY(globals_index)
+{
+    lutok::state state;
+    ATF_REQUIRE(luaL_dostring(raw(state), "global_variable = 'hello'") == 0);
+    lua_pushvalue(raw(state), lutok::globals_index);
+    lua_pushstring(raw(state), "global_variable");
+    lua_gettable(raw(state), -2);
+    ATF_REQUIRE(lua_isstring(raw(state), -1));
+    ATF_REQUIRE(std::strcmp("hello", lua_tostring(raw(state), -1)) == 0);
+    lua_pop(raw(state), 2);
+}
+
+
 ATF_TEST_CASE_WITHOUT_HEAD(insert);
 ATF_TEST_CASE_BODY(insert)
 {
@@ -1318,6 +1332,7 @@ ATF_INIT_TEST_CASES(tcs)
     ATF_ADD_TEST_CASE(tcs, get_table__nil);
     ATF_ADD_TEST_CASE(tcs, get_table__unknown_index);
     ATF_ADD_TEST_CASE(tcs, get_top);
+    ATF_ADD_TEST_CASE(tcs, globals_index);
     ATF_ADD_TEST_CASE(tcs, insert);
     ATF_ADD_TEST_CASE(tcs, is_boolean__empty);
     ATF_ADD_TEST_CASE(tcs, is_boolean__top);

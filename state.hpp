@@ -50,6 +50,10 @@ class state;
 typedef int (*cxx_function)(state&);
 
 
+/// Stack index constant pointing to the globals table (_G).
+extern const int globals_index;
+
+
 /// A RAII model for the Lua state.
 ///
 /// This class holds the state of the Lua interpreter during its existence and

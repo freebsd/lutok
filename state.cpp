@@ -212,6 +212,9 @@ cxx_function_trampoline(lua_State* raw_state)
 }  // anonymous namespace
 
 
+const int lutok::globals_index = LUA_GLOBALSINDEX;
+
+
 /// Internal implementation for lutok::state.
 struct lutok::state::impl {
     /// The Lua internal state.
