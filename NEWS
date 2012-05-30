@@ -1,8 +1,7 @@
 Changes in version 0.2
 ======================
 
-STILL UNDER DEVELOPMENT; NOT RELEASED YET!
-REMEMBER TO ADJUST -version-info BEFORE THE RELEASE.
+Released on 2012/05/30.
 
 * New global constants: globals_index.
 
