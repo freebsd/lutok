@@ -34,15 +34,22 @@ dnl
 AC_DEFUN([KYUA_LUA], [
     lua_found=no
 
-    PKG_CHECK_MODULES([LUA], [lua5.1 >= 5.1], [lua_found=yes], [true])
+    for lua_release in 5.2 5.1; do
+        if test "${lua_found}" = no; then
+            PKG_CHECK_MODULES([LUA], [lua${lua_release} >= ${lua_release}],
+                              [lua_found=yes], [true])
+        fi
+        if test "${lua_found}" = no; then
+            PKG_CHECK_MODULES([LUA], [lua-${lua_release} >= ${lua_release}],
+                              [lua_found=yes], [true])
+        fi
+        if test "${lua_found}" = no; then
+            PKG_CHECK_MODULES([LUA], [lua >= ${lua_release}],
+                              [lua_found=yes], [true])
+        fi
 
-    if test "${lua_found}" = no; then
-        PKG_CHECK_MODULES([LUA], [lua-5.1 >= 5.1], [lua_found=yes], [true])
-    fi
-
-    if test "${lua_found}" = no; then
-        PKG_CHECK_MODULES([LUA], [lua >= 5.1], [lua_found=yes], [true])
-    fi
+        test "${lua_found}" = no || break
+    done
 
     if test "${lua_found}" = no; then
         AC_PATH_PROGS([LUA_CONFIG], [lua-config], [unset])
