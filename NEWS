@@ -16,6 +16,9 @@ of Lutok is incompatible with previous releases as well.
 
 * Removed global constants: globals_index.
 
+* Fixed the state.open_* methods to use the new luaL_requiref function
+  in Lua 5.2 so that the modules are opened as appropriate.
+
 
 Changes in version 0.2
 ======================

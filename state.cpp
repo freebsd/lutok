@@ -590,9 +590,14 @@ lutok::state::open_base(void)
 void
 lutok::state::open_string(void)
 {
+#if LUA_VERSION_NUM >= 502
+    luaL_requiref(_pimpl->lua_state, LUA_STRLIBNAME, luaopen_string, 1);
+    lua_pop(_pimpl->lua_state, 1);
+#else
     lua_pushcfunction(_pimpl->lua_state, luaopen_string);
     if (lua_pcall(_pimpl->lua_state, 0, 0, 0) != 0)
         throw lutok::api_error::from_stack(*this, "luaopen_string");
+#endif
 }
 
 
@@ -604,9 +609,14 @@ lutok::state::open_string(void)
 void
 lutok::state::open_table(void)
 {
+#if LUA_VERSION_NUM >= 502
+    luaL_requiref(_pimpl->lua_state, LUA_TABLIBNAME, luaopen_table, 1);
+    lua_pop(_pimpl->lua_state, 1);
+#else
     lua_pushcfunction(_pimpl->lua_state, luaopen_table);
     if (lua_pcall(_pimpl->lua_state, 0, 0, 0) != 0)
         throw lutok::api_error::from_stack(*this, "luaopen_table");
+#endif
 }
 
 
