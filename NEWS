@@ -4,7 +4,11 @@ Changes in version 0.3
 STILL UNDER DEVELOPMENT; NOT RELEASED YET.
 REMEMBER TO UPDATE -version-info BEFORE CUTTING A RELEASE!
 
-* No changes recorded.
+* New global constants: registry_index.
+
+* New methods added to the state class: get_global_table.
+
+* Removed global constants: globals_index.
 
 
 Changes in version 0.2

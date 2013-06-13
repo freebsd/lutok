@@ -212,7 +212,7 @@ cxx_function_trampoline(lua_State* raw_state)
 }  // anonymous namespace
 
 
-const int lutok::globals_index = LUA_GLOBALSINDEX;
+const int lutok::registry_index = LUA_REGISTRYINDEX;
 
 
 /// Internal implementation for lutok::state.
@@ -241,7 +241,7 @@ struct lutok::state::impl {
 /// session.  As soon as the object is destroyed, the session is terminated.
 lutok::state::state(void)
 {
-    lua_State* lua = lua_open();
+    lua_State* lua = luaL_newstate();
     if (lua == NULL)
         throw lutok::error("lua open failed");
     _pimpl.reset(new impl(lua, true));
@@ -305,6 +305,26 @@ lutok::state::get_global(const std::string& name)
     lua_pushstring(_pimpl->lua_state, name.c_str());
     if (lua_pcall(_pimpl->lua_state, 1, 1, 0) != 0)
         throw lutok::api_error::from_stack(*this, "lua_getglobal");
+}
+
+
+/// Pushes a reference to the global table onto the stack.
+///
+/// This is a wrapper around the incompatible differences between Lua 5.1 and
+/// 5.2 to access to the globals table.
+///
+/// \post state(-1) Contains the reference to the globals table.
+void
+lutok::state::get_global_table(void)
+{
+#if LUA_VERSION_NUM >= 502
+    lua_pushvalue(_pimpl->lua_state, registry_index);
+    lua_pushinteger(_pimpl->lua_state, LUA_RIDX_GLOBALS);
+    lua_gettable(_pimpl->lua_state, -2);
+    lua_remove(_pimpl->lua_state, -2);
+#else
+    lua_pushvalue(_pimpl->lua_state, LUA_GLOBALSINDEX);
+#endif
 }
 
 

@@ -50,8 +50,8 @@ class state;
 typedef int (*cxx_function)(state&);
 
 
-/// Stack index constant pointing to the globals table (_G).
-extern const int globals_index;
+/// Stack index constant pointing to the registry table.
+extern const int registry_index;
 
 
 /// A RAII model for the Lua state.
@@ -87,6 +87,7 @@ public:
 
     void close(void);
     void get_global(const std::string&);
+    void get_global_table(void);
     bool get_metafield(const int, const std::string&);
     bool get_metatable(const int = -1);
     void get_table(const int = -2);
