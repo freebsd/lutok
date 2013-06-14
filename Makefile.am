@@ -62,7 +62,7 @@ liblutok_la_SOURCES += state.cpp
 liblutok_la_SOURCES += state.hpp
 liblutok_la_SOURCES += state.ipp
 liblutok_la_SOURCES += test_utils.hpp
-liblutok_la_CPPFLAGS = -I$(srcdir)/include $(LUA_CFLAGS)
+liblutok_la_CPPFLAGS = $(LUTOK_CFLAGS)
 liblutok_la_LDFLAGS = -version-info 1:0:1
 liblutok_la_LIBADD = $(LUA_LIBS)
 
@@ -95,13 +95,13 @@ EXTRA_DIST += $(tests_DATA)
 
 tests_PROGRAMS = c_gate_test
 c_gate_test_SOURCES = c_gate_test.cpp test_utils.hpp
-c_gate_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
-c_gate_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+c_gate_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
+c_gate_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
 tests_PROGRAMS += debug_test
 debug_test_SOURCES = debug_test.cpp test_utils.hpp
-debug_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
-debug_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+debug_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
+debug_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
 tests_SCRIPTS = examples_test
 CLEANFILES += examples_test
@@ -117,23 +117,23 @@ examples_test: $(srcdir)/examples_test.sh
 
 tests_PROGRAMS += exceptions_test
 exceptions_test_SOURCES = exceptions_test.cpp
-exceptions_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
-exceptions_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+exceptions_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
+exceptions_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
 tests_PROGRAMS += operations_test
 operations_test_SOURCES = operations_test.cpp test_utils.hpp
-operations_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
-operations_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+operations_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
+operations_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
 tests_PROGRAMS += stack_cleaner_test
 stack_cleaner_test_SOURCES = stack_cleaner_test.cpp test_utils.hpp
-stack_cleaner_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
-stack_cleaner_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+stack_cleaner_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
+stack_cleaner_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
 tests_PROGRAMS += state_test
 state_test_SOURCES = state_test.cpp test_utils.hpp
-state_test_CXXFLAGS = $(ATF_CXX_CFLAGS) $(LUTOK_CFLAGS)
-state_test_LDADD = $(ATF_CXX_LIBS) $(LUTOK_LIBS)
+state_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
+state_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
 check-local: check-kyua
 PHONY_TARGETS += check-kyua
