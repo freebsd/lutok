@@ -41,6 +41,7 @@ AC_CONFIG_SRCDIR([state.hpp])
 
 
 AM_INIT_AUTOMAKE([1.9 check-news foreign subdir-objects -Wall])
+AM_PROG_AR
 LT_INIT
 
 
