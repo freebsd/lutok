@@ -568,6 +568,18 @@ lutok::state::next(const int index)
 }
 
 
+/// Wrapper around luaL_openlibs.
+///
+/// \throw api_error If luaL_openlibs fails.
+///
+/// \warning Terminates execution if there is not enough memory.
+void
+lutok::state::open_all(void)
+{
+    luaL_openlibs(_pimpl->lua_state);
+}
+
+
 /// Wrapper around luaopen_base.
 ///
 /// \throw api_error If luaopen_base fails.

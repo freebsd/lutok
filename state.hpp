@@ -114,6 +114,7 @@ public:
     void new_table(void);
     template< typename Type > Type* new_userdata(void);
     bool next(const int = -2);
+    void open_all(void);
     void open_base(void);
     void open_string(void);
     void open_table(void);

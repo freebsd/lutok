@@ -3,6 +3,8 @@ Changes in version 0.4
 
 STILL UNDER DEVELOPMENT; NOT RELEASED YET.
 
+* Issue 5: New methods added to the state class: open_all.
+
 * Cope with the lack of AM_PROG_AR in configure.ac, which first
   appeared in Automake 1.11.2.  Fixes a problem in Ubuntu 10.04
   LTS, which appears stuck in 1.11.1.

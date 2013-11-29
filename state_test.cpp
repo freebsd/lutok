@@ -757,6 +757,21 @@ ATF_TEST_CASE_BODY(open_base)
 }
 
 
+ATF_TEST_CASE_WITHOUT_HEAD(open_all);
+ATF_TEST_CASE_BODY(open_all)
+{
+    lutok::state state;
+    check_modules(state, "");
+    state.open_all();
+    // Best-effort attempt at looking for a bunch of possible modules.
+    ATF_REQUIRE(is_available(state, "assert"));
+    ATF_REQUIRE(is_available(state, "debug.getinfo"));
+    ATF_REQUIRE(is_available(state, "package.path"));
+    ATF_REQUIRE(is_available(state, "string.byte"));
+    ATF_REQUIRE(is_available(state, "table.concat"));
+}
+
+
 ATF_TEST_CASE_WITHOUT_HEAD(open_string);
 ATF_TEST_CASE_BODY(open_string)
 {
@@ -1360,6 +1375,7 @@ ATF_INIT_TEST_CASES(tcs)
     ATF_ADD_TEST_CASE(tcs, new_userdata);
     ATF_ADD_TEST_CASE(tcs, next__empty);
     ATF_ADD_TEST_CASE(tcs, next__many);
+    ATF_ADD_TEST_CASE(tcs, open_all);
     ATF_ADD_TEST_CASE(tcs, open_base);
     ATF_ADD_TEST_CASE(tcs, open_string);
     ATF_ADD_TEST_CASE(tcs, open_table);
