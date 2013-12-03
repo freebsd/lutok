@@ -64,26 +64,31 @@ lutok::create_module(state& s, const std::string& name,
 ///
 /// \param s The Lua state.
 /// \param file The file to load.
+/// \param nargs The number of arguments on the stack to pass to the file.
 /// \param nresults The number of results to expect; -1 for any.
+/// \param errfunc If not 0, index of a function in the stack to act as an
+///     error handler.
 ///
 /// \return The number of results left on the stack.
 ///
 /// \throw error If there is a problem processing the file.
 unsigned int
-lutok::do_file(state& s, const std::string& file, const int nresults)
+lutok::do_file(state& s, const std::string& file, const int nargs,
+               const int nresults, const int errfunc)
 {
     assert(nresults >= -1);
-    const int height = s.get_top();
+    const int height = s.get_top() - nargs;
 
-    stack_cleaner cleaner(s);
     try {
         s.load_file(file);
-        s.pcall(0, nresults == -1 ? LUA_MULTRET : nresults, 0);
+        if (nargs > 0)
+            s.insert(-nargs - 1);
+        s.pcall(nargs, nresults == -1 ? LUA_MULTRET : nresults,
+                errfunc == 0 ? 0 : errfunc - 1);
     } catch (const lutok::api_error& e) {
         throw lutok::error("Failed to load Lua file '" + file + "': " +
                            e.what());
     }
-    cleaner.forget();
 
     const int actual_results = s.get_top() - height;
     assert(nresults == -1 || actual_results == nresults);
@@ -99,26 +104,31 @@ lutok::do_file(state& s, const std::string& file, const int nresults)
 ///
 /// \param s The Lua state.
 /// \param str The string to process.
+/// \param nargs The number of arguments on the stack to pass to the chunk.
 /// \param nresults The number of results to expect; -1 for any.
+/// \param errfunc If not 0, index of a function in the stack to act as an
+///     error handler.
 ///
 /// \return The number of results left on the stack.
 ///
 /// \throw error If there is a problem processing the string.
 unsigned int
-lutok::do_string(state& s, const std::string& str, const int nresults)
+lutok::do_string(state& s, const std::string& str, const int nargs,
+                 const int nresults, const int errfunc)
 {
     assert(nresults >= -1);
-    const int height = s.get_top();
+    const int height = s.get_top() - nargs;
 
-    stack_cleaner cleaner(s);
     try {
         s.load_string(str);
-        s.pcall(0, nresults == -1 ? LUA_MULTRET : nresults, 0);
+        if (nargs > 0)
+            s.insert(-nargs - 1);
+        s.pcall(nargs, nresults == -1 ? LUA_MULTRET : nresults,
+                errfunc == 0 ? 0 : errfunc - 1);
     } catch (const lutok::api_error& e) {
         throw lutok::error("Failed to process Lua string '" + str + "': " +
                            e.what());
     }
-    cleaner.forget();
 
     const int actual_results = s.get_top() - height;
     assert(nresults == -1 || actual_results == nresults);
@@ -139,5 +149,5 @@ void
 lutok::eval(state& s, const std::string& expression, const int nresults)
 {
     assert(nresults > 0);
-    do_string(s, "return " + expression, nresults);
+    do_string(s, "return " + expression, 0, nresults, 0);
 }
