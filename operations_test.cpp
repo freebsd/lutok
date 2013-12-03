@@ -86,7 +86,7 @@ ATF_TEST_CASE_BODY(create_module__empty)
 
     state.open_base();
     lutok::do_string(state, "return next(my_math) == nil", 0, 1, 0);
-    ATF_REQUIRE(state.to_boolean());
+    ATF_REQUIRE(state.to_boolean(-1));
     state.pop(1);
 }
 
@@ -100,7 +100,7 @@ ATF_TEST_CASE_BODY(create_module__one)
     lutok::create_module(state, "my_math", members);
 
     lutok::do_string(state, "return my_math.add(10, 20)", 0, 1, 0);
-    ATF_REQUIRE_EQ(30, state.to_integer());
+    ATF_REQUIRE_EQ(30, state.to_integer(-1));
     state.pop(1);
 }
 
@@ -116,11 +116,11 @@ ATF_TEST_CASE_BODY(create_module__many)
     lutok::create_module(state, "my_math", members);
 
     lutok::do_string(state, "return my_math.add(10, 20)", 0, 1, 0);
-    ATF_REQUIRE_EQ(30, state.to_integer());
+    ATF_REQUIRE_EQ(30, state.to_integer(-1));
     lutok::do_string(state, "return my_math.multiply(10, 20)", 0, 1, 0);
-    ATF_REQUIRE_EQ(200, state.to_integer());
+    ATF_REQUIRE_EQ(200, state.to_integer(-1));
     lutok::do_string(state, "return my_math.add2(20, 30)", 0, 1, 0);
-    ATF_REQUIRE_EQ(50, state.to_integer());
+    ATF_REQUIRE_EQ(50, state.to_integer(-1));
     state.pop(3);
 }
 
@@ -224,7 +224,7 @@ ATF_TEST_CASE_BODY(do_file__error_with_errfunc)
     output.close();
 
     lutok::state state;
-    lutok::eval(state, "function(message) return 'This is an error!' end");
+    lutok::eval(state, "function(message) return 'This is an error!' end", 1);
     {
         stack_balance_checker checker(state);
         ATF_REQUIRE_THROW_RE(lutok::error, "This is an error!",
@@ -300,7 +300,7 @@ ATF_TEST_CASE_WITHOUT_HEAD(do_string__error_with_errfunc);
 ATF_TEST_CASE_BODY(do_string__error_with_errfunc)
 {
     lutok::state state;
-    lutok::eval(state, "function(message) return 'This is an error!' end");
+    lutok::eval(state, "function(message) return 'This is an error!' end", 1);
     {
         stack_balance_checker checker(state);
         ATF_REQUIRE_THROW_RE(lutok::error, "This is an error!",
@@ -316,8 +316,8 @@ ATF_TEST_CASE_BODY(eval__one_result)
 {
     lutok::state state;
     stack_balance_checker checker(state);
-    lutok::eval(state, "3 + 10");
-    ATF_REQUIRE_EQ(13, state.to_integer());
+    lutok::eval(state, "3 + 10", 1);
+    ATF_REQUIRE_EQ(13, state.to_integer(-1));
     state.pop(1);
 }
 
@@ -341,7 +341,7 @@ ATF_TEST_CASE_BODY(eval__error)
     lutok::state state;
     stack_balance_checker checker(state);
     ATF_REQUIRE_THROW(lutok::error,
-                      lutok::eval(state, "non_existent.method()"));
+                      lutok::eval(state, "non_existent.method()", 1));
 }
 
 

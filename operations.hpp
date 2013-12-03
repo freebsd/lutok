@@ -47,7 +47,7 @@ unsigned int do_file(state&, const std::string&, const int, const int,
                      const int);
 unsigned int do_string(state&, const std::string&, const int, const int,
                        const int);
-void eval(state&, const std::string&, const int = 1);
+void eval(state&, const std::string&, const int);
 
 
 }  // namespace lutok

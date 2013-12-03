@@ -62,7 +62,7 @@
 static void
 print_table_field(lutok::state& state, const std::string& field)
 {
-    assert(state.is_table());
+    assert(state.is_table(-1));
 
     // Bring in some RAII magic: the stack_cleaner object captures the current
     // height of the Lua stack at this point.  Whenever the object goes out of
@@ -76,10 +76,10 @@ print_table_field(lutok::state& state, const std::string& field)
     // Stack contents: -1: table.
     state.push_string(field);
     // Stack contents: -2: table, -1: field name.
-    state.get_table();
+    state.get_table(-2);
     // Stack contents: -2: table, -1: field value.
 
-    if (!state.is_string()) {
+    if (!state.is_string(-1)) {
         std::cout << "The field " << field << " does not contain a string\n";
         // Stack contents: -2: table, -1: field value.
         //
@@ -94,7 +94,7 @@ print_table_field(lutok::state& state, const std::string& field)
         return;
     }
 
-    std::cout << "String in field " << field << ": " << state.to_string()
+    std::cout << "String in field " << field << ": " << state.to_string(-1)
               << '\n';
     // A well-behaved program explicitly pops anything extra from the stack to
     // return it to its original state.  Mostly for clarity.
@@ -113,7 +113,8 @@ main(void)
     lutok::state state;
     state.open_base();
 
-    lutok::do_string(state, "example = {foo='hello', bar=123, baz='bye'}");
+    lutok::do_string(state, "example = {foo='hello', bar=123, baz='bye'}",
+                     0, 0, 0);
 
     state.get_global("example");
     print_table_field(state, "foo");

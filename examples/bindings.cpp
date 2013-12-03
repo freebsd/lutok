@@ -78,9 +78,9 @@ factorial(const int i)
 static int
 lua_factorial(lutok::state& state)
 {
-    if (!state.is_number())
+    if (!state.is_number(-1))
         throw std::runtime_error("Argument to factorial must be an integer");
-    const int i = state.to_integer();
+    const int i = state.to_integer(-1);
     if (i < 0)
         throw std::runtime_error("Argument to factorial must be positive");
     state.push_integer(factorial(i));
@@ -124,7 +124,7 @@ main(int argc, char** argv)
     std::ostringstream script;
     script << "print(native.factorial(" << argv[1] << "))";
     try {
-        lutok::do_string(state, script.str());
+        lutok::do_string(state, script.str(), 0, 0, 0);
         return EXIT_SUCCESS;
     } catch (const lutok::error& e) {
         std::cerr << "ERROR: " << e.what() << '\n';

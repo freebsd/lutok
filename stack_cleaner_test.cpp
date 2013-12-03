@@ -66,7 +66,7 @@ ATF_TEST_CASE_BODY(nested)
         lutok::stack_cleaner cleaner1(state);
         state.push_integer(10);
         ATF_REQUIRE_EQ(1, state.get_top());
-        ATF_REQUIRE_EQ(10, state.to_integer());
+        ATF_REQUIRE_EQ(10, state.to_integer(-1));
         {
             lutok::stack_cleaner cleaner2(state);
             state.push_integer(20);
@@ -75,7 +75,7 @@ ATF_TEST_CASE_BODY(nested)
             ATF_REQUIRE_EQ(10, state.to_integer(-2));
         }
         ATF_REQUIRE_EQ(1, state.get_top());
-        ATF_REQUIRE_EQ(10, state.to_integer());
+        ATF_REQUIRE_EQ(10, state.to_integer(-1));
     }
     ATF_REQUIRE_EQ(0, state.get_top());
 }
@@ -94,7 +94,7 @@ ATF_TEST_CASE_BODY(forget)
         ATF_REQUIRE_EQ(3, state.get_top());
     }
     ATF_REQUIRE_EQ(2, state.get_top());
-    ATF_REQUIRE_EQ(30, state.to_integer());
+    ATF_REQUIRE_EQ(30, state.to_integer(-1));
     state.pop(2);
 }
 

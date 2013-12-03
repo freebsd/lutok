@@ -178,7 +178,7 @@ cxx_divide(lutok::state& state)
 static int
 raise_long_error(lutok::state& state)
 {
-    const int length = state.to_integer();
+    const int length = state.to_integer(-1);
     throw std::runtime_error(std::string(length, 'A').c_str());
 }
 
@@ -259,26 +259,8 @@ ATF_TEST_CASE_BODY(get_metafield__undefined)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(get_metatable__top);
-ATF_TEST_CASE_BODY(get_metatable__top)
-{
-    lutok::state state;
-    luaL_openlibs(raw(state));
-    ATF_REQUIRE(luaL_dostring(raw(state), "meta = { foo = 567 }; "
-                              "t = {}; setmetatable(t, meta)") == 0);
-    lua_getglobal(raw(state), "t");
-    ATF_REQUIRE(state.get_metatable());
-    ATF_REQUIRE(lua_istable(raw(state), -1));
-    lua_pushstring(raw(state), "foo");
-    lua_gettable(raw(state), -2);
-    ATF_REQUIRE(lua_isnumber(raw(state), -1));
-    ATF_REQUIRE_EQ(567, lua_tointeger(raw(state), -1));
-    lua_pop(raw(state), 3);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(get_metatable__explicit);
-ATF_TEST_CASE_BODY(get_metatable__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(get_metatable__ok);
+ATF_TEST_CASE_BODY(get_metatable__ok)
 {
     lutok::state state;
     luaL_openlibs(raw(state));
@@ -314,7 +296,7 @@ ATF_TEST_CASE_BODY(get_table__ok)
     ATF_REQUIRE(luaL_dostring(raw(state), "t = { a = 1, bar = 234 }") == 0);
     lua_getglobal(raw(state), "t");
     lua_pushstring(raw(state), "bar");
-    state.get_table();
+    state.get_table(-2);
     ATF_REQUIRE(lua_isnumber(raw(state), -1));
     ATF_REQUIRE_EQ(234, lua_tointeger(raw(state), -1));
     lua_pop(raw(state), 2);
@@ -327,7 +309,7 @@ ATF_TEST_CASE_BODY(get_table__nil)
     lutok::state state;
     lua_pushnil(raw(state));
     lua_pushinteger(raw(state), 1);
-    REQUIRE_API_ERROR("lua_gettable", state.get_table());
+    REQUIRE_API_ERROR("lua_gettable", state.get_table(-2));
     ATF_REQUIRE_EQ(2, lua_gettop(raw(state)));
     lua_pop(raw(state), 2);
 }
@@ -341,7 +323,7 @@ ATF_TEST_CASE_BODY(get_table__unknown_index)
                               "the_table = { foo = 1, bar = 2 }") == 0);
     lua_getglobal(raw(state), "the_table");
     lua_pushstring(raw(state), "baz");
-    state.get_table();
+    state.get_table(-2);
     ATF_REQUIRE(lua_isnil(raw(state), -1));
     lua_pop(raw(state), 2);
 }
@@ -381,24 +363,12 @@ ATF_TEST_CASE_WITHOUT_HEAD(is_boolean__empty);
 ATF_TEST_CASE_BODY(is_boolean__empty)
 {
     lutok::state state;
-    ATF_REQUIRE(!state.is_boolean());
+    ATF_REQUIRE(!state.is_boolean(-1));
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(is_boolean__top);
-ATF_TEST_CASE_BODY(is_boolean__top)
-{
-    lutok::state state;
-    lua_pushnil(raw(state));
-    ATF_REQUIRE(!state.is_boolean());
-    lua_pushboolean(raw(state), 1);
-    ATF_REQUIRE(state.is_boolean());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(is_boolean__explicit);
-ATF_TEST_CASE_BODY(is_boolean__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(is_boolean__ok);
+ATF_TEST_CASE_BODY(is_boolean__ok)
 {
     lutok::state state;
     lua_pushboolean(raw(state), 1);
@@ -414,26 +384,12 @@ ATF_TEST_CASE_WITHOUT_HEAD(is_function__empty);
 ATF_TEST_CASE_BODY(is_function__empty)
 {
     lutok::state state;
-    ATF_REQUIRE(!state.is_function());
+    ATF_REQUIRE(!state.is_function(-1));
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(is_function__top);
-ATF_TEST_CASE_BODY(is_function__top)
-{
-    lutok::state state;
-    luaL_dostring(raw(state), "function my_func(a, b) return a + b; end");
-
-    lua_pushnil(raw(state));
-    ATF_REQUIRE(!state.is_function());
-    lua_getglobal(raw(state), "my_func");
-    ATF_REQUIRE(state.is_function());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(is_function__explicit);
-ATF_TEST_CASE_BODY(is_function__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(is_function__ok);
+ATF_TEST_CASE_BODY(is_function__ok)
 {
     lutok::state state;
     luaL_dostring(raw(state), "function my_func(a, b) return a + b; end");
@@ -451,24 +407,12 @@ ATF_TEST_CASE_WITHOUT_HEAD(is_nil__empty);
 ATF_TEST_CASE_BODY(is_nil__empty)
 {
     lutok::state state;
-    ATF_REQUIRE(state.is_nil());
+    ATF_REQUIRE(state.is_nil(-1));
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(is_nil__top);
-ATF_TEST_CASE_BODY(is_nil__top)
-{
-    lutok::state state;
-    lua_pushnil(raw(state));
-    ATF_REQUIRE(state.is_nil());
-    lua_pushinteger(raw(state), 5);
-    ATF_REQUIRE(!state.is_nil());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(is_nil__explicit);
-ATF_TEST_CASE_BODY(is_nil__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(is_nil__ok);
+ATF_TEST_CASE_BODY(is_nil__ok)
 {
     lutok::state state;
     lua_pushnil(raw(state));
@@ -484,24 +428,12 @@ ATF_TEST_CASE_WITHOUT_HEAD(is_number__empty);
 ATF_TEST_CASE_BODY(is_number__empty)
 {
     lutok::state state;
-    ATF_REQUIRE(!state.is_number());
+    ATF_REQUIRE(!state.is_number(-1));
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(is_number__top);
-ATF_TEST_CASE_BODY(is_number__top)
-{
-    lutok::state state;
-    lua_pushnil(raw(state));
-    ATF_REQUIRE(!state.is_number());
-    lua_pushinteger(raw(state), 5);
-    ATF_REQUIRE(state.is_number());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(is_number__explicit);
-ATF_TEST_CASE_BODY(is_number__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(is_number__ok);
+ATF_TEST_CASE_BODY(is_number__ok)
 {
     lutok::state state;
     lua_pushnil(raw(state));
@@ -517,26 +449,12 @@ ATF_TEST_CASE_WITHOUT_HEAD(is_string__empty);
 ATF_TEST_CASE_BODY(is_string__empty)
 {
     lutok::state state;
-    ATF_REQUIRE(!state.is_string());
+    ATF_REQUIRE(!state.is_string(-1));
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(is_string__top);
-ATF_TEST_CASE_BODY(is_string__top)
-{
-    lutok::state state;
-    lua_pushnil(raw(state));
-    ATF_REQUIRE(!state.is_string());
-    lua_pushinteger(raw(state), 3);
-    ATF_REQUIRE(state.is_string());
-    lua_pushstring(raw(state), "foo");
-    ATF_REQUIRE(state.is_string());
-    lua_pop(raw(state), 3);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(is_string__explicit);
-ATF_TEST_CASE_BODY(is_string__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(is_string__ok);
+ATF_TEST_CASE_BODY(is_string__ok)
 {
     lutok::state state;
     lua_pushinteger(raw(state), 3);
@@ -556,26 +474,12 @@ ATF_TEST_CASE_WITHOUT_HEAD(is_table__empty);
 ATF_TEST_CASE_BODY(is_table__empty)
 {
     lutok::state state;
-    ATF_REQUIRE(!state.is_table());
+    ATF_REQUIRE(!state.is_table(-1));
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(is_table__top);
-ATF_TEST_CASE_BODY(is_table__top)
-{
-    lutok::state state;
-    luaL_dostring(raw(state), "t = {3, 4, 5}");
-
-    lua_pushstring(raw(state), "foo");
-    ATF_REQUIRE(!state.is_table());
-    lua_getglobal(raw(state), "t");
-    ATF_REQUIRE(state.is_table());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(is_table__explicit);
-ATF_TEST_CASE_BODY(is_table__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(is_table__ok);
+ATF_TEST_CASE_BODY(is_table__ok)
 {
     lutok::state state;
     luaL_dostring(raw(state), "t = {3, 4, 5}");
@@ -593,25 +497,12 @@ ATF_TEST_CASE_WITHOUT_HEAD(is_userdata__empty);
 ATF_TEST_CASE_BODY(is_userdata__empty)
 {
     lutok::state state;
-    ATF_REQUIRE(!state.is_userdata());
+    ATF_REQUIRE(!state.is_userdata(-1));
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(is_userdata__top);
-ATF_TEST_CASE_BODY(is_userdata__top)
-{
-    lutok::state state;
-
-    lua_pushstring(raw(state), "foo");
-    ATF_REQUIRE(!state.is_userdata());
-    lua_newuserdata(raw(state), 1234);
-    ATF_REQUIRE(state.is_userdata());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(is_userdata__explicit);
-ATF_TEST_CASE_BODY(is_userdata__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(is_userdata__ok);
+ATF_TEST_CASE_BODY(is_userdata__ok)
 {
     lutok::state state;
 
@@ -726,7 +617,7 @@ ATF_TEST_CASE_BODY(next__many)
     lua_getglobal(raw(state), "t");
     lua_pushnil(raw(state));
 
-    ATF_REQUIRE(state.next());
+    ATF_REQUIRE(state.next(-2));
     ATF_REQUIRE_EQ(3, lua_gettop(raw(state)));
     ATF_REQUIRE(lua_isnumber(raw(state), -2));
     ATF_REQUIRE_EQ(1, lua_tointeger(raw(state), -2));
@@ -734,7 +625,7 @@ ATF_TEST_CASE_BODY(next__many)
     ATF_REQUIRE_EQ(100, lua_tointeger(raw(state), -1));
     lua_pop(raw(state), 1);
 
-    ATF_REQUIRE(state.next());
+    ATF_REQUIRE(state.next(-2));
     ATF_REQUIRE_EQ(3, lua_gettop(raw(state)));
     ATF_REQUIRE(lua_isnumber(raw(state), -2));
     ATF_REQUIRE_EQ(2, lua_tointeger(raw(state), -2));
@@ -742,7 +633,7 @@ ATF_TEST_CASE_BODY(next__many)
     ATF_REQUIRE_EQ(200, lua_tointeger(raw(state), -1));
     lua_pop(raw(state), 1);
 
-    ATF_REQUIRE(!state.next());
+    ATF_REQUIRE(!state.next(-2));
     lua_pop(raw(state), 1);
 }
 
@@ -983,24 +874,8 @@ ATF_TEST_CASE_BODY(push_string)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(push_value__top);
-ATF_TEST_CASE_BODY(push_value__top)
-{
-    lutok::state state;
-
-    lua_pushinteger(raw(state), 10);
-    lua_pushinteger(raw(state), 20);
-    state.push_value();
-    ATF_REQUIRE_EQ(3, lua_gettop(raw(state)));
-    ATF_REQUIRE_EQ(20, lua_tointeger(raw(state), -1));
-    ATF_REQUIRE_EQ(20, lua_tointeger(raw(state), -2));
-    ATF_REQUIRE_EQ(10, lua_tointeger(raw(state), -3));
-    lua_pop(raw(state), 3);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(push_value__explicit);
-ATF_TEST_CASE_BODY(push_value__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(push_value);
+ATF_TEST_CASE_BODY(push_value)
 {
     lutok::state state;
 
@@ -1015,25 +890,8 @@ ATF_TEST_CASE_BODY(push_value__explicit)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(raw_get__top);
-ATF_TEST_CASE_BODY(raw_get__top)
-{
-    lutok::state state;
-
-    luaL_openlibs(raw(state));
-    ATF_REQUIRE(luaL_dostring(
-        raw(state), "t = {foo=123} ; setmetatable(t, {__index=1})") == 0);
-    lua_getglobal(raw(state), "t");
-    lua_pushstring(raw(state), "foo");
-    state.raw_get();
-    ATF_REQUIRE(lua_isnumber(raw(state), -1));
-    ATF_REQUIRE_EQ(123, lua_tointeger(raw(state), -1));
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(raw_get__explicit);
-ATF_TEST_CASE_BODY(raw_get__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(raw_get);
+ATF_TEST_CASE_BODY(raw_get)
 {
     lutok::state state;
 
@@ -1051,27 +909,8 @@ ATF_TEST_CASE_BODY(raw_get__explicit)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(raw_set__top);
-ATF_TEST_CASE_BODY(raw_set__top)
-{
-    lutok::state state;
-
-    luaL_openlibs(raw(state));
-    ATF_REQUIRE(luaL_dostring(
-        raw(state), "t = {} ; setmetatable(t, {__newindex=1})") == 0);
-    lua_getglobal(raw(state), "t");
-    lua_pushstring(raw(state), "foo");
-    lua_pushinteger(raw(state), 345);
-    state.raw_set();
-    ATF_REQUIRE(luaL_dostring(raw(state), "return t.foo") == 0);
-    ATF_REQUIRE(lua_isnumber(raw(state), -1));
-    ATF_REQUIRE_EQ(345, lua_tointeger(raw(state), -1));
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(raw_set__explicit);
-ATF_TEST_CASE_BODY(raw_set__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(raw_set);
+ATF_TEST_CASE_BODY(raw_set)
 {
     lutok::state state;
 
@@ -1121,31 +960,8 @@ ATF_TEST_CASE_BODY(set_global)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(set_metatable__top);
-ATF_TEST_CASE_BODY(set_metatable__top)
-{
-    lutok::state state;
-    ATF_REQUIRE(luaL_dostring(
-        raw(state),
-        "mt = {}\n"
-        "mt.__add = function(a, b) return a[1] + b end\n"
-        "numbers = {}\n"
-        "numbers[1] = 5\n") == 0);
-
-    lua_getglobal(raw(state), "numbers");
-    lua_getglobal(raw(state), "mt");
-    state.set_metatable();
-    lua_pop(raw(state), 1);
-
-    ATF_REQUIRE(luaL_dostring(raw(state), "return numbers + 2") == 0);
-    ATF_REQUIRE(lua_isnumber(raw(state), -1));
-    ATF_REQUIRE_EQ(7, lua_tointeger(raw(state), -1));
-    lua_pop(raw(state), 1);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(set_metatable__explicit);
-ATF_TEST_CASE_BODY(set_metatable__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(set_metatable);
+ATF_TEST_CASE_BODY(set_metatable)
 {
     lutok::state state;
     ATF_REQUIRE(luaL_dostring(
@@ -1177,7 +993,7 @@ ATF_TEST_CASE_BODY(set_table__ok)
 
     lua_pushstring(raw(state), "bar");
     lua_pushstring(raw(state), "baz");
-    state.set_table();
+    state.set_table(-3);
     ATF_REQUIRE_EQ(1, lua_gettop(raw(state)));
 
     lua_pushstring(raw(state), "a");
@@ -1208,20 +1024,8 @@ ATF_TEST_CASE_BODY(set_table__nil)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(to_boolean__top);
-ATF_TEST_CASE_BODY(to_boolean__top)
-{
-    lutok::state state;
-    lua_pushboolean(raw(state), 1);
-    ATF_REQUIRE(state.to_boolean());
-    lua_pushboolean(raw(state), 0);
-    ATF_REQUIRE(!state.to_boolean());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(to_boolean__explicit);
-ATF_TEST_CASE_BODY(to_boolean__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(to_boolean);
+ATF_TEST_CASE_BODY(to_boolean)
 {
     lutok::state state;
     lua_pushboolean(raw(state), 0);
@@ -1232,20 +1036,8 @@ ATF_TEST_CASE_BODY(to_boolean__explicit)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(to_integer__top);
-ATF_TEST_CASE_BODY(to_integer__top)
-{
-    lutok::state state;
-    lua_pushstring(raw(state), "34");
-    ATF_REQUIRE_EQ(34, state.to_integer());
-    lua_pushinteger(raw(state), 12);
-    ATF_REQUIRE_EQ(12, state.to_integer());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(to_integer__explicit);
-ATF_TEST_CASE_BODY(to_integer__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(to_integer);
+ATF_TEST_CASE_BODY(to_integer)
 {
     lutok::state state;
     lua_pushinteger(raw(state), 12);
@@ -1255,20 +1047,8 @@ ATF_TEST_CASE_BODY(to_integer__explicit)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(to_string__top);
-ATF_TEST_CASE_BODY(to_string__top)
-{
-    lutok::state state;
-    lua_pushstring(raw(state), "foobar");
-    ATF_REQUIRE_EQ("foobar", state.to_string());
-    lua_pushinteger(raw(state), 12);
-    ATF_REQUIRE_EQ("12", state.to_string());
-    lua_pop(raw(state), 2);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(to_string__explicit);
-ATF_TEST_CASE_BODY(to_string__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(to_string);
+ATF_TEST_CASE_BODY(to_string)
 {
     lutok::state state;
     lua_pushstring(raw(state), "foobar");
@@ -1279,24 +1059,8 @@ ATF_TEST_CASE_BODY(to_string__explicit)
 }
 
 
-ATF_TEST_CASE_WITHOUT_HEAD(to_userdata__top);
-ATF_TEST_CASE_BODY(to_userdata__top)
-{
-    lutok::state state;
-    {
-        int* pointer = static_cast< int* >(
-            lua_newuserdata(raw(state), sizeof(int)));
-        *pointer = 987;
-    }
-
-    int* pointer = state.to_userdata< int >();
-    ATF_REQUIRE_EQ(987, *pointer);
-    lua_pop(raw(state), 1);
-}
-
-
-ATF_TEST_CASE_WITHOUT_HEAD(to_userdata__explicit);
-ATF_TEST_CASE_BODY(to_userdata__explicit)
+ATF_TEST_CASE_WITHOUT_HEAD(to_userdata);
+ATF_TEST_CASE_BODY(to_userdata)
 {
     lutok::state state;
     {
@@ -1337,8 +1101,7 @@ ATF_INIT_TEST_CASES(tcs)
     ATF_ADD_TEST_CASE(tcs, get_global_table);
     ATF_ADD_TEST_CASE(tcs, get_metafield__ok);
     ATF_ADD_TEST_CASE(tcs, get_metafield__undefined);
-    ATF_ADD_TEST_CASE(tcs, get_metatable__top);
-    ATF_ADD_TEST_CASE(tcs, get_metatable__explicit);
+    ATF_ADD_TEST_CASE(tcs, get_metatable__ok);
     ATF_ADD_TEST_CASE(tcs, get_metatable__undefined);
     ATF_ADD_TEST_CASE(tcs, get_table__ok);
     ATF_ADD_TEST_CASE(tcs, get_table__nil);
@@ -1346,26 +1109,19 @@ ATF_INIT_TEST_CASES(tcs)
     ATF_ADD_TEST_CASE(tcs, get_top);
     ATF_ADD_TEST_CASE(tcs, insert);
     ATF_ADD_TEST_CASE(tcs, is_boolean__empty);
-    ATF_ADD_TEST_CASE(tcs, is_boolean__top);
-    ATF_ADD_TEST_CASE(tcs, is_boolean__explicit);
+    ATF_ADD_TEST_CASE(tcs, is_boolean__ok);
     ATF_ADD_TEST_CASE(tcs, is_function__empty);
-    ATF_ADD_TEST_CASE(tcs, is_function__top);
-    ATF_ADD_TEST_CASE(tcs, is_function__explicit);
+    ATF_ADD_TEST_CASE(tcs, is_function__ok);
     ATF_ADD_TEST_CASE(tcs, is_nil__empty);
-    ATF_ADD_TEST_CASE(tcs, is_nil__top);
-    ATF_ADD_TEST_CASE(tcs, is_nil__explicit);
+    ATF_ADD_TEST_CASE(tcs, is_nil__ok);
     ATF_ADD_TEST_CASE(tcs, is_number__empty);
-    ATF_ADD_TEST_CASE(tcs, is_number__top);
-    ATF_ADD_TEST_CASE(tcs, is_number__explicit);
+    ATF_ADD_TEST_CASE(tcs, is_number__ok);
     ATF_ADD_TEST_CASE(tcs, is_string__empty);
-    ATF_ADD_TEST_CASE(tcs, is_string__top);
-    ATF_ADD_TEST_CASE(tcs, is_string__explicit);
+    ATF_ADD_TEST_CASE(tcs, is_string__ok);
     ATF_ADD_TEST_CASE(tcs, is_table__empty);
-    ATF_ADD_TEST_CASE(tcs, is_table__top);
-    ATF_ADD_TEST_CASE(tcs, is_table__explicit);
+    ATF_ADD_TEST_CASE(tcs, is_table__ok);
     ATF_ADD_TEST_CASE(tcs, is_userdata__empty);
-    ATF_ADD_TEST_CASE(tcs, is_userdata__top);
-    ATF_ADD_TEST_CASE(tcs, is_userdata__explicit);
+    ATF_ADD_TEST_CASE(tcs, is_userdata__ok);
     ATF_ADD_TEST_CASE(tcs, load_file__ok);
     ATF_ADD_TEST_CASE(tcs, load_file__api_error);
     ATF_ADD_TEST_CASE(tcs, load_file__file_not_found_error);
@@ -1392,25 +1148,17 @@ ATF_INIT_TEST_CASES(tcs)
     ATF_ADD_TEST_CASE(tcs, push_integer);
     ATF_ADD_TEST_CASE(tcs, push_nil);
     ATF_ADD_TEST_CASE(tcs, push_string);
-    ATF_ADD_TEST_CASE(tcs, push_value__top);
-    ATF_ADD_TEST_CASE(tcs, push_value__explicit);
-    ATF_ADD_TEST_CASE(tcs, raw_get__top);
-    ATF_ADD_TEST_CASE(tcs, raw_get__explicit);
-    ATF_ADD_TEST_CASE(tcs, raw_set__top);
-    ATF_ADD_TEST_CASE(tcs, raw_set__explicit);
+    ATF_ADD_TEST_CASE(tcs, push_value);
+    ATF_ADD_TEST_CASE(tcs, raw_get);
+    ATF_ADD_TEST_CASE(tcs, raw_set);
     ATF_ADD_TEST_CASE(tcs, registry_index);
     ATF_ADD_TEST_CASE(tcs, set_global);
-    ATF_ADD_TEST_CASE(tcs, set_metatable__top);
-    ATF_ADD_TEST_CASE(tcs, set_metatable__explicit);
+    ATF_ADD_TEST_CASE(tcs, set_metatable);
     ATF_ADD_TEST_CASE(tcs, set_table__ok);
     ATF_ADD_TEST_CASE(tcs, set_table__nil);
-    ATF_ADD_TEST_CASE(tcs, to_boolean__top);
-    ATF_ADD_TEST_CASE(tcs, to_boolean__explicit);
-    ATF_ADD_TEST_CASE(tcs, to_integer__top);
-    ATF_ADD_TEST_CASE(tcs, to_integer__explicit);
-    ATF_ADD_TEST_CASE(tcs, to_string__top);
-    ATF_ADD_TEST_CASE(tcs, to_string__explicit);
-    ATF_ADD_TEST_CASE(tcs, to_userdata__top);
-    ATF_ADD_TEST_CASE(tcs, to_userdata__explicit);
+    ATF_ADD_TEST_CASE(tcs, to_boolean);
+    ATF_ADD_TEST_CASE(tcs, to_integer);
+    ATF_ADD_TEST_CASE(tcs, to_string);
+    ATF_ADD_TEST_CASE(tcs, to_userdata);
     ATF_ADD_TEST_CASE(tcs, upvalue_index);
 }

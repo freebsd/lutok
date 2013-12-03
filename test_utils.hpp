@@ -124,7 +124,7 @@ public:
     ~stack_balance_checker(void)
     {
         if (_with_sentinel) {
-            if (!_state.is_number() || _state.to_integer() != 987654321)
+            if (!_state.is_number(-1) || _state.to_integer(-1) != 987654321)
                 ATF_FAIL("Stack corrupted: sentinel not found");
             _state.pop(1);
         }

@@ -11,6 +11,11 @@ Interface changes:
 
 * Issue 5: New methods added to the state class: open_all.
 
+* Removed default parameter values from all state methods and all
+  standalone operations.  It is often unclear what the default value is
+  given that it depends on the specific Lua operation.  Being explicit
+  on the caller side is clearer.
+
 * Modified operations do_file and do_string to support passing a number
   of arguments to the loaded chunks and an error handler to the backing
   pcall call.

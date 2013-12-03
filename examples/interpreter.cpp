@@ -50,7 +50,7 @@ run_statement(lutok::state& state, const std::string& line)
         // the interpreter and process it.  The piece of code can include
         // multiple statements separated by a semicolon or by a newline
         // character.
-        lutok::do_string(state, line);
+        lutok::do_string(state, line, 0, 0, 0);
     } catch (const lutok::error& error) {
         std::cerr << "ERROR: " << error.what() << '\n';
     }

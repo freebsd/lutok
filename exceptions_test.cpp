@@ -61,7 +61,7 @@ ATF_TEST_CASE_BODY(api_error__from_stack)
     const lutok::api_error e = lutok::api_error::from_stack(state,
                                                             "the_function");
     ATF_REQUIRE_EQ(1, state.get_top());
-    ATF_REQUIRE_EQ(123, state.to_integer());
+    ATF_REQUIRE_EQ(123, state.to_integer(-1));
     state.pop(1);
     ATF_REQUIRE(std::strcmp("The error message", e.what()) == 0);
     ATF_REQUIRE_EQ("the_function", e.api_function());
