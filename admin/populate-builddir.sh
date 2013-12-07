@@ -78,7 +78,6 @@ main() {
 
     rm -f "${ctlfile}"
 
-    recursive_copy "${srcdir}" "${builddir}" "${ctlfile}" Atffile
     recursive_copy "${srcdir}" "${builddir}" "${ctlfile}" Kyuafile
 }
 

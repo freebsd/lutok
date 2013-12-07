@@ -90,7 +90,7 @@ examples_DATA += examples/raii.cpp
 EXTRA_DIST += $(examples_DATA)
 
 if WITH_ATF
-tests_DATA = Atffile Kyuafile
+tests_DATA = Kyuafile
 EXTRA_DIST += $(tests_DATA)
 
 tests_PROGRAMS = c_gate_test

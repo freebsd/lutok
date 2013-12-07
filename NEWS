@@ -7,6 +7,9 @@ STILL UNDER DEVELOPMENT; NOT RELEASED YET.
   appeared in Automake 1.11.2.  Fixes a problem in Ubuntu 10.04
   LTS, which appears stuck in 1.11.1.
 
+* Stopped shipping an Atffile.  The only supported way to run the tests
+  is via Kyua.
+
 Interface changes:
 
 * Issue 5: New methods added to the state class: open_all.
