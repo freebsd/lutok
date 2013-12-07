@@ -32,7 +32,6 @@ doc_DATA = AUTHORS COPYING NEWS README
 noinst_DATA = INSTALL README
 EXTRA_DIST = $(doc_DATA) INSTALL README
 
-include admin/Makefile.am.inc
 include include/Makefile.am.inc
 
 LUTOK_CFLAGS = -I$(srcdir)/include $(LUA_CFLAGS)
@@ -138,16 +137,8 @@ state_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 check-local: check-kyua
 PHONY_TARGETS += check-kyua
 check-kyua:
-	$(srcdir)/admin/populate-builddir.sh $(top_srcdir) $(top_builddir) \
-	    cleanlist
-	$(TESTS_ENVIRONMENT) kyua test
-
-CLEAN_TARGETS += clean-builddir
-clean-builddir:
-	if test -f cleanlist; then \
-	    rm -f $$(cat cleanlist); \
-	    rm -f cleanlist; \
-	fi
+	$(TESTS_ENVIRONMENT) kyua test \
+	    --kyuafile='$(top_srcdir)/Kyuafile' --build-root='$(top_builddir)'
 
 installcheck-local: installcheck-kyua
 PHONY_TARGETS += installcheck-kyua

@@ -37,7 +37,7 @@ To build and use Lutok successfully you need:
 Optionally, if you want to build and run the tests (recommended), you
 need:
 
-* Kyua 0.2 or greater.
+* Kyua 0.5 or greater.
 * ATF 0.15 or greater.
 
 If you are building Lutok from the code on the repository, you will also
