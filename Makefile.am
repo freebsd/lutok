@@ -62,7 +62,7 @@ liblutok_la_SOURCES += state.hpp
 liblutok_la_SOURCES += state.ipp
 liblutok_la_SOURCES += test_utils.hpp
 liblutok_la_CPPFLAGS = $(LUTOK_CFLAGS)
-liblutok_la_LDFLAGS = -version-info 2:0:0
+liblutok_la_LDFLAGS = -version-info 3:0:0
 liblutok_la_LIBADD = $(LUA_LIBS)
 
 pkgconfig_DATA = lutok.pc

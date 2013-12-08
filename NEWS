@@ -1,7 +1,7 @@
 Changes in version 0.4
 ======================
 
-STILL UNDER DEVELOPMENT; NOT RELEASED YET.
+Released on 2013/12/07.
 
 * Cope with the lack of AM_PROG_AR in configure.ac, which first
   appeared in Automake 1.11.2.  Fixes a problem in Ubuntu 10.04
