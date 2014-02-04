@@ -28,7 +28,7 @@ dnl OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 AC_INIT([Lutok], [0.4],
         [lutok-discuss@googlegroups.com], [lutok],
-        [http://code.google.com/p/lutok/])
+        [https://github.com/jmmv/lutok/])
 AC_PREREQ([2.65])
 
 
