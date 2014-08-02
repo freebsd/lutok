@@ -78,6 +78,7 @@ lutok.pc: $(srcdir)/lutok.pc.in Makefile
 	mv lutok.pc.tmp lutok.pc
 
 CLEAN_TARGETS =
+DIST_HOOKS =
 PHONY_TARGETS =
 
 examplesdir = $(docdir)/examples
@@ -145,7 +146,7 @@ PHONY_TARGETS += installcheck-kyua
 installcheck-kyua:
 	cd $(testsdir) && $(TESTS_ENVIRONMENT) kyua test
 else
-dist-hook: dist-no-atf
+DIST_HOOKS += dist-no-atf
 PHONY_TARGETS += dist-no-atf
 dist-no-atf:
 	@echo "Sorry; cannot build a distfile without atf"
@@ -169,8 +170,15 @@ api-docs/html: api-docs/api-docs.tag
 CLEAN_TARGETS += clean-api-docs
 clean-api-docs:
 	rm -rf api-docs
-endif
+
 EXTRA_DIST += api-docs/html
+else
+DIST_HOOKS += dist-no-doxygen
+PHONY_TARGETS += dist-no-doxygen
+dist-no-doxygen:
+	@echo "Sorry; cannot build a distfile without Doxygen"
+	@false
+endif
 
 install-data-local: install-api-docs
 install-api-docs: install-docDATA
@@ -197,5 +205,7 @@ clean-local: $(CLEAN_TARGETS)
 PHONY_TARGETS += clean-all
 clean-all:
 	GIT="$(GIT)" $(SH) $(srcdir)/admin/clean-all.sh
+
+dist-hook: $(DIST_HOOKS)
 
 .PHONY: ${PHONY_TARGETS}
