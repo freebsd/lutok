@@ -135,6 +135,7 @@ state_test_SOURCES = state_test.cpp test_utils.hpp
 state_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
 state_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
+if HAVE_KYUA
 check-local: check-kyua
 PHONY_TARGETS += check-kyua
 check-kyua:
@@ -145,6 +146,7 @@ installcheck-local: installcheck-kyua
 PHONY_TARGETS += installcheck-kyua
 installcheck-kyua:
 	cd $(testsdir) && $(TESTS_ENVIRONMENT) kyua test
+endif
 else
 DIST_HOOKS += dist-no-atf
 PHONY_TARGETS += dist-no-atf
