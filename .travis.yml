@@ -7,4 +7,4 @@ compiler:
 before_install:
     - ./admin/travis-install-deps.sh
 
-script: ./configure && make distcheck
+script: autoreconf -i -s && ./configure && make distcheck
