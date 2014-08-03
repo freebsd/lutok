@@ -36,8 +36,12 @@ else
 fi
 ./configure
 
+f=
+f="${f} CPPFLAGS='-I/usr/local/include'"
+f="${f} LDFLAGS='-L/usr/local/lib -Wl,-R/usr/local/lib'"
+f="${f} PKG_CONFIG_PATH='/usr/local/lib/pkgconfig'"
 if [ "${AS_ROOT:-no}" = yes ]; then
-    sudo make distcheck
+    sudo make distcheck DISTCHECK_CONFIGURE_FLAGS="${f}"
 else
-    make distcheck
+    make distcheck DISTCHECK_CONFIGURE_FLAGS="${f}"
 fi
