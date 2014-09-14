@@ -69,12 +69,12 @@ pkgconfig_DATA = lutok.pc
 CLEANFILES = lutok.pc
 EXTRA_DIST += lutok.pc.in
 lutok.pc: $(srcdir)/lutok.pc.in Makefile
-	sed -e 's#__INCLUDEDIR__#$(includedir)#g' \
+	$(AM_V_GEN)sed -e 's#__INCLUDEDIR__#$(includedir)#g' \
 	    -e 's#__LIBDIR__#$(libdir)#g' \
 	    -e 's#__LUA_CFLAGS__#$(LUA_CFLAGS)#g' \
 	    -e 's#__LUA_LIBS__#$(LUA_LIBS)#g' \
 	    -e 's#__VERSION__#$(PACKAGE_VERSION)#g' \
-	    <$(srcdir)/lutok.pc.in >lutok.pc.tmp
+	    <$(srcdir)/lutok.pc.in >lutok.pc.tmp; \
 	mv lutok.pc.tmp lutok.pc
 
 CLEAN_TARGETS =
@@ -107,12 +107,12 @@ tests_SCRIPTS = examples_test
 CLEANFILES += examples_test
 EXTRA_DIST += examples_test.sh
 examples_test: $(srcdir)/examples_test.sh
-	sed -e 's,__ATF_SH__,$(ATF_SH),g' \
+	$(AM_V_GEN)sed -e 's,__ATF_SH__,$(ATF_SH),g' \
 	    -e 's,__EXAMPLESDIR__,$(examplesdir),g' \
 	    -e 's,__LIBDIR__,$(libdir),g' \
-	    <$(srcdir)/examples_test.sh >examples_test.tmp
-	chmod +x examples_test.tmp
-	rm -f examples_test
+	    <$(srcdir)/examples_test.sh >examples_test.tmp; \
+	chmod +x examples_test.tmp; \
+	rm -f examples_test; \
 	mv examples_test.tmp examples_test
 
 tests_PROGRAMS += exceptions_test
@@ -163,9 +163,9 @@ if WITH_DOXYGEN
 all-local: api-docs/api-docs.tag
 
 api-docs/api-docs.tag: $(builddir)/Doxyfile $(SOURCES)
-	rm -rf api-docs
-	mkdir -p api-docs
-	${DOXYGEN} $(builddir)/Doxyfile 2>&1 | tee api-docs/warnings
+	$(AM_V_GEN)rm -rf api-docs; \
+	mkdir -p api-docs; \
+	${DOXYGEN} $(builddir)/Doxyfile 2>&1 | tee api-docs/warnings; \
 	rm -f api-docs/html/installdox
 api-docs/html: api-docs/api-docs.tag
 
