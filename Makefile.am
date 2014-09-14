@@ -32,8 +32,6 @@ doc_DATA = AUTHORS COPYING NEWS README
 noinst_DATA = INSTALL README
 EXTRA_DIST = $(doc_DATA) INSTALL README
 
-include include/Makefile.am.inc
-
 LUTOK_CFLAGS = -I$(srcdir)/include $(LUA_CFLAGS)
 LUTOK_LIBS = liblutok.la $(LUA_LIBS)
 
@@ -45,6 +43,15 @@ pkginclude_HEADERS += stack_cleaner.hpp
 pkginclude_HEADERS += state.hpp
 pkginclude_HEADERS += state.ipp
 pkginclude_HEADERS += test_utils.hpp
+
+EXTRA_DIST += include/lutok/README
+EXTRA_DIST += include/lutok/c_gate.hpp
+EXTRA_DIST += include/lutok/debug.hpp
+EXTRA_DIST += include/lutok/exceptions.hpp
+EXTRA_DIST += include/lutok/operations.hpp
+EXTRA_DIST += include/lutok/stack_cleaner.hpp
+EXTRA_DIST += include/lutok/state.hpp
+EXTRA_DIST += include/lutok/state.ipp
 
 lib_LTLIBRARIES = liblutok.la
 liblutok_la_SOURCES  = c_gate.cpp
