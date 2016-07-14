@@ -27,13 +27,14 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+Cxx="__CXX__"
 ExamplesDir="__EXAMPLESDIR__"
 LibDir="__LIBDIR__"
 
 
 make_example() {
     cp "${ExamplesDir}/Makefile" "${ExamplesDir}/${1}.cpp" .
-    make "${1}"
+    make CXX="${Cxx}" "${1}"
 
     # Ensure that the binary we just built can find liblutok.  This is
     # needed because the lutok.pc file (which the Makefile used above

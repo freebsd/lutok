@@ -36,8 +36,12 @@ else
 fi
 ./configure
 
+archflags=
+[ "${ARCH?}" != i386 ] || archflags=-m32
+
 f=
 f="${f} CPPFLAGS='-I/usr/local/include'"
+f="${f} CXX='${CXX} ${archflags}'"
 f="${f} LDFLAGS='-L/usr/local/lib -Wl,-R/usr/local/lib'"
 f="${f} PKG_CONFIG_PATH='/usr/local/lib/pkgconfig'"
 if [ "${AS_ROOT:-no}" = yes ]; then
