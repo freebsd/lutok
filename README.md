@@ -1,5 +1,4 @@
-## Lutok is a lightweight C++ API library for Lua.
-[![Travis Build Status](https://travis-ci.org/jmmv/lutok.svg?branch=master)](//travis-ci.org/jmmv/lutok)
+## Lutok is a lightweight C++ API library for Lua. [![Travis Build Status](https://travis-ci.org/jmmv/lutok.svg?branch=master)](//travis-ci.org/jmmv/lutok)
 
 Lutok provides thin C++ wrappers around the Lua C API to ease the
 interaction between C++ and Lua.  These wrappers make intensive use of
