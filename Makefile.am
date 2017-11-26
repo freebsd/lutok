@@ -44,7 +44,7 @@ pkginclude_HEADERS += state.hpp
 pkginclude_HEADERS += state.ipp
 pkginclude_HEADERS += test_utils.hpp
 
-EXTRA_DIST += include/lutok/README.md
+EXTRA_DIST += include/lutok/README
 EXTRA_DIST += include/lutok/c_gate.hpp
 EXTRA_DIST += include/lutok/debug.hpp
 EXTRA_DIST += include/lutok/exceptions.hpp
