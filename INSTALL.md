@@ -1,5 +1,4 @@
-Installation instructions
-=========================
+# Installation instructions
 
 Lutok uses the GNU Automake, GNU Autoconf and GNU Libtool utilities as
 its build system.  These are used only when compiling the library from
@@ -25,8 +24,7 @@ Or alternatively, install as a regular user into your home directory:
     $ make installcheck
 
 
-Dependencies
-============
+## Dependencies
 
 To build and use Lutok successfully you need:
 
@@ -48,8 +46,7 @@ need the following tools:
 * GNU Libtool.
 
 
-Regenerating the build system
-=============================
+## Regenerating the build system
 
 This is not necessary if you are building from a formal release
 distribution file.
@@ -72,8 +69,7 @@ the appropriate path:
     $ autoreconf -i -s -I <atf-prefix>/share/aclocal
 
 
-General build procedure
-=======================
+## General build procedure
 
 To build and install the source package, you must follow these steps:
 
@@ -97,8 +93,7 @@ To build and install the source package, you must follow these steps:
    installcheck`.  You do not need to be root to do this.
 
 
-Configuration flags
-===================
+## Configuration flags
 
 The most common, standard flags given to `configure` are:
 
@@ -164,8 +159,7 @@ The following flags are specific to Lutok's `configure` script:
   desired override with the `--htmldir` flag to the configure script.
 
 
-Run the tests!
-==============
+## Run the tests!
 
 Lastly, after a successful installation (and assuming you built the
 sources with support for ATF), you should periodically run the tests

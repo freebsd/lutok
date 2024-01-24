@@ -1,5 +1,4 @@
-Welcome to the Kyua project!
-============================
+# Welcome to the Lutok project!
 
 Lutok is a **lightweight C++ API library** for Lua.
 
@@ -20,9 +19,9 @@ performance.
 For further information on the contents of this distribution file,
 please refer to the following other documents:
 
-* AUTHORS: List of authors and contributors to this project.
-* COPYING: License information.
-* INSTALL.md: Compilation and installation instructions.
-* NEWS.md: List of major changes between formal releases.
+* `AUTHORS`: List of authors and contributors to this project.
+* `COPYING`: License information.
+* `INSTALL.md:` Compilation and installation instructions.
+* `NEWS.md`: List of major changes between formal releases.
 
 For general project information, please visit [Lutok on GitHub](https://github.com/freebsd/lutok/)
