@@ -1,3 +1,7 @@
+Major changes between releases
+==============================
+
+
 Changes in version 0.4
 ======================
 
