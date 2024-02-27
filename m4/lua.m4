@@ -34,7 +34,7 @@ dnl
 AC_DEFUN([KYUA_LUA], [
     lua_found=no
 
-    for lua_release in 5.2 5.1; do
+    for lua_release in ${LUA_VERSION:-5.4 5.3 5.2 5.1}; do
         if test "${lua_found}" = no; then
             PKG_CHECK_MODULES([LUA], [lua${lua_release} >= ${lua_release}],
                               [lua_found=yes], [true])
