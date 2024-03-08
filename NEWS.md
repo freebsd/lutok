@@ -1,5 +1,6 @@
-Changes in version 0.4
-======================
+# Major changes between releases
+
+## Changes in version 0.4
 
 Released on 2013/12/07.
 
@@ -24,8 +25,7 @@ Interface changes:
   pcall call.
 
 
-Changes in version 0.3
-======================
+## Changes in version 0.3
 
 Released on 2013/06/14.
 
@@ -47,8 +47,7 @@ Interface changes:
 * Removed global constants: globals_index.
 
 
-Changes in version 0.2
-======================
+## Changes in version 0.2
 
 Released on 2012/05/30.
 
@@ -60,8 +59,7 @@ Released on 2012/05/30.
 * Acknowledged that Lua 5.2 is currently not supported.
 
 
-Changes in version 0.1
-======================
+## Changes in version 0.1
 
 Released on 2012/01/29.
 
