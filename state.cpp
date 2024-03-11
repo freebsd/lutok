@@ -185,7 +185,7 @@ cxx_closure_trampoline(lua_State* raw_state)
     }
 
     auto* function = state.to_userdata< lutok::cxx_function >(
-        state.upvalue_index(nupvalues));
+        lutok::state::upvalue_index(nupvalues));
     return call_cxx_function_from_c(*function, raw_state);
 }
 
@@ -205,7 +205,7 @@ cxx_function_trampoline(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
     auto* function = state.to_userdata< lutok::cxx_function >(
-        state.upvalue_index(1));
+        lutok::state::upvalue_index(1));
     return call_cxx_function_from_c(*function, raw_state);
 }
 
