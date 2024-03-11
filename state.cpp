@@ -137,7 +137,7 @@ protected_settable(lua_State* state)
 /// function.
 static int
 call_cxx_function_from_c(lutok::cxx_function function,
-                         lua_State* raw_state) throw()
+                         lua_State* raw_state) noexcept
 {
     char error_buf[1024];
 
