@@ -45,7 +45,7 @@ lutok::state_c_gate::state_c_gate(state& state_) :
 /// Destroying this object has no implications on the life cycle of the Lua
 /// state.  Only the corresponding state object controls when the Lua state is
 /// closed.
-lutok::state_c_gate::~state_c_gate(void) = default;
+lutok::state_c_gate::~state_c_gate() = default;
 
 
 /// Creates a C++ state for a C Lua state.
