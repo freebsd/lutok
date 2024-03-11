@@ -102,7 +102,7 @@ lutok::debug::event(void) const
 std::string
 lutok::debug::name(void) const
 {
-    assert(_pimpl->lua_debug.name != NULL);
+    assert(_pimpl->lua_debug.name != nullptr);
     return _pimpl->lua_debug.name;
 }
 
@@ -113,7 +113,7 @@ lutok::debug::name(void) const
 std::string
 lutok::debug::name_what(void) const
 {
-    assert(_pimpl->lua_debug.namewhat != NULL);
+    assert(_pimpl->lua_debug.namewhat != nullptr);
     return _pimpl->lua_debug.namewhat;
 }
 
@@ -124,7 +124,7 @@ lutok::debug::name_what(void) const
 std::string
 lutok::debug::what(void) const
 {
-    assert(_pimpl->lua_debug.what != NULL);
+    assert(_pimpl->lua_debug.what != nullptr);
     return _pimpl->lua_debug.what;
 }
 
@@ -135,7 +135,7 @@ lutok::debug::what(void) const
 std::string
 lutok::debug::source(void) const
 {
-    assert(_pimpl->lua_debug.source != NULL);
+    assert(_pimpl->lua_debug.source != nullptr);
     return _pimpl->lua_debug.source;
 }
 
@@ -187,6 +187,5 @@ lutok::debug::last_line_defined(void) const
 std::string
 lutok::debug::short_src(void) const
 {
-    assert(_pimpl->lua_debug.short_src != NULL);
     return _pimpl->lua_debug.short_src;
 }
