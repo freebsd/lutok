@@ -50,7 +50,7 @@ namespace {
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_getglobal(lua_State* state)
 {
     lua_getglobal(state, lua_tostring(state, -1));
@@ -67,7 +67,7 @@ protected_getglobal(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_gettable(lua_State* state)
 {
     lua_gettable(state, -2);
@@ -84,7 +84,7 @@ protected_gettable(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_next(lua_State* state)
 {
     const int more = lua_next(state, -2) != 0;
@@ -101,7 +101,7 @@ protected_next(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_setglobal(lua_State* state)
 {
     lua_setglobal(state, lua_tostring(state, -2));
@@ -118,7 +118,7 @@ protected_setglobal(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_settable(lua_State* state)
 {
     lua_settable(state, -3);
@@ -136,7 +136,7 @@ protected_settable(lua_State* state)
 ///
 /// \return The number of return values pushed onto the Lua stack by the
 /// function.
-static int
+int
 call_cxx_function_from_c(lutok::cxx_function function,
                          lua_State* raw_state) noexcept
 {
@@ -171,7 +171,7 @@ call_cxx_function_from_c(lutok::cxx_function function,
 /// \param raw_state The Lua C API state.
 ///
 /// \return The number of return values of the called closure.
-static int
+int
 cxx_closure_trampoline(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
@@ -200,7 +200,7 @@ cxx_closure_trampoline(lua_State* raw_state)
 /// \param raw_state The Lua C API state.
 ///
 /// \return The number of return values of the called function.
-static int
+int
 cxx_function_trampoline(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
