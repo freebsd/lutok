@@ -62,7 +62,7 @@ lutok::debug::~debug(void) = default;
 /// \warning Terminates execution if there is not enough memory to manipulate
 /// the Lua stack.
 void
-lutok::debug::get_info(state& s, const std::string& what_)
+lutok::debug::get_info(state& s, const std::string& what_) const
 {
     lua_State* raw_state = state_c_gate(s).c_state();
 
@@ -76,7 +76,7 @@ lutok::debug::get_info(state& s, const std::string& what_)
 /// \param s The Lua state.
 /// \param level The second parameter to lua_getstack.
 void
-lutok::debug::get_stack(state& s, const int level)
+lutok::debug::get_stack(state& s, const int level) const
 {
     lua_State* raw_state = state_c_gate(s).c_state();
 

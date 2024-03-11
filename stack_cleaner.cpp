@@ -85,7 +85,7 @@ lutok::stack_cleaner::~stack_cleaner()
 /// elements that are currently in the stack will not be touched during
 /// destruction when the function is called.
 void
-lutok::stack_cleaner::forget()
+lutok::stack_cleaner::forget() const
 {
     _pimpl->original_depth = _pimpl->state_ref.get_top();
 }
