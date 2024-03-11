@@ -81,7 +81,7 @@ class stack_cleaner {
     stack_cleaner& operator=(const stack_cleaner&);
 
 public:
-    stack_cleaner(state&);
+    explicit stack_cleaner(state&);
     ~stack_cleaner();
 
     void forget() const;

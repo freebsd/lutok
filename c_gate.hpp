@@ -57,7 +57,7 @@ class state_c_gate {
     state& _state;
 
 public:
-    state_c_gate(state&);
+    explicit state_c_gate(state&);
     ~state_c_gate();
 
     static state connect(lua_State*);
