@@ -121,7 +121,7 @@ public:
     ///
     /// If the stack height does not match the height when the instance was
     /// created, this fails the test case.
-    ~stack_balance_checker(void)
+    ~stack_balance_checker()
     {
         if (_with_sentinel) {
             if (!_state.is_number(-1) || _state.to_integer(-1) != 987654321)

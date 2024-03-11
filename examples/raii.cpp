@@ -108,7 +108,7 @@ print_table_field(lutok::state& state, const std::string& field)
 ///
 /// \return A system exit code.
 int
-main(void)
+main()
 {
     lutok::state state;
     state.open_base();
