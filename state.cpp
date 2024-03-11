@@ -137,7 +137,7 @@ protected_settable(lua_State* state)
 /// \return The number of return values pushed onto the Lua stack by the
 /// function.
 int
-call_cxx_function_from_c(lutok::cxx_function function,
+call_cxx_function_from_c(const lutok::cxx_function function,
                          lua_State* raw_state) noexcept
 {
     char error_buf[1024];
@@ -228,7 +228,7 @@ struct lutok::state::impl {
     ///
     /// \param lua_ The Lua internal state.
     /// \param owned_ Whether we own the state or not.
-    impl(lua_State* lua_, bool owned_) :
+    impl(lua_State* lua_, const bool owned_) :
         lua_state(lua_),
         owned(owned_)
     {
@@ -678,7 +678,7 @@ lutok::state::push_boolean(const bool value) const
 /// \param function The C++ function to be pushed as a closure.
 /// \param nvalues The number of upvalues that the function receives.
 void
-lutok::state::push_cxx_closure(cxx_function function, const int nvalues) const
+lutok::state::push_cxx_closure(const cxx_function function, const int nvalues) const
 {
     auto *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
@@ -694,7 +694,7 @@ lutok::state::push_cxx_closure(cxx_function function, const int nvalues) const
 ///
 /// \param function The C++ function to be pushed.
 void
-lutok::state::push_cxx_function(cxx_function function) const
+lutok::state::push_cxx_function(const cxx_function function) const
 {
     auto *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
