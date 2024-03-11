@@ -68,7 +68,7 @@ lutok::state_c_gate::connect(lua_State* raw_state)
 ///
 /// \return A native lua_State object holding the Lua C API state.
 lua_State*
-lutok::state_c_gate::c_state(void)
+lutok::state_c_gate::c_state(void) const
 {
     return static_cast< lua_State* >(_state.raw_state());
 }

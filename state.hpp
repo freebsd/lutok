@@ -74,60 +74,60 @@ class state {
     /// Pointer to the shared internal implementation.
     std::shared_ptr< impl > _pimpl;
 
-    void* new_userdata_voidp(const size_t);
-    void* to_userdata_voidp(const int);
+    void* new_userdata_voidp(const size_t) const;
+    void* to_userdata_voidp(const int) const;
 
     friend class state_c_gate;
     explicit state(void*);
-    void* raw_state(void);
+    void* raw_state(void) const;
 
 public:
     state(void);
     ~state(void);
 
-    void close(void);
+    void close(void) const;
     void get_global(const std::string&);
-    void get_global_table(void);
-    bool get_metafield(const int, const std::string&);
-    bool get_metatable(const int);
+    void get_global_table(void) const;
+    bool get_metafield(const int, const std::string&) const;
+    bool get_metatable(const int) const;
     void get_table(const int);
-    int get_top(void);
-    void insert(const int);
-    bool is_boolean(const int);
-    bool is_function(const int);
-    bool is_nil(const int);
-    bool is_number(const int);
-    bool is_string(const int);
-    bool is_table(const int);
-    bool is_userdata(const int);
+    int get_top(void) const;
+    void insert(const int) const;
+    bool is_boolean(const int) const;
+    bool is_function(const int) const;
+    bool is_nil(const int) const;
+    bool is_number(const int) const;
+    bool is_string(const int) const;
+    bool is_table(const int) const;
+    bool is_userdata(const int) const;
     void load_file(const std::string&);
     void load_string(const std::string&);
-    void new_table(void);
+    void new_table(void) const;
     template< typename Type > Type* new_userdata(void);
     bool next(const int);
-    void open_all(void);
+    void open_all(void) const;
     void open_base(void);
-    void open_string(void);
-    void open_table(void);
+    void open_string(void) const;
+    void open_table(void) const;
     void pcall(const int, const int, const int);
-    void pop(const int);
-    void push_boolean(const bool);
-    void push_cxx_closure(cxx_function, const int);
-    void push_cxx_function(cxx_function);
-    void push_integer(const int);
-    void push_nil(void);
-    void push_string(const std::string&);
-    void push_value(const int);
-    void raw_get(const int);
-    void raw_set(const int);
+    void pop(const int) const;
+    void push_boolean(const bool) const;
+    void push_cxx_closure(cxx_function, const int) const;
+    void push_cxx_function(cxx_function) const;
+    void push_integer(const int) const;
+    void push_nil(void) const;
+    void push_string(const std::string&) const;
+    void push_value(const int) const;
+    void raw_get(const int) const;
+    void raw_set(const int) const;
     void set_global(const std::string&);
-    void set_metatable(const int);
+    void set_metatable(const int) const;
     void set_table(const int);
-    bool to_boolean(const int);
-    long to_integer(const int);
+    bool to_boolean(const int) const;
+    long to_integer(const int) const;
     template< typename Type > Type* to_userdata(const int);
-    std::string to_string(const int);
-    int upvalue_index(const int);
+    std::string to_string(const int) const;
+    static int upvalue_index(const int);
 };
 
 
