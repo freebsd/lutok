@@ -50,7 +50,7 @@ public:
 
 
 /// Exception for errors raised by the Lua API library.
-class api_error : public error {
+class api_error final : public error {
     /// Name of the Lua C API function that caused the error.
     std::string _api_function;
 
@@ -65,7 +65,7 @@ public:
 
 
 /// File not found error.
-class file_not_found_error : public error {
+class file_not_found_error final : public error {
     /// Name of the not-found file.
     std::string _filename;
 
