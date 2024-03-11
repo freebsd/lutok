@@ -242,7 +242,7 @@ struct lutok::state::impl {
 lutok::state::state(void)
 {
     lua_State* lua = luaL_newstate();
-    if (lua == NULL)
+    if (lua == nullptr)
         throw lutok::error("lua open failed");
     _pimpl.reset(new impl(lua, true));
 }
@@ -267,7 +267,7 @@ lutok::state::state(void* raw_state_) :
 /// code.
 lutok::state::~state(void)
 {
-    if (_pimpl->owned && _pimpl->lua_state != NULL)
+    if (_pimpl->owned && _pimpl->lua_state != nullptr)
         close();
 }
 
@@ -283,10 +283,10 @@ lutok::state::~state(void)
 void
 lutok::state::close(void)
 {
-    assert(_pimpl->lua_state != NULL);
+    assert(_pimpl->lua_state != nullptr);
     assert(lua_gettop(_pimpl->lua_state) == 0);
     lua_close(_pimpl->lua_state);
-    _pimpl->lua_state = NULL;
+    _pimpl->lua_state = nullptr;
 }
 
 
