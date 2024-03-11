@@ -875,7 +875,7 @@ lutok::state::to_string(const int index) const
     // Note that the creation of a string object below (explicit for clarity)
     // implies that the raw string is duplicated and, henceforth, the string is
     // safe even if the corresponding element is popped from the Lua stack.
-    return std::string(raw_string);
+    return {raw_string};
 }
 
 
