@@ -32,6 +32,7 @@ extern "C" {
 
 #include <cassert>
 #include <cstring>
+#include <memory>
 
 #include "c_gate.hpp"
 #include "exceptions.hpp"
@@ -244,7 +245,7 @@ lutok::state::state(void)
     lua_State* lua = luaL_newstate();
     if (lua == nullptr)
         throw lutok::error("lua open failed");
-    _pimpl.reset(new impl(lua, true));
+    _pimpl = std::make_shared<impl>(lua, true);
 }
 
 
