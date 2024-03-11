@@ -29,6 +29,7 @@
 #include <cassert>
 
 #include <lua.hpp>
+#include <utility>
 
 #include "c_gate.hpp"
 #include "exceptions.hpp"
@@ -52,10 +53,10 @@ lutok::error::~error() noexcept = default;
 ///
 /// \param api_function_ The name of the API function that caused the error.
 /// \param message The plain-text error message provided by Lua.
-lutok::api_error::api_error(const std::string& api_function_,
+lutok::api_error::api_error(std::string api_function_,
                             const std::string& message) :
     error(message),
-    _api_function(api_function_)
+    _api_function(std::move(api_function_))
 {
 }
 
