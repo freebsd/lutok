@@ -75,7 +75,7 @@ lutok::stack_cleaner::~stack_cleaner(void)
     assert(current_depth >= _pimpl->original_depth);
     const unsigned int diff = current_depth - _pimpl->original_depth;
     if (diff > 0)
-        _pimpl->state_ref.pop(diff);
+        _pimpl->state_ref.pop(static_cast<int>(diff));
 }
 
 
