@@ -64,7 +64,7 @@ lutok::debug::get_info(state& s, const std::string& what_) const
     lua_State* raw_state = state_c_gate(s).c_state();
 
     if (lua_getinfo(raw_state, what_.c_str(), &_pimpl->lua_debug) == 0)
-        throw lutok::api_error::from_stack(s, "lua_getinfo");
+        throw api_error::from_stack(s, "lua_getinfo");
 }
 
 

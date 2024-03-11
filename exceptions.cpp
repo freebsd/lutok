@@ -77,12 +77,12 @@ lutok::api_error::~api_error() noexcept = default;
 lutok::api_error
 lutok::api_error::from_stack(state& state_, const std::string& api_function_)
 {
-    lua_State* raw_state = lutok::state_c_gate(state_).c_state();
+    lua_State* raw_state = state_c_gate(state_).c_state();
 
     assert(lua_isstring(raw_state, -1));
     const std::string message = lua_tostring(raw_state, -1);
     lua_pop(raw_state, 1);
-    return lutok::api_error(api_function_, message);
+    return api_error(api_function_, message);
 }
 
 
