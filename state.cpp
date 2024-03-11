@@ -183,7 +183,7 @@ cxx_closure_trampoline(lua_State* raw_state)
         nupvalues = debug.nups;
     }
 
-    lutok::cxx_function* function = state.to_userdata< lutok::cxx_function >(
+    auto* function = state.to_userdata< lutok::cxx_function >(
         state.upvalue_index(nupvalues));
     return call_cxx_function_from_c(*function, raw_state);
 }
@@ -203,7 +203,7 @@ static int
 cxx_function_trampoline(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
-    lutok::cxx_function* function = state.to_userdata< lutok::cxx_function >(
+    auto* function = state.to_userdata< lutok::cxx_function >(
         state.upvalue_index(1));
     return call_cxx_function_from_c(*function, raw_state);
 }
@@ -679,7 +679,7 @@ lutok::state::push_boolean(const bool value) const
 void
 lutok::state::push_cxx_closure(cxx_function function, const int nvalues) const
 {
-    cxx_function *data = static_cast< cxx_function* >(
+    auto *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
     *data = function;
     lua_pushcclosure(_pimpl->lua_state, cxx_closure_trampoline, nvalues + 1);
@@ -695,7 +695,7 @@ lutok::state::push_cxx_closure(cxx_function function, const int nvalues) const
 void
 lutok::state::push_cxx_function(cxx_function function) const
 {
-    cxx_function *data = static_cast< cxx_function* >(
+    auto *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
     *data = function;
     lua_pushcclosure(_pimpl->lua_state, cxx_function_trampoline, 1);
