@@ -32,7 +32,7 @@ To build and use Lutok successfully you need:
 
 * A standards-compliant C++ complier.
 * Lua 5.1 or greater.
-* pkg-config.
+* pkgconf or pkg-config.
 
 Optionally, if you want to build and run the tests (recommended), you
 need:
