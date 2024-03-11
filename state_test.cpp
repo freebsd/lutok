@@ -158,7 +158,7 @@ cxx_divide(lutok::state& state)
     if (divisor == 0)
         throw std::runtime_error("Divisor is 0");
     if (dividend < 0 || divisor < 0)
-        throw std::string("Cannot divide negative numbers");
+        throw std::runtime_error("Cannot divide negative numbers");
     state.push_integer(dividend / divisor);
     state.push_integer(dividend % divisor);
     return 2;
