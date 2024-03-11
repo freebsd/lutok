@@ -55,7 +55,7 @@ class api_error : public error {
     std::string _api_function;
 
 public:
-    explicit api_error(const std::string&, const std::string&);
+    explicit api_error(std::string, const std::string&);
     virtual ~api_error() noexcept;
 
     static api_error from_stack(state&, const std::string&);
