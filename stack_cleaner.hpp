@@ -82,9 +82,9 @@ class stack_cleaner {
 
 public:
     stack_cleaner(state&);
-    ~stack_cleaner(void);
+    ~stack_cleaner();
 
-    void forget(void);
+    void forget();
 };
 
 

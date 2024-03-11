@@ -66,22 +66,22 @@ class debug {
 #endif
 
 public:
-    debug(void);
-    ~debug(void);
+    debug();
+    ~debug();
 
     void get_info(state&, const std::string&);
     void get_stack(state&, const int);
 
-    int event(void) const;
-    std::string name(void) const;
-    std::string name_what(void) const;
-    std::string what(void) const;
-    std::string source(void) const;
-    int current_line(void) const;
-    int n_ups(void) const;
-    int line_defined(void) const;
-    int last_line_defined(void) const;
-    std::string short_src(void) const;
+    int event() const;
+    std::string name() const;
+    std::string name_what() const;
+    std::string what() const;
+    std::string source() const;
+    int current_line() const;
+    int n_ups() const;
+    int line_defined() const;
+    int last_line_defined() const;
+    std::string short_src() const;
 };
 
 

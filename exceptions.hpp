@@ -45,7 +45,7 @@ class state;
 class error : public std::runtime_error {
 public:
     explicit error(const std::string&);
-    virtual ~error(void) throw();
+    virtual ~error() throw();
 };
 
 
@@ -56,11 +56,11 @@ class api_error : public error {
 
 public:
     explicit api_error(const std::string&, const std::string&);
-    virtual ~api_error(void) throw();
+    virtual ~api_error() throw();
 
     static api_error from_stack(state&, const std::string&);
 
-    const std::string& api_function(void) const;
+    const std::string& api_function() const;
 };
 
 
@@ -71,9 +71,9 @@ class file_not_found_error : public error {
 
 public:
     explicit file_not_found_error(const std::string&);
-    virtual ~file_not_found_error(void) throw();
+    virtual ~file_not_found_error() throw();
 
-    const std::string& filename(void) const;
+    const std::string& filename() const;
 };
 
 

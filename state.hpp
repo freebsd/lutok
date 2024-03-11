@@ -88,19 +88,19 @@ class state {
 
     friend class state_c_gate;
     explicit state(void*);
-    void* raw_state(void);
+    void* raw_state();
 
 public:
-    state(void);
-    ~state(void);
+    state();
+    ~state();
 
-    void close(void);
+    void close();
     void get_global(const std::string&);
-    void get_global_table(void);
+    void get_global_table();
     bool get_metafield(const int, const std::string&);
     bool get_metatable(const int);
     void get_table(const int);
-    int get_top(void);
+    int get_top();
     void insert(const int);
     bool is_boolean(const int);
     bool is_function(const int);
@@ -111,20 +111,20 @@ public:
     bool is_userdata(const int);
     void load_file(const std::string&);
     void load_string(const std::string&);
-    void new_table(void);
-    template< typename Type > Type* new_userdata(void);
+    void new_table();
+    template< typename Type > Type* new_userdata();
     bool next(const int);
-    void open_all(void);
-    void open_base(void);
-    void open_string(void);
-    void open_table(void);
+    void open_all();
+    void open_base();
+    void open_string();
+    void open_table();
     void pcall(const int, const int, const int);
     void pop(const int);
     void push_boolean(const bool);
     void push_cxx_closure(cxx_function, const int);
     void push_cxx_function(cxx_function);
     void push_integer(const int);
-    void push_nil(void);
+    void push_nil();
     void push_string(const std::string&);
     void push_value(const int);
     void raw_get(const int);
