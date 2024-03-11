@@ -62,7 +62,7 @@ public:
 
     static state connect(lua_State*);
 
-    lua_State* c_state(void) const;
+    [[nodiscard]] lua_State* c_state(void) const;
 };
 
 

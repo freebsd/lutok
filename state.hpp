@@ -74,12 +74,12 @@ class state {
     /// Pointer to the shared internal implementation.
     std::shared_ptr< impl > _pimpl;
 
-    void* new_userdata_voidp(size_t) const;
-    void* to_userdata_voidp(int) const;
+    [[nodiscard]] void* new_userdata_voidp(size_t) const;
+    [[nodiscard]] void* to_userdata_voidp(int) const;
 
     friend class state_c_gate;
     explicit state(void*);
-    void* raw_state(void) const;
+    [[nodiscard]] void* raw_state(void) const;
 
 public:
     state(void);
@@ -88,18 +88,18 @@ public:
     void close(void) const;
     void get_global(const std::string&);
     void get_global_table(void) const;
-    bool get_metafield(int, const std::string&) const;
-    bool get_metatable(int) const;
+    [[nodiscard]] bool get_metafield(int, const std::string&) const;
+    [[nodiscard]] bool get_metatable(int) const;
     void get_table(int);
-    int get_top(void) const;
+    [[nodiscard]] int get_top(void) const;
     void insert(int) const;
-    bool is_boolean(int) const;
-    bool is_function(int) const;
-    bool is_nil(int) const;
-    bool is_number(int) const;
-    bool is_string(int) const;
-    bool is_table(int) const;
-    bool is_userdata(int) const;
+    [[nodiscard]] bool is_boolean(int) const;
+    [[nodiscard]] bool is_function(int) const;
+    [[nodiscard]] bool is_nil(int) const;
+    [[nodiscard]] bool is_number(int) const;
+    [[nodiscard]] bool is_string(int) const;
+    [[nodiscard]] bool is_table(int) const;
+    [[nodiscard]] bool is_userdata(int) const;
     void load_file(const std::string&);
     void load_string(const std::string&);
     void new_table(void) const;
@@ -123,10 +123,10 @@ public:
     void set_global(const std::string&);
     void set_metatable(int) const;
     void set_table(int);
-    bool to_boolean(int) const;
-    long to_integer(int) const;
+    [[nodiscard]] bool to_boolean(int) const;
+    [[nodiscard]] long to_integer(int) const;
     template< typename Type > Type* to_userdata(int);
-    std::string to_string(int) const;
+    [[nodiscard]] std::string to_string(int) const;
     static int upvalue_index(int);
 };
 
