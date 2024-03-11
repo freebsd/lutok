@@ -65,7 +65,7 @@ namespace {
 /// \param symbol The symbol to check for.
 ///
 /// \return True if the symbol is defined, false otherwise.
-static bool
+bool
 is_available(lutok::state& state, const char* symbol)
 {
     luaL_loadstring(raw(state), (std::string("return ") + symbol).c_str());
@@ -84,7 +84,7 @@ is_available(lutok::state& state, const char* symbol)
 ///
 /// \param state The Lua state.
 /// \param expected The module to expect.  Empty if no modules are allowed.
-static void
+void
 check_modules(lutok::state& state, const std::string& expected)
 {
     std::cout << "Checking loaded modules" <<
@@ -105,7 +105,7 @@ check_modules(lutok::state& state, const std::string& expected)
 /// \param raw_state The raw Lua state.
 ///
 /// \return The number of result values, i.e. 2.
-static int
+int
 c_get_upvalues(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
@@ -125,7 +125,7 @@ c_get_upvalues(lua_State* raw_state)
 /// \param state The Lua state.
 ///
 /// \return The number of result values, i.e. 1.
-static int
+int
 cxx_multiply_closure(lutok::state& state)
 {
     const int f1 = lua_tointeger(raw(state), lua_upvalueindex(1));
@@ -150,7 +150,7 @@ cxx_multiply_closure(lutok::state& state)
 /// \throw std::string If the dividend or the divisor are negative.  This is an
 ///     exception not derived from std::exception on purpose to ensure that the
 ///     C++ wrapping correctly captures any exception regardless of its type.
-static int
+int
 cxx_divide(lutok::state& state)
 {
     const int dividend = state.to_integer(-2);
@@ -175,7 +175,7 @@ cxx_divide(lutok::state& state)
 ///
 /// \throw std::runtime_error Unconditionally, with an error message formed by
 ///     the repetition of 'A' as many times as requested.
-static int
+int
 raise_long_error(lutok::state& state)
 {
     const int length = state.to_integer(-1);

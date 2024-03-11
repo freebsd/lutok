@@ -76,7 +76,7 @@ namespace {
 /// \param state The Lua state.
 ///
 /// \return The internal lua_State of the input Lua state.
-static inline lua_State*
+inline lua_State*
 raw(lutok::state& state)
 {
     return lutok::state_c_gate(state).c_state();
