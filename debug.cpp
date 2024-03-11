@@ -28,12 +28,9 @@
 
 #include <cassert>
 
-#include <lua.hpp>
-
 #include <lutok/c_gate.hpp>
 #include <lutok/debug.hpp>
 #include <lutok/exceptions.hpp>
-#include <lutok/state.ipp>
 
 
 /// Internal implementation for lutok::debug.
