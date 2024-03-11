@@ -239,7 +239,7 @@ struct lutok::state::impl {
 ///
 /// You must share the same state object alongside the lifetime of your Lua
 /// session.  As soon as the object is destroyed, the session is terminated.
-lutok::state::state(void)
+lutok::state::state()
 {
     lua_State* lua = luaL_newstate();
     if (lua == nullptr)
@@ -265,7 +265,7 @@ lutok::state::state(void* raw_state_) :
 /// Closes the session unless it has already been closed by calling the
 /// close() method.  It is recommended to explicitly close the session in the
 /// code.
-lutok::state::~state(void)
+lutok::state::~state()
 {
     if (_pimpl->owned && _pimpl->lua_state != nullptr)
         close();
@@ -281,7 +281,7 @@ lutok::state::~state(void)
 /// \pre The Lua stack is empty.  This is not truly necessary but ensures that
 ///     our code is consistent and clears the stack explicitly.
 void
-lutok::state::close(void)
+lutok::state::close()
 {
     assert(_pimpl->lua_state != nullptr);
     assert(lua_gettop(_pimpl->lua_state) == 0);
@@ -315,7 +315,7 @@ lutok::state::get_global(const std::string& name)
 ///
 /// \post state(-1) Contains the reference to the globals table.
 void
-lutok::state::get_global_table(void)
+lutok::state::get_global_table()
 {
 #if LUA_VERSION_NUM >= 502
     lua_pushvalue(_pimpl->lua_state, registry_index);
@@ -381,7 +381,7 @@ lutok::state::get_table(const int index)
 ///
 /// \return The return value of lua_gettop.
 int
-lutok::state::get_top(void)
+lutok::state::get_top()
 {
     return lua_gettop(_pimpl->lua_state);
 }
@@ -518,7 +518,7 @@ lutok::state::load_string(const std::string& str)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::new_table(void)
+lutok::state::new_table()
 {
     lua_newtable(_pimpl->lua_state);
 }
@@ -574,7 +574,7 @@ lutok::state::next(const int index)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_all(void)
+lutok::state::open_all()
 {
     luaL_openlibs(_pimpl->lua_state);
 }
@@ -586,7 +586,7 @@ lutok::state::open_all(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_base(void)
+lutok::state::open_base()
 {
     lua_pushcfunction(_pimpl->lua_state, luaopen_base);
     if (lua_pcall(_pimpl->lua_state, 0, 0, 0) != 0)
@@ -600,7 +600,7 @@ lutok::state::open_base(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_string(void)
+lutok::state::open_string()
 {
 #if LUA_VERSION_NUM >= 502
     luaL_requiref(_pimpl->lua_state, LUA_STRLIBNAME, luaopen_string, 1);
@@ -619,7 +619,7 @@ lutok::state::open_string(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_table(void)
+lutok::state::open_table()
 {
 #if LUA_VERSION_NUM >= 502
     luaL_requiref(_pimpl->lua_state, LUA_TABLIBNAME, luaopen_table, 1);
@@ -714,7 +714,7 @@ lutok::state::push_integer(const int value)
 
 /// Wrapper around lua_pushnil.
 void
-lutok::state::push_nil(void)
+lutok::state::push_nil()
 {
     lua_pushnil(_pimpl->lua_state);
 }
@@ -898,7 +898,7 @@ lutok::state::upvalue_index(const int index)
 /// to call this method is by using the c_gate module, and c_gate takes care of
 /// casting this object to the appropriate type.
 void*
-lutok::state::raw_state(void)
+lutok::state::raw_state()
 {
     return _pimpl->lua_state;
 }

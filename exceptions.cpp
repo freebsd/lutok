@@ -45,7 +45,7 @@ lutok::error::error(const std::string& message) :
 
 
 /// Destructor for the error.
-lutok::error::~error(void) throw() = default;
+lutok::error::~error() throw() = default;
 
 
 /// Constructs a new error.
@@ -61,7 +61,7 @@ lutok::api_error::api_error(const std::string& api_function_,
 
 
 /// Destructor for the error.
-lutok::api_error::~api_error(void) throw() = default;
+lutok::api_error::~api_error() throw() = default;
 
 
 /// Constructs a new api_error with the message on the top of the Lua stack.
@@ -89,7 +89,7 @@ lutok::api_error::from_stack(state& state_, const std::string& api_function_)
 ///
 /// \return The name of the function.
 const std::string&
-lutok::api_error::api_function(void) const
+lutok::api_error::api_function() const
 {
     return _api_function;
 }
@@ -107,14 +107,14 @@ lutok::file_not_found_error::file_not_found_error(
 
 
 /// Destructor for the error.
-lutok::file_not_found_error::~file_not_found_error(void) throw() = default;
+lutok::file_not_found_error::~file_not_found_error() throw() = default;
 
 
 /// Gets the name of the file that could not be found.
 ///
 /// \return The name of the file.
 const std::string&
-lutok::file_not_found_error::filename(void) const
+lutok::file_not_found_error::filename() const
 {
     return _filename;
 }

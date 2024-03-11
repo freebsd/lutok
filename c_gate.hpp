@@ -58,11 +58,11 @@ class state_c_gate {
 
 public:
     state_c_gate(state&);
-    ~state_c_gate(void);
+    ~state_c_gate();
 
     static state connect(lua_State*);
 
-    lua_State* c_state(void);
+    lua_State* c_state();
 };
 
 
