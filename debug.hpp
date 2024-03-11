@@ -72,16 +72,16 @@ public:
     void get_info(state&, const std::string&) const;
     void get_stack(state&, int) const;
 
-    int event() const;
-    std::string name() const;
-    std::string name_what() const;
-    std::string what() const;
-    std::string source() const;
-    int current_line() const;
-    int n_ups() const;
-    int line_defined() const;
-    int last_line_defined() const;
-    std::string short_src() const;
+    [[nodiscard]] int event() const;
+    [[nodiscard]] std::string name() const;
+    [[nodiscard]] std::string name_what() const;
+    [[nodiscard]] std::string what() const;
+    [[nodiscard]] std::string source() const;
+    [[nodiscard]] int current_line() const;
+    [[nodiscard]] int n_ups() const;
+    [[nodiscard]] int line_defined() const;
+    [[nodiscard]] int last_line_defined() const;
+    [[nodiscard]] std::string short_src() const;
 };
 
 

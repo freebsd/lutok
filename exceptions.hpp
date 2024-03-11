@@ -60,7 +60,7 @@ public:
 
     static api_error from_stack(state&, const std::string&);
 
-    const std::string& api_function() const;
+    [[nodiscard]] const std::string& api_function() const;
 };
 
 
@@ -73,7 +73,7 @@ public:
     explicit file_not_found_error(const std::string&);
     ~file_not_found_error() noexcept override;
 
-    const std::string& filename() const;
+    [[nodiscard]] const std::string& filename() const;
 };
 
 
