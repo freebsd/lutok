@@ -44,6 +44,8 @@ AC_DEFUN([KYUA_REQUIRE_CXX], [
     if test "${atf_cv_prog_cxx_works}" = no; then
         AC_MSG_ERROR([C++ compiler cannot create executables])
     fi
+
+    AX_CXX_COMPILE_STDCXX_11([], [])
 ])
 
 dnl
