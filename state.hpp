@@ -124,7 +124,7 @@ public:
     void set_metatable(int) const;
     void set_table(int);
     [[nodiscard]] bool to_boolean(int) const;
-    [[nodiscard]] long to_integer(int) const;
+    [[nodiscard]] int to_integer(int) const;
     template< typename Type > Type* to_userdata(int);
     [[nodiscard]] std::string to_string(int) const;
     static int upvalue_index(int);

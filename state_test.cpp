@@ -802,7 +802,7 @@ ATF_TEST_CASE_BODY(push_cxx_function__fail_anything)
     lua_setglobal(raw(state), "cxx_divide");
 
     ATF_REQUIRE(luaL_dostring(raw(state), "return cxx_divide(-3, -1)") != 0);
-    ATF_REQUIRE_MATCH("Unhandled exception", lua_tostring(raw(state), -1));
+    ATF_REQUIRE_MATCH("Cannot divide negative numbers", lua_tostring(raw(state), -1));
     lua_pop(raw(state), 1);
 }
 
