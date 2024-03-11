@@ -61,8 +61,8 @@ public:
     debug(void);
     ~debug(void);
 
-    void get_info(state&, const std::string&);
-    void get_stack(state&, const int);
+    void get_info(state&, const std::string&) const;
+    void get_stack(state&, const int) const;
 
     int event(void) const;
     std::string name(void) const;
