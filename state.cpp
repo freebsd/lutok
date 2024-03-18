@@ -31,7 +31,7 @@ extern "C" {
 }
 
 #include <cassert>
-#include <cstring>
+#include <string>
 #include <memory>
 
 #include "c_gate.hpp"

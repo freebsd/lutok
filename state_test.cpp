@@ -28,7 +28,7 @@
 
 #include "state.ipp"
 
-#include <cstring>
+#include <string>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
