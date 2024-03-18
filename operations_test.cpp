@@ -49,7 +49,7 @@ namespace {
 /// \param state The Lua state.
 ///
 /// \return The number of results (1).
-static int
+int
 hook_add(lutok::state& state)
 {
     state.push_integer(state.to_integer(-1) + state.to_integer(-2));
@@ -66,7 +66,7 @@ hook_add(lutok::state& state)
 /// \param state The Lua state.
 ///
 /// \return The number of results (1).
-static int
+int
 hook_multiply(lutok::state& state)
 {
     state.push_integer(state.to_integer(-1) * state.to_integer(-2));

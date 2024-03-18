@@ -61,7 +61,7 @@ run_statement(lutok::state& state, const std::string& line)
 ///
 /// \return A system exit code.
 int
-main(void)
+main()
 {
     // Create a new session and load some standard libraries.
     lutok::state state;

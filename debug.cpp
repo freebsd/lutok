@@ -28,12 +28,9 @@
 
 #include <cassert>
 
-#include <lua.hpp>
-
 #include <lutok/c_gate.hpp>
 #include <lutok/debug.hpp>
 #include <lutok/exceptions.hpp>
-#include <lutok/state.ipp>
 
 
 /// Internal implementation for lutok::debug.
@@ -44,16 +41,14 @@ struct lutok::debug::impl {
 
 
 /// Constructor for an empty debug structure.
-lutok::debug::debug(void) :
+lutok::debug::debug() :
     _pimpl(new impl())
 {
 }
 
 
 /// Destructor.
-lutok::debug::~debug(void)
-{
-}
+lutok::debug::~debug() = default;
 
 
 /// Wrapper around lua_getinfo.
@@ -64,12 +59,12 @@ lutok::debug::~debug(void)
 /// \warning Terminates execution if there is not enough memory to manipulate
 /// the Lua stack.
 void
-lutok::debug::get_info(state& s, const std::string& what_)
+lutok::debug::get_info(state& s, const std::string& what_) const
 {
     lua_State* raw_state = state_c_gate(s).c_state();
 
     if (lua_getinfo(raw_state, what_.c_str(), &_pimpl->lua_debug) == 0)
-        throw lutok::api_error::from_stack(s, "lua_getinfo");
+        throw api_error::from_stack(s, "lua_getinfo");
 }
 
 
@@ -78,7 +73,7 @@ lutok::debug::get_info(state& s, const std::string& what_)
 /// \param s The Lua state.
 /// \param level The second parameter to lua_getstack.
 void
-lutok::debug::get_stack(state& s, const int level)
+lutok::debug::get_stack(state& s, const int level) const
 {
     lua_State* raw_state = state_c_gate(s).c_state();
 
@@ -90,7 +85,7 @@ lutok::debug::get_stack(state& s, const int level)
 ///
 /// \return Returns the 'event' field of the internal lua_Debug structure.
 int
-lutok::debug::event(void) const
+lutok::debug::event() const
 {
     return _pimpl->lua_debug.event;
 }
@@ -100,9 +95,9 @@ lutok::debug::event(void) const
 ///
 /// \return Returns the 'name' field of the internal lua_Debug structure.
 std::string
-lutok::debug::name(void) const
+lutok::debug::name() const
 {
-    assert(_pimpl->lua_debug.name != NULL);
+    assert(_pimpl->lua_debug.name != nullptr);
     return _pimpl->lua_debug.name;
 }
 
@@ -111,9 +106,9 @@ lutok::debug::name(void) const
 ///
 /// \return Returns the 'namewhat' field of the internal lua_Debug structure.
 std::string
-lutok::debug::name_what(void) const
+lutok::debug::name_what() const
 {
-    assert(_pimpl->lua_debug.namewhat != NULL);
+    assert(_pimpl->lua_debug.namewhat != nullptr);
     return _pimpl->lua_debug.namewhat;
 }
 
@@ -122,9 +117,9 @@ lutok::debug::name_what(void) const
 ///
 /// \return Returns the 'what' field of the internal lua_Debug structure.
 std::string
-lutok::debug::what(void) const
+lutok::debug::what() const
 {
-    assert(_pimpl->lua_debug.what != NULL);
+    assert(_pimpl->lua_debug.what != nullptr);
     return _pimpl->lua_debug.what;
 }
 
@@ -133,9 +128,9 @@ lutok::debug::what(void) const
 ///
 /// \return Returns the 'source' field of the internal lua_Debug structure.
 std::string
-lutok::debug::source(void) const
+lutok::debug::source() const
 {
-    assert(_pimpl->lua_debug.source != NULL);
+    assert(_pimpl->lua_debug.source != nullptr);
     return _pimpl->lua_debug.source;
 }
 
@@ -144,7 +139,7 @@ lutok::debug::source(void) const
 ///
 /// \return Returns the 'currentline' field of the internal lua_Debug structure.
 int
-lutok::debug::current_line(void) const
+lutok::debug::current_line() const
 {
     return _pimpl->lua_debug.currentline;
 }
@@ -154,7 +149,7 @@ lutok::debug::current_line(void) const
 ///
 /// \return Returns the 'nups' field of the internal lua_Debug structure.
 int
-lutok::debug::n_ups(void) const
+lutok::debug::n_ups() const
 {
     return _pimpl->lua_debug.nups;
 }
@@ -164,7 +159,7 @@ lutok::debug::n_ups(void) const
 ///
 /// \return Returns the 'linedefined' field of the internal lua_Debug structure.
 int
-lutok::debug::line_defined(void) const
+lutok::debug::line_defined() const
 {
     return _pimpl->lua_debug.linedefined;
 }
@@ -175,7 +170,7 @@ lutok::debug::line_defined(void) const
 /// \return Returns the 'lastlinedefined' field of the internal lua_Debug
 /// structure.
 int
-lutok::debug::last_line_defined(void) const
+lutok::debug::last_line_defined() const
 {
     return _pimpl->lua_debug.lastlinedefined;
 }
@@ -185,8 +180,7 @@ lutok::debug::last_line_defined(void) const
 ///
 /// \return Returns the 'short_src' field of the internal lua_Debug structure.
 std::string
-lutok::debug::short_src(void) const
+lutok::debug::short_src() const
 {
-    assert(_pimpl->lua_debug.short_src != NULL);
     return _pimpl->lua_debug.short_src;
 }
