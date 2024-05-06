@@ -57,7 +57,7 @@ install_from_github() {
 
     local distname="${name}-${release}"
 
-    local baseurl="https://github.com/jmmv/${project}"
+    local baseurl="https://github.com/freebsd/${project}"
     wget --no-check-certificate \
         "${baseurl}/releases/download/${distname}/${distname}.tar.gz"
     tar -xzvf "${distname}.tar.gz"
@@ -95,7 +95,7 @@ install_from_bintray() {
             exit 1
             ;;
     esac
-    wget "http://dl.bintray.com/jmmv/kyua/${name}" || return 1
+    wget "http://dl.bintray.com/freebsd/kyua/${name}" || return 1
     sudo tar -xzvp -C / -f "${name}"
     rm -f "${name}"
 }
