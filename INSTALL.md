@@ -28,9 +28,9 @@ Or alternatively, install as a regular user into your home directory:
 
 To build and use Lutok successfully you need:
 
-* A standards-compliant C++ complier.
+* A C++-11 standards-compliant compiler.
 * Lua 5.1 or greater.
-* pkgconf or pkg-config.
+* pkg-config or an equivalent tool, e.g., pkgconf.
 
 Optionally, if you want to build and run the tests (recommended), you
 need:
@@ -41,8 +41,8 @@ need:
 If you are building Lutok from the code on the repository, you will also
 need the following tools:
 
-* GNU Autoconf.
-* GNU Automake.
+* GNU Autoconf 2.68 (or later).
+* GNU Automake 1.9 (or later).
 * GNU Libtool.
 
 
