@@ -19,8 +19,8 @@ please refer to the following other documents:
 
 * AUTHORS: List of authors and contributors to this project.
 * COPYING: License information.
-* INSTALL: Compilation and installation instructions.
-* NEWS: List of major changes between formal releases.
+* INSTALL.md: Compilation and installation instructions.
+* NEWS.md: List of major changes between formal releases.
 
 For general project information, please visit:
 
