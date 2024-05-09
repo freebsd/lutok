@@ -8,21 +8,21 @@ Released on 2013/12/07.
   appeared in Automake 1.11.2.  Fixes a problem in Ubuntu 10.04
   LTS, which appears stuck in 1.11.1.
 
-* Stopped shipping an Atffile.  The only supported way to run the tests
+* Stopped shipping an `Atffile`.  The only supported way to run the tests
   is via Kyua.
 
 Interface changes:
 
-* Issue 5: New methods added to the state class: open_all.
+* Issue 5: New methods added to the state class: `open_all`.
 
 * Removed default parameter values from all state methods and all
   standalone operations.  It is often unclear what the default value is
   given that it depends on the specific Lua operation.  Being explicit
   on the caller side is clearer.
 
-* Modified operations do_file and do_string to support passing a number
+* Modified operations `do_file` and `do_string` to support passing a number
   of arguments to the loaded chunks and an error handler to the backing
-  pcall call.
+  `pcall` call.
 
 
 ## Changes in version 0.3
@@ -40,21 +40,21 @@ Released on 2013/06/14.
 
 Interface changes:
 
-* New global constants: registry_index.
+* New global constants: `registry_index`.
 
-* New methods added to the state class: get_global_table.
+* New methods added to the state class: `get_global_table`.
 
-* Removed global constants: globals_index.
+* Removed global constants: `globals_index`.
 
 
 ## Changes in version 0.2
 
 Released on 2012/05/30.
 
-* New global constants: globals_index.
+* New global constants: `globals_index`.
 
-* New methods added to the state class: get_metafield, get_metatable,
-  insert, push_value, raw_get and raw_set.
+* New methods added to the state class: `get_metafield`, `get_metatable`,
+  `insert`, `push_value`, `raw_get`, and `raw_set`.
 
 * Acknowledged that Lua 5.2 is currently not supported.
 
