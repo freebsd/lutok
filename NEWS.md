@@ -1,5 +1,17 @@
 # Major changes between releases
 
+## Changes in version 0.5 (UNRELEASED)
+
+Released on 2024/05/XX.
+
+* Use more modern autotools macros.  Bump the minimum autoconf version to 2.68 to
+  support this change.
+
+* Modify build code to improve Lua 5.4 support.
+
+* Replace `std::auto_ptr` use with `std::unique_ptr` use.  This improves C++
+  standard support and fixes the build with newer C++ standards.
+
 ## Changes in version 0.4
 
 Released on 2013/12/07.
