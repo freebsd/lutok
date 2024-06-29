@@ -76,7 +76,7 @@ namespace {
 /// \param state The Lua state.
 ///
 /// \return The internal lua_State of the input Lua state.
-static inline lua_State*
+inline lua_State*
 raw(lutok::state& state)
 {
     return lutok::state_c_gate(state).c_state();
@@ -107,7 +107,7 @@ public:
     ///     validate upon exit that the item is still there.  This is an attempt
     ///     to ensure that already-existing items are not removed from the stack
     ///     by the code under test.
-    stack_balance_checker(lutok::state& state_,
+    explicit stack_balance_checker(lutok::state& state_,
                           const bool with_sentinel_ = true) :
         _state(state_),
         _with_sentinel(with_sentinel_),
@@ -121,7 +121,7 @@ public:
     ///
     /// If the stack height does not match the height when the instance was
     /// created, this fails the test case.
-    ~stack_balance_checker(void)
+    ~stack_balance_checker()
     {
         if (_with_sentinel) {
             if (!_state.is_number(-1) || _state.to_integer(-1) != 987654321)
