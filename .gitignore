@@ -2,15 +2,18 @@
 *.lo
 *.o
 *_test
+*~
 
 .deps
 .libs
+
 Doxyfile
 Makefile
 Makefile.in
 aclocal.m4
 api-docs
 autom4te.cache
+build
 config.h
 config.h.in
 config.log
