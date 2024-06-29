@@ -1,4 +1,6 @@
-Lutok is a lightweight C++ API library for Lua.
+# Welcome to the Lutok project!
+
+Lutok is a **lightweight C++ API library** for Lua.
 
 Lutok provides thin C++ wrappers around the Lua C API to ease the
 interaction between C++ and Lua.  These wrappers make intensive use of
@@ -17,11 +19,9 @@ performance.
 For further information on the contents of this distribution file,
 please refer to the following other documents:
 
-* AUTHORS: List of authors and contributors to this project.
-* COPYING: License information.
-* INSTALL: Compilation and installation instructions.
-* NEWS: List of major changes between formal releases.
+* `AUTHORS`: List of authors and contributors to this project.
+* `COPYING`: License information.
+* `INSTALL.md:` Compilation and installation instructions.
+* `NEWS.md`: List of major changes between formal releases.
 
-For general project information, please visit:
-
-    https://github.com/freebsd/lutok/
+For general project information, please visit [Lutok on GitHub](https://github.com/freebsd/lutok/)
