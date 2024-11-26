@@ -47,10 +47,9 @@ lutok::create_module(state& s, const std::string& name,
 {
     stack_cleaner cleaner(s);
     s.new_table();
-    for (std::map< std::string, cxx_function >::const_iterator
-         iter = members.begin(); iter != members.end(); iter++) {
-        s.push_string((*iter).first);
-        s.push_cxx_function((*iter).second);
+    for (const auto & member : members) {
+        s.push_string(member.first);
+        s.push_cxx_function(member.second);
         s.set_table(-3);
     }
     s.set_global(name);
@@ -85,8 +84,8 @@ lutok::do_file(state& s, const std::string& file, const int nargs,
             s.insert(-nargs - 1);
         s.pcall(nargs, nresults == -1 ? LUA_MULTRET : nresults,
                 errfunc == 0 ? 0 : errfunc - 1);
-    } catch (const lutok::api_error& e) {
-        throw lutok::error("Failed to load Lua file '" + file + "': " +
+    } catch (const api_error& e) {
+        throw error("Failed to load Lua file '" + file + "': " +
                            e.what());
     }
 
@@ -125,8 +124,8 @@ lutok::do_string(state& s, const std::string& str, const int nargs,
             s.insert(-nargs - 1);
         s.pcall(nargs, nresults == -1 ? LUA_MULTRET : nresults,
                 errfunc == 0 ? 0 : errfunc - 1);
-    } catch (const lutok::api_error& e) {
-        throw lutok::error("Failed to process Lua string '" + str + "': " +
+    } catch (const api_error& e) {
+        throw error("Failed to process Lua string '" + str + "': " +
                            e.what());
     }
 

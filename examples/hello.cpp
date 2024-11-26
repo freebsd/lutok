@@ -38,7 +38,7 @@
 ///
 /// \return A system exit code.
 int
-main(void)
+main()
 {
     // Initializes a new Lua state.  Every Lua state is independent from each
     // other.
