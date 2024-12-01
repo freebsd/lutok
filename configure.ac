@@ -50,21 +50,34 @@ AC_PROG_CXX
 KYUA_REQUIRE_CXX
 KYUA_DEVELOPER_MODE([C++])
 
+# Check for ATF and add --enable-atf flag
+AC_ARG_ENABLE([atf],
+  [AS_HELP_STRING([--enable-atf], [Enable ATF tests (default: no)])],
+  [enable_atf=$enableval],
+  [enable_atf=no])
+AM_CONDITIONAL([WITH_ATF], [test "x$enable_atf" = "xyes"])
 
-ATF_CHECK_CXX([>= 0.15])
-ATF_CHECK_SH([>= 0.15])
-ATF_ARG_WITH
+# ATF dependencies
+if test "x$enable_atf" = "xyes"; then
+  ATF_CHECK_CXX([>= 0.15])
+  ATF_CHECK_SH([>= 0.15])
+else
+  AC_MSG_NOTICE([ATF support disabled])
+fi
+
 KYUA_DOXYGEN
 KYUA_LUA
 
-
+# Check for Kyua
 AC_PATH_PROG([KYUA], [kyua])
 AM_CONDITIONAL([HAVE_KYUA], [test -n "${KYUA}"])
+
+# Check for Git
 AC_PATH_PROG([GIT], [git])
 
-
+# Define pkg-config and tests directory
 AC_SUBST(pkgconfigdir, \${libdir}/pkgconfig)
 AC_SUBST(testsdir, \${exec_prefix}/tests/lutok)
 
-
+# Output configuration
 AC_OUTPUT
