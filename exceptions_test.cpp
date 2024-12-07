@@ -28,7 +28,7 @@
 
 #include "exceptions.hpp"
 
-#include <cstring>
+#include <string>
 
 #include <atf-c++.hpp>
 
