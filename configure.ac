@@ -59,14 +59,13 @@ AC_ARG_ENABLE([atf],
 AM_CONDITIONAL([WITH_ATF], [test "x$enable_atf" = "xyes"])
 
 # ATF dependencies
-if test "x$enable_atf" = "xyes"; then
-  ATF_CHECK_CXX([>= 0.22])
-  ATF_CHECK_SH([>= 0.22])
-else
-  AC_MSG_NOTICE([ATF support disabled])
-fi
+m4_ifdef([ATF_CHECK_CXX],[
+AS_IF([test "x$enable_atf" = "xyes"],[
+  ATF_CHECK_CXX([>= 0.21])
+  ATF_CHECK_SH([>= 0.21])
+],[AC_MSG_NOTICE([ATF support disabled])])
+])
 
-ATF_ARG_WITH
 KYUA_DOXYGEN
 KYUA_LUA
 
