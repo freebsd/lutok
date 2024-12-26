@@ -128,7 +128,7 @@ The following flags are specific to Lutok's `configure` script:
       detection features regardless of the value of this flag.  However, such
       warnings are only fatal when `--enable-developer` is set to "yes".
 
-- `--with-atf`
+- `--enable-atf`
     - **Possible values**: "yes", "no", "auto".
     - **Default**: "auto"
 
