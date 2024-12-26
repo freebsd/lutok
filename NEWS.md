@@ -1,8 +1,11 @@
 # Major changes between releases
 
-## Changes in version 0.5 (UNRELEASED)
+## Changes in version 0.6 (UNRELEASED)
 
-Released on 2024/05/XX.
+
+## Changes in version 0.5
+
+Released on 2024/11/25.
 
 * Use more modern autotools macros.  Bump the minimum autoconf version to 2.68 to
   support this change.
