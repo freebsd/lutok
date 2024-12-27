@@ -41,13 +41,14 @@ AC_CONFIG_SRCDIR([state.hpp])
 
 
 AM_INIT_AUTOMAKE([1.9 check-news foreign subdir-objects -Wall])
-m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+
+AM_PROG_AR
 LT_INIT
 
 
 AC_LANG([C++])
 AC_PROG_CXX
-KYUA_REQUIRE_CXX
+AX_CXX_COMPILE_STDCXX(14, noext, mandatory)
 KYUA_DEVELOPER_MODE([C++])
 
 # Check for ATF and add --enable-atf flag
@@ -59,12 +60,13 @@ AM_CONDITIONAL([WITH_ATF], [test "x$enable_atf" = "xyes"])
 
 # ATF dependencies
 if test "x$enable_atf" = "xyes"; then
-  ATF_CHECK_CXX([>= 0.15])
-  ATF_CHECK_SH([>= 0.15])
+  ATF_CHECK_CXX([>= 0.22])
+  ATF_CHECK_SH([>= 0.22])
 else
   AC_MSG_NOTICE([ATF support disabled])
 fi
 
+ATF_ARG_WITH
 KYUA_DOXYGEN
 KYUA_LUA
 
