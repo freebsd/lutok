@@ -7,25 +7,23 @@ package, you do not need to read this document.
 
 For the impatient:
 
-    ```shell
-    $ ./configure
-    $ make
-    $ make check
-    Gain root privileges
-    # make install
-    Drop root privileges
-    $ make installcheck
-    ```
+```shell
+$ ./configure
+$ make
+$ make check
+$ sudo make install # or `make install` with root privileges
+$ make installcheck
+```
 
 Or alternatively, install as a regular user into your home directory:
 
-    ```shell
-    $ ./configure --prefix ~/local
-    $ make
-    $ make check
-    $ make install
-    $ make installcheck
-    ```
+```shell
+$ ./configure --prefix ~/local
+$ make
+$ make check
+$ make install
+$ make installcheck
+```
 
 # Dependencies
 
@@ -60,9 +58,9 @@ system.  You will also need to do this if you modify `configure.ac`,
 `Makefile.am`, or any of the other build system files.  To do this, simply
 run:
 
-    ```shell
-    $ autoreconf -i -s
-    ```
+```shell
+$ autoreconf -i -s
+```
 
 If ATF is installed in a different prefix than `autoconf`, you will also
 need to tell `autoreconf` where the ATF m4 macros are located.  Otherwise,
@@ -71,9 +69,9 @@ errors mentioning, for example, `ATF_CHECK_SH`.  To fix this, you have
 to run `autoreconf` in the following manner, replacing `<atf-prefix>` with
 the appropriate path:
 
-    ```shell
-    $ autoreconf -i -s -I <atf-prefix>/share/aclocal
-    ```
+```shell
+$ autoreconf -i -s -I <atf-prefix>/share/aclocal
+```
 
 # General build procedure
 
@@ -103,14 +101,14 @@ To build and install the source package, you must follow these steps:
 
 The most common, standard flags given to `configure` are:
 
-## `--prefix=directory`
+- `--prefix=directory`
     - **Possible values**: any path
     - **Default**: "/usr/local"
 
       Specifies where the library (binaries and all associated files) will
       be installed.
 
-## `--help`
+- `--help`
       Shows information about all available flags and exits immediately,
       without running any configuration tasks.
 
@@ -173,9 +171,9 @@ sources with support for ATF), you should periodically run the tests
 from the final location to ensure things remain stable.  Do so as
 follows:
 
-    ```shell
-    $ kyua test -k /usr/local/tests/lutok/Kyuafile
-    ```
+```shell
+$ kyua test -k /usr/local/tests/lutok/Kyuafile
+```
 
 And if you see any tests fail, do not hesitate to report them in:
 
