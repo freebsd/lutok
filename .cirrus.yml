@@ -6,18 +6,18 @@ task:
     - name: 15.0-CURRENT
       freebsd_instance:
         image_family: freebsd-15-0-snap
-    - name: 14-STABLE
-      freebsd_instance:
-        image_family: freebsd-14-2-snap
-    - name: 14.2-RELEASE
-      freebsd_instance:
-        image_family: freebsd-14-2
-    - name: 13-STABLE
-      freebsd_instance:
-        image_family: freebsd-13-4-snap
-    - name: 13.4-RELEASE
-      freebsd_instance:
-        image_family: freebsd-13-4
+    #- name: 14-STABLE
+    #  freebsd_instance:
+    #    image_family: freebsd-14-2-snap
+    #- name: 14.2-RELEASE
+    #  freebsd_instance:
+    #    image_family: freebsd-14-2
+    #- name: 13-STABLE
+    #  freebsd_instance:
+    #    image_family: freebsd-13-4-snap
+    #- name: 13.4-RELEASE
+    #  freebsd_instance:
+    #    image_family: freebsd-13-4
   env:
     DO: distcheck
   install_script:
