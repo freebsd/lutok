@@ -21,4 +21,5 @@ config.status
 configure
 libtool
 lutok.pc
+releases
 stamp-h1
