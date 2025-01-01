@@ -34,18 +34,28 @@ if [ -d /usr/local/share/aclocal ]; then
 else
     autoreconf -isv
 fi
-./configure
 
-archflags=
-[ "${ARCH?}" != i386 ] || archflags=-m32
+: ${CC=cc}
+: ${CXX=c++}
 
-f=
-f="${f} CPPFLAGS='-I/usr/local/include'"
-f="${f} CXX='${CXX} ${archflags}'"
-f="${f} LDFLAGS='-L/usr/local/lib -Wl,-R/usr/local/lib'"
-f="${f} PKG_CONFIG_PATH='/usr/local/lib/pkgconfig'"
+# The following variables mirror the names/values used by FreeBSD ports.
+LOCALBASE="/usr/local"
+LUA_VERSION=54
+LUA_VER=5.4
+
+PKG_CONFIG_PATH="${LOCALBASE}/libdata/pkgconfig:${LOCALBASE}/share/pkgconfig:/usr/libdata/pkgconfig"
+
+CONFIGURE_ARGS="${CONFIGURE_ARGS} --enable-atf"
+
+env CPPFLAGS="-I${LOCALBASE}/include" CC="${CC}" CXX="${CXX}" \
+    LDFLAGS="-L${LOCALBASE}/lib -Wl,-R${LOCALBASE}/lib" \
+    LUA_CFLAGS="-I${LOCALBASE}/include/lua${LUA_VERSION}" \
+    LUA_LIBS="-L${LOCALBASE}/lib -llua-${LUA_VER} -lm" \
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" \
+./configure ${CONFIGURE_ARGS}
+
 if [ "${AS_ROOT:-no}" = yes ]; then
-    sudo -H PATH="${PATH}" make distcheck DISTCHECK_CONFIGURE_FLAGS="${f}"
+    sudo -H PATH="${PATH}" make distcheck
 else
-    make distcheck DISTCHECK_CONFIGURE_FLAGS="${f}"
+    make distcheck
 fi
