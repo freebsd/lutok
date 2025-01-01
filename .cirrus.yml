@@ -1,0 +1,33 @@
+env:
+  ARCH: amd64
+
+task:
+  matrix:
+    - name: 15.0-CURRENT
+      freebsd_instance:
+        image_family: freebsd-15-0-snap
+    #- name: 14-STABLE
+    #  freebsd_instance:
+    #    image_family: freebsd-14-2-snap
+    #- name: 14.2-RELEASE
+    #  freebsd_instance:
+    #    image_family: freebsd-14-2
+    #- name: 13-STABLE
+    #  freebsd_instance:
+    #    image_family: freebsd-13-4-snap
+    #- name: 13.4-RELEASE
+    #  freebsd_instance:
+    #    image_family: freebsd-13-4
+  env:
+    DO: distcheck
+  install_script:
+    - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
+    - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
+    # Build dependencies
+    - pkg install -y atf autoconf automake libtool lua54 m4 pkgconf
+    # Doc dependencies
+    - pkg install -y doxygen
+    # Test dependencies
+    - pkg install -y kyua
+  script:
+    - ./admin/ci-build.sh
