@@ -1,7 +1,20 @@
 # Major changes between releases
 
-## Changes in version 0.6 (UNRELEASED)
+## Changes in version 0.6
 
+Released on 2024/12/31.
+
+* Remove lingering C++-11 support. The project now requires a C++14 compliant toolchain to build.
+
+* Fix a Doxygen warning by deleting the `stack_cleaner` copy/assignment operator.
+
+* Vendor the ATF m4 files from freebsd/atf@atf-0.22 ,
+
+* `m4/lua.m4`: remove legacy `lua-config` support in favor of `pkg_config`.
+
+* Fix a benign buffer overrun complaint from gcc 13.2.
+
+* Rename `--with-atf` to `--enable-atf`.
 
 ## Changes in version 0.5
 
