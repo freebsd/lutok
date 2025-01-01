@@ -34,18 +34,16 @@ dnl
 AC_DEFUN([KYUA_LUA], [
     lua_found=no
     for lua_release in ${LUA_VERSION:-5.4 5.3}; do
-        AS_IF([test "${lua_found}" = no],[
-            PKG_CHECK_MODULES([LUA], [lua${lua_release} >= ${lua_release}],
-                              [lua_found="lua${lua_release}"; break],[])
-        ])
-        AS_IF([test "${lua_found}" = no],[
-            PKG_CHECK_MODULES([LUA], [lua-${lua_release} >= ${lua_release}],
-                              [lua_found="lua-${lua_release}"; break],[])
-        ])
-        AS_IF([test "${lua_found}" = no],[
-            PKG_CHECK_MODULES([LUA], [lua >= ${lua_release}],
-                              [lua_found=lua; break],[])
-        ])
+        PKG_CHECK_MODULES([LUA], [lua-${lua_release} >= ${lua_release}],
+            [lua_found="lua-${lua_release}"],[
+        PKG_CHECK_MODULES([LUA], [lua${lua_release} >= ${lua_release}],
+            [lua_found="lua${lua_release}"],[
+        PKG_CHECK_MODULES([LUA], [lua >= ${lua_release}],
+            [lua_found="lua"],[])
+        ])])
+        if test "${lua_found}" != no; then
+            break
+        fi
     done
 
     AS_IF([test "${lua_found}" = no],[],[
