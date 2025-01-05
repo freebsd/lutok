@@ -2,7 +2,7 @@
 
 ## Changes in version 0.6
 
-Released on 2024/12/31.
+Released on 2025/01/04.
 
 * Remove lingering C++-11 support. The project now requires a C++14 compliant toolchain to build.
 
