@@ -1,5 +1,11 @@
 # Major changes between releases
 
+## Changes in version 0.7
+
+Released on 2025/XX/YY.
+
+* Issue 37: fix release tarball by relying on `make dist`.
+
 ## Changes in version 0.6
 
 Released on 2025/01/04.
