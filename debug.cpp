@@ -33,7 +33,6 @@
 #include <lutok/c_gate.hpp>
 #include <lutok/debug.hpp>
 #include <lutok/exceptions.hpp>
-#include <lutok/state.ipp>
 
 
 /// Internal implementation for lutok::debug.
@@ -51,9 +50,7 @@ lutok::debug::debug(void) :
 
 
 /// Destructor.
-lutok::debug::~debug(void)
-{
-}
+lutok::debug::~debug(void) = default;
 
 
 /// Wrapper around lua_getinfo.
@@ -64,7 +61,7 @@ lutok::debug::~debug(void)
 /// \warning Terminates execution if there is not enough memory to manipulate
 /// the Lua stack.
 void
-lutok::debug::get_info(state& s, const std::string& what_)
+lutok::debug::get_info(state& s, const std::string& what_) const
 {
     lua_State* raw_state = state_c_gate(s).c_state();
 
@@ -78,7 +75,7 @@ lutok::debug::get_info(state& s, const std::string& what_)
 /// \param s The Lua state.
 /// \param level The second parameter to lua_getstack.
 void
-lutok::debug::get_stack(state& s, const int level)
+lutok::debug::get_stack(state& s, const int level) const
 {
     lua_State* raw_state = state_c_gate(s).c_state();
 
@@ -102,7 +99,7 @@ lutok::debug::event(void) const
 std::string
 lutok::debug::name(void) const
 {
-    assert(_pimpl->lua_debug.name != NULL);
+    assert(_pimpl->lua_debug.name != nullptr);
     return _pimpl->lua_debug.name;
 }
 
@@ -113,7 +110,7 @@ lutok::debug::name(void) const
 std::string
 lutok::debug::name_what(void) const
 {
-    assert(_pimpl->lua_debug.namewhat != NULL);
+    assert(_pimpl->lua_debug.namewhat != nullptr);
     return _pimpl->lua_debug.namewhat;
 }
 
@@ -124,7 +121,7 @@ lutok::debug::name_what(void) const
 std::string
 lutok::debug::what(void) const
 {
-    assert(_pimpl->lua_debug.what != NULL);
+    assert(_pimpl->lua_debug.what != nullptr);
     return _pimpl->lua_debug.what;
 }
 
@@ -135,7 +132,7 @@ lutok::debug::what(void) const
 std::string
 lutok::debug::source(void) const
 {
-    assert(_pimpl->lua_debug.source != NULL);
+    assert(_pimpl->lua_debug.source != nullptr);
     return _pimpl->lua_debug.source;
 }
 
@@ -187,6 +184,5 @@ lutok::debug::last_line_defined(void) const
 std::string
 lutok::debug::short_src(void) const
 {
-    assert(_pimpl->lua_debug.short_src != NULL);
     return _pimpl->lua_debug.short_src;
 }
