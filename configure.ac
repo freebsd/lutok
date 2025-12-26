@@ -48,7 +48,7 @@ LT_INIT
 
 AC_LANG([C++])
 AC_PROG_CXX
-AX_CXX_COMPILE_STDCXX(14, noext, mandatory)
+AX_CXX_COMPILE_STDCXX(20, noext, mandatory)
 KYUA_DEVELOPER_MODE([C++])
 
 # Check for ATF and add --enable-atf flag
