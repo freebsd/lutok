@@ -1,5 +1,11 @@
 # Major changes between releases
 
+## Changes in version 0.6.2
+
+Released on 2025/12/27.
+
+* Update the minimum C++ standard to C++-20.
+
 ## Changes in version 0.6.1
 
 Released on 2025/03/28.
