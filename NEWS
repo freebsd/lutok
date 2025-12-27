@@ -2,7 +2,7 @@
 
 ## Changes in version 0.6.1
 
-Released on 2025/XX/YY.
+Released on 2025/03/28.
 
 * Issue 37: fix release tarball by relying on `make dist`.
 
