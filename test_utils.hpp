@@ -107,7 +107,7 @@ public:
     ///     validate upon exit that the item is still there.  This is an attempt
     ///     to ensure that already-existing items are not removed from the stack
     ///     by the code under test.
-    stack_balance_checker(lutok::state& state_,
+    explicit stack_balance_checker(lutok::state& state_,
                           const bool with_sentinel_ = true) :
         _state(state_),
         _with_sentinel(with_sentinel_),
