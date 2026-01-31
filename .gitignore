@@ -4,6 +4,8 @@
 *_test
 *~
 
+.DS_Store
+
 .deps
 .libs
 
