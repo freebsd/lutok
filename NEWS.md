@@ -1,5 +1,11 @@
 # Major changes between releases
 
+## Changes in version 0.6.3
+
+Released on 2026/XX/YY.
+
+*
+
 ## Changes in version 0.6.2
 
 Released on 2025/12/27.
