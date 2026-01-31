@@ -144,6 +144,8 @@ state_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
 state_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
 if HAVE_KYUA
+TESTS_ENVIRONMENT = PKG_CONFIG_PATH=$(prefix)/lib/pkgconfig
+
 check-local: check-kyua
 PHONY_TARGETS += check-kyua
 check-kyua:

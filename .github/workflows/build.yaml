@@ -1,0 +1,141 @@
+---
+# GitHub action to compile and test lutok on supported platforms.
+#
+# Steps executed:
+# * Handle prerequisites
+#     * Install binary packages
+#     * Build packages from source (if needed).
+#     * Build
+#     * Install
+#     * Run tests
+#
+# On MacOS we build with:
+#   * latest clang from brew (system provided clang lacks sanitizers).
+#   * ld from system
+name: build
+on:  # yamllint disable-line rule:truthy
+    pull_request:
+        branches:
+            - master
+    push:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        name: build ${{ matrix.build-os }} ${{ matrix.compiler }}
+        env:
+            AR: ${{ matrix.llvm-bindir }}/llvm-ar
+            CC: ${{ matrix.llvm-bindir }}/clang
+            CPP: ${{ matrix.llvm-bindir }}/clang-cpp
+            CXX: ${{ matrix.llvm-bindir }}/clang++
+            NM: ${{ matrix.llvm-bindir }}/llvm-nm
+            RANLIB: ${{ matrix.llvm-bindir }}/llvm-ranlib
+            OBJDUMP: ${{ matrix.llvm-bindir }}/llvm-objdump
+            STRIP: ${{ matrix.llvm-bindir }}/llvm-strip
+            LUTOK_SRCDIR: ${{ github.workspace }}/src
+            LUTOK_OBJDIR: ${{ github.workspace }}/obj
+            JOB_NAME: ${{ matrix.build-os }} ${{ matrix.compiler }}
+        runs-on: "${{ matrix.build-os }}"
+        strategy:
+            fail-fast: false
+            matrix:
+                build-os:
+                    - macos-latest
+                    - ubuntu-latest
+                include:
+                    # The macOS runner uses a homebrew provided compiler as the
+                    # system compiler lacks ASAN/LSAN/UBSAN support.
+                    - build-os: macos-latest
+                      compiler: clang-19
+                      pkgs:
+                          - atf
+                          - autoconf
+                          - automake
+                          - doxygen
+                          - kyua
+                          - libtool
+                          - llvm@19
+                          - lua
+                          - pkgconf
+                      llvm-bindir: /opt/homebrew/opt/llvm@19/bin
+                    - build-os: ubuntu-latest
+                      compiler: clang-18
+                      pkgs:
+                          - atf-sh
+                          - autoconf
+                          - automake
+                          - doxygen
+                          - graphviz
+                          - kyua
+                          - libatf-dev
+                          - liblua5.4-dev
+                          - libtool
+                          - llvm-18
+                          - lua5.4
+                          - pkgconf
+                      llvm-bindir: /usr/lib/llvm-18/bin
+        steps:
+            - name: Install packages (macOS)
+              if: runner.os == 'macOS'
+              run: |
+                  brew update --quiet || true
+                  brew install ${{ join(matrix.pkgs, ' ') }}
+            - name: Install packages (Ubuntu)
+              if: runner.os == 'Linux'
+              run: |
+                  sudo apt update --quiet
+                  sudo apt --quiet -y --no-install-suggests \
+                      --no-install-recommends install \
+                      ${{ join(matrix.pkgs, ' ') }}
+            - name: Checking out source
+              uses: actions/checkout@v4
+              with:
+                  path: src
+            - name: Sanity checks
+              run: |
+                  which -a kyua
+            - name: Build
+              run: |
+                  cd "${LUTOK_SRCDIR}"
+                  ./admin/ci-build/01_configure.sh
+            - name: Distcheck (builds and tests)
+              run: |
+                  CFG_ARGS="--disable-dependency-tracking --enable-developer"
+                  CFG_ARGS="${CFG_ARGS} --enable-atf"
+                  cd "${LUTOK_SRCDIR}"
+                  env "EXTRA_DISTCHECK_CONFIGURE_ARGS=${CFG_ARGS}" \
+                      ./admin/ci-build/02_distcheck.sh
+            - name: Gather/Archive Logs and Reports
+              run: |
+                  REPORTS_DIR="${LUTOK_OBJDIR}/reports"
+                  mkdir -p "${REPORTS_DIR}"
+                  (
+                    cd "${REPORTS_DIR}"
+                    mkdir -p build_logs
+                    # Gather the distcheck failure log if the target failed.
+                    # It's easier to ignore the failure than create yet another
+                    # conditional variable step.
+                    cp -a "${LUTOK_SRCDIR}"/lutok-*/_build/sub/*.log \
+                        build_logs/ 2>/dev/null || true
+                    # Include the raw kyua logs.
+                    cp -a ~/.kyua/logs kyua_logs
+                    # Include the raw kyua results DBs.
+                    cp -a ~/.kyua/store kyua_store
+                  )
+                  # Create an archive of the reports.
+                  job_name_encoded=$(echo "${JOB_NAME}" | tr ' ' '_')
+                  tar -cvf "lutok-test-reports-${job_name_encoded}.tar" \
+                      -C "${REPORTS_DIR}" .
+              if: ${{ ! cancelled() }}
+            - name: Archive Build Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: Test Report for ${{ env.JOB_NAME }}
+                  path: lutok-test-reports-*.tar
+                  compression-level: 0
+                  retention-days: 10
+                  overwrite: true
+              if: ${{ ! cancelled() }}
