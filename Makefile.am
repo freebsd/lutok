@@ -216,7 +216,7 @@ clean-local: $(CLEAN_TARGETS)
 
 PHONY_TARGETS += clean-all
 clean-all:
-	GIT="$(GIT)" $(SH) $(srcdir)/admin/clean-all.sh
+	GIT="$(GIT)" $(SH) $(srcdir)/scripts/clean-all.sh
 
 dist-hook: $(DIST_HOOKS)
 

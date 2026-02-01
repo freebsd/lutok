@@ -40,10 +40,10 @@ task:
     - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
     - pkg install -y autoconf automake doxygen libtool kyua pkgconf
   script:
-    - ./admin/ci-build/01_configure.sh
+    - ./scripts/ci-build/01_configure.sh
     - env EXTRA_DISTCHECK_CONFIGURE_ARGS="--enable-atf --enable-developer"
           JUNIT_OUTPUT="$(pwd)/test-results.xml"
-          ./admin/ci-build/02_distcheck.sh
+          ./scripts/ci-build/02_distcheck.sh
   on_failure:
     dump_distcheck_logs:
       - cat atf-*/_build/sub/config.log

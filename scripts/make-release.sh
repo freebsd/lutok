@@ -3,7 +3,7 @@
 # Create release artifacts from a release tag.
 #
 # Example:
-# 	./admin/make-release.sh atf-0.23
+# 	./scripts/make-release.sh atf-0.23
 
 readonly REPO=freebsd/lutok
 

@@ -100,14 +100,14 @@ jobs:
             - name: Build
               run: |
                   cd "${LUTOK_SRCDIR}"
-                  ./admin/ci-build/01_configure.sh
+                  ./scripts/ci-build/01_configure.sh
             - name: Distcheck (builds and tests)
               run: |
                   CFG_ARGS="--disable-dependency-tracking --enable-developer"
                   CFG_ARGS="${CFG_ARGS} --enable-atf"
                   cd "${LUTOK_SRCDIR}"
                   env "EXTRA_DISTCHECK_CONFIGURE_ARGS=${CFG_ARGS}" \
-                      ./admin/ci-build/02_distcheck.sh
+                      ./scripts/ci-build/02_distcheck.sh
             - name: Gather/Archive Logs and Reports
               run: |
                   REPORTS_DIR="${LUTOK_OBJDIR}/reports"
