@@ -28,12 +28,11 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Cxx="__CXX__"
-ExamplesDir="__EXAMPLESDIR__"
 LibDir="__LIBDIR__"
 
 
 make_example() {
-    cp "${ExamplesDir}/Makefile" "${ExamplesDir}/${1}.cpp" .
+    cp "Makefile" "${1}.cpp" .
     make CXX="${Cxx}" "${1}"
 
     # Ensure that the binary we just built can find liblutok.  This is
@@ -60,7 +59,7 @@ example_test_case() {
 
     atf_test_case "${name}"
     eval "${name}_head() { \
-        atf_set 'require.files' '${ExamplesDir}/${name}.cpp'; \
+        atf_set 'require.files' '${name}.cpp'; \
         atf_set 'require.progs' 'make pkg-config'; \
     }"
     eval "${name}_body() { \
