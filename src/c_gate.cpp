@@ -27,7 +27,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <lutok/c_gate.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 /// Creates a new gateway to an existing C++ Lua state.

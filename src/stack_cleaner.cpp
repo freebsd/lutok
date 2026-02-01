@@ -30,7 +30,7 @@
 #include <cstring>
 
 #include <lutok/stack_cleaner.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 /// Internal implementation for lutok::stack_cleaner.

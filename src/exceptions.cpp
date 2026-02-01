@@ -32,7 +32,7 @@
 
 #include <lutok/c_gate.hpp>
 #include <lutok/exceptions.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 /// Constructs a new error with a plain-text message.

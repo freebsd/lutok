@@ -33,7 +33,7 @@
 #include <atf-c++.hpp>
 
 #include <lutok/exceptions.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 #include <lutok/test_utils.hpp>
 
 

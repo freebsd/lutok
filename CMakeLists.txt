@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(lutok VERSION 0.6.3 LANGUAGES CXX)
+project(lutok VERSION 0.7.0 LANGUAGES CXX)
 
 # Set C++20 standard
 set(CMAKE_CXX_STANDARD 20)
@@ -33,7 +33,7 @@ set(LUTOK_SOURCES
 )
 
 # Public headers
-file(GLOB LUTOK_PUBLIC_HEADERS "include/lutok/*.hpp" "include/lutok/*.ipp")
+file(GLOB LUTOK_PUBLIC_HEADERS "include/lutok/*.hpp")
 
 # Create shared library
 add_library(lutok SHARED ${LUTOK_SOURCES})

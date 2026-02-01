@@ -35,7 +35,7 @@ extern "C" {
 
 #include <lutok/c_gate.hpp>
 #include <lutok/exceptions.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 namespace {

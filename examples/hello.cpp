@@ -31,7 +31,7 @@
 
 #include <cstdlib>
 
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 /// Program's entry point.

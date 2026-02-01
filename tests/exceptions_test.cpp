@@ -32,7 +32,7 @@
 
 #include <atf-c++.hpp>
 
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 ATF_TEST_CASE_WITHOUT_HEAD(error);

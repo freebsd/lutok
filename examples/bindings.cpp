@@ -43,7 +43,7 @@
 
 #include <lutok/exceptions.hpp>
 #include <lutok/operations.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 /// Calculates the factorial of a given number.

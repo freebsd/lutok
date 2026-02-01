@@ -31,7 +31,7 @@
 #include <atf-c++.hpp>
 #include <lua.hpp>
 
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 #include <lutok/test_utils.hpp>
 
 

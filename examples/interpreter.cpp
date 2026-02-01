@@ -35,7 +35,7 @@
 
 #include <lutok/exceptions.hpp>
 #include <lutok/operations.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 /// Executes a Lua statement provided by the user with error checking.
