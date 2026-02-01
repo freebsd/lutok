@@ -69,7 +69,7 @@ lutok::stack_cleaner::stack_cleaner(state& state_) :
 ///
 /// \pre The current height of the stack must be equal or greater to the height
 /// of the stack when this object was instantiated.
-lutok::stack_cleaner::~stack_cleaner(void)
+lutok::stack_cleaner::~stack_cleaner()
 {
     const unsigned int current_depth = _pimpl->state_ref.get_top();
     assert(current_depth >= _pimpl->original_depth);
@@ -85,7 +85,7 @@ lutok::stack_cleaner::~stack_cleaner(void)
 /// elements that are currently in the stack will not be touched during
 /// destruction when the function is called.
 void
-lutok::stack_cleaner::forget(void)
+lutok::stack_cleaner::forget() const
 {
     _pimpl->original_depth = _pimpl->state_ref.get_top();
 }
