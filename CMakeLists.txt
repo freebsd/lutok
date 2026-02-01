@@ -55,7 +55,7 @@ target_include_directories(lutok
 target_link_libraries(lutok PUBLIC ${LUA_LIBRARIES})
 
 # Developer mode - auto-enabled when building from git
-if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git" OR EXISTS "${CMAKE_SOURCE_DIR}/.jj")
     option(DEVELOPER_MODE "Enable developer mode (strict warnings, -Werror)" ON)
     if(DEVELOPER_MODE)
         message(STATUS "Building from git repository - developer mode auto-enabled")
