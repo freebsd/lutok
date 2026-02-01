@@ -26,57 +26,43 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// \file debug.hpp
-/// Provides the debug wrapper class for the Lua C debug state.
+#include <lutok/debug.hpp>
 
-#if !defined(LUTOK_DEBUG_HPP)
-#define LUTOK_DEBUG_HPP
+#include <atf-c++.hpp>
+#include <lua.hpp>
 
-#include <string>
-#include <memory>
-
-namespace lutok {
+#include <lutok/state.ipp>
+#include <lutok/test_utils.hpp>
 
 
-class state;
+ATF_TEST_CASE_WITHOUT_HEAD(get_info);
+ATF_TEST_CASE_BODY(get_info)
+{
+    lutok::state state;
+    ATF_REQUIRE(luaL_dostring(raw(state), "\n\nfunction hello() end\n"
+                              "return hello") == 0);
+    lutok::debug debug;
+    debug.get_info(state, ">S");
+    ATF_REQUIRE_EQ(3, debug.line_defined());
+}
 
 
-/// A model for the Lua debug state.
-///
-/// This extremely-simple class provides a mechanism to hide the internals of
-/// the C native lua_Debug type, exposing its internal fields using friendlier
-/// C++ types.
-///
-/// This class also acts as a complement to the state class by exposing any
-/// state-related functions as methods of this function.  For example, while it
-/// might seem that get_info() belongs in state, we expose it from here because
-/// its result is really mutating a debug object, not the state object.
-class debug {
-    struct impl;
-
-    /// Pointer to the shared internal implementation.
-    std::shared_ptr< impl > _pimpl;
-
-public:
-    debug(void);
-    ~debug(void);
-
-    void get_info(state&, const std::string&);
-    void get_stack(state&, const int);
-
-    int event(void) const;
-    std::string name(void) const;
-    std::string name_what(void) const;
-    std::string what(void) const;
-    std::string source(void) const;
-    int current_line(void) const;
-    int n_ups(void) const;
-    int line_defined(void) const;
-    int last_line_defined(void) const;
-    std::string short_src(void) const;
-};
+ATF_TEST_CASE_WITHOUT_HEAD(get_stack);
+ATF_TEST_CASE_BODY(get_stack)
+{
+    lutok::state state;
+    ATF_REQUIRE(luaL_dostring(raw(state), "error('Hello')") == 1);
+    lutok::debug debug;
+    debug.get_stack(state, 0);
+    lua_pop(raw(state), 1);
+    // Not sure if we can actually validate anything here, other than we did not
+    // crash... (because get_stack only is supposed to update internal values of
+    // the debug structure).
+}
 
 
-}  // namespace lutok
-
-#endif  // !defined(LUTOK_DEBUG_HPP)
+ATF_INIT_TEST_CASES(tcs)
+{
+    ATF_ADD_TEST_CASE(tcs, get_info);
+    ATF_ADD_TEST_CASE(tcs, get_stack);
+}

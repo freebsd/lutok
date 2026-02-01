@@ -1,181 +1,138 @@
 # Introduction
 
-Lutok uses the GNU Automake, GNU Autoconf and GNU Libtool utilities as
-its build system.  These are used only when compiling the library from
-the source code package.  If you want to install Lutok from a binary
-package, you do not need to read this document.
+Lutok uses CMake as its build system. These instructions are for compiling
+the library from source. If you want to install Lutok from a binary package,
+you do not need to read this document.
 
 For the impatient:
 
 ```shell
-$ ./configure
-$ make
-$ make check
-$ sudo make install # or `make install` with root privileges
-$ make installcheck
+$ cmake -B build -S .
+$ cmake --build build
+$ ctest --test-dir build  # Run tests
+$ sudo cmake --install build
 ```
 
 Or alternatively, install as a regular user into your home directory:
 
 ```shell
-$ ./configure --prefix ~/local
-$ make
-$ make check
-$ make install
-$ make installcheck
+$ cmake -B build -S . -DCMAKE_INSTALL_PREFIX=~/local
+$ cmake --build build
+$ ctest --test-dir build
+$ cmake --install build
 ```
 
 # Dependencies
 
 To build and use Lutok successfully you need:
 
-* A C++-11 standards-compliant compiler.
-* Lua 5.1 or greater.
-* pkg-config or an equivalent tool, e.g., pkgconf.
+* CMake 4.2 or greater.
+* A C++20 standards-compliant compiler.
+* Lua 5.3 or greater.
 
-Optionally, if you want to build and run the tests (recommended), you
-need:
+Optionally, if you want to build and run the tests (recommended), you need:
 
 * Kyua 0.5 or greater.
 * ATF 0.15 or greater.
 
-If you are building Lutok from the code on the repository, you will also
-need the following tools:
+Optionally, if you want to build the API documentation, you need:
 
-* GNU Autoconf 2.68 (or later).
-* GNU Automake 1.9 (or later).
-* GNU Libtool.
-
-
-# Regenerating the build system
-
-This is not necessary if you are building from a formal release
-distribution file.
-
-On the other hand, if you are building Lutok from code extracted from
-the repository, you must first regenerate the files used by the build
-system.  You will also need to do this if you modify `configure.ac`,
-`Makefile.am`, or any of the other build system files.  To do this, simply
-run:
-
-```shell
-$ autoreconf -i -s
-```
-
-If ATF is installed in a different prefix than `autoconf`, you will also
-need to tell `autoreconf` where the ATF m4 macros are located.  Otherwise,
-the `configure` script will be incomplete and will show confusing syntax
-errors mentioning, for example, `ATF_CHECK_SH`.  To fix this, you have
-to run `autoreconf` in the following manner, replacing `<atf-prefix>` with
-the appropriate path:
-
-```shell
-$ autoreconf -i -s -I <atf-prefix>/share/aclocal
-```
+* Doxygen
 
 # General build procedure
 
-To build and install the source package, you must follow these steps:
+To build and install the source package, follow these steps:
 
-#. Configure the sources to adapt to your operating system.  This is
-   done using the `configure` script located on the sources' top
-   directory, and it is usually invoked without arguments unless you
-   want to change the installation prefix.  More details on this
-   procedure are given on a later section.
+1. **Configure** the build using CMake. This is done by running `cmake -B build -S .`
+   from the source directory. You can customize the build with various options
+   (see Configuration Options below).
 
-#. Build the sources to generate the binaries and scripts.  Simply run
-   `make` on the sources' top directory after configuring them.  No
-   problems should arise.
+2. **Build** the sources by running `cmake --build build`.
 
-#. Install the library by running `make install`.  You may need to
-   become root to issue this step.
+3. **Test** the build (optional but recommended) by running `ctest --test-dir build`
+   or `cmake --build build --target test`.
 
-#. Issue any manual installation steps that may be required.  These are
-   described later in their own section.
+4. **Install** the library by running `cmake --install build`. You may need to use
+   `sudo cmake --install build` if installing to system directories.
 
-#. Check that the installed library works by running `make installcheck`.
-   You do not need to be root to do this.
+# Configuration Options
 
+Common CMake options:
 
-# Configuration flags
+- `-DCMAKE_INSTALL_PREFIX=<directory>`
+    - **Default**: "/usr/local" (on FreeBSD and macOS)
 
-The most common, standard flags given to `configure` are:
+      Specifies where the library will be installed.
 
-- `--prefix=directory`
-    - **Possible values**: any path
-    - **Default**: "/usr/local"
+- `-DCMAKE_BUILD_TYPE=<type>`
+    - **Possible values**: "Debug", "Release", "RelWithDebInfo", "MinSizeRel"
+    - **Default**: None (uses default compiler flags)
 
-      Specifies where the library (binaries and all associated files) will
-      be installed.
+      Specifies the build type. Use "Debug" for development, "Release" for
+      optimized builds.
 
-- `--help`
-      Shows information about all available flags and exits immediately,
-      without running any configuration tasks.
+Lutok-specific options:
 
-The following flags are specific to Lutok's `configure` script:
+- `-DDEVELOPER_MODE=<ON|OFF>`
+    - **Default**: ON when building from git/jj repository, OFF otherwise
 
-- `--enable-developer`
-    - **Possible values**: "yes", "no"
-    - **Default**: "yes" in Git HEAD builds; "no" in formal releases.
+      Enables strict compiler warnings and treats warnings as errors. Useful
+      for development. Auto-enabled when building from a VCS checkout.
 
-      Enables several features useful for development, such as the inclusion
-      of debugging symbols in all objects or the enforcement of compilation
-      warnings.
+- `-DBUILD_TESTING=<ON|OFF>`
+    - **Default**: ON
 
-      The compiler will be executed with an exhaustive collection of warning
-      detection features regardless of the value of this flag.  However, such
-      warnings are only fatal when `--enable-developer` is set to "yes".
+      Enables building of test programs. Tests require ATF to be installed.
+      Run tests with `ctest --test-dir build` or `cmake --build build --target test`.
 
-- `--enable-atf`
-    - **Possible values**: "yes", "no", "auto".
-    - **Default**: "auto"
+- `-DBUILD_DOCS=<ON|OFF>`
+    - **Default**: OFF
 
-      Enables usage of ATF to build (and later install) the tests.
+      Enables building of API documentation with Doxygen. Build docs with
+      `cmake --build build --target docs`. Generated docs will be in
+      `build/api-docs/html/`.
 
-      Setting this to "yes" causes the `configure` script to look for ATF
-      unconditionally and abort if not found.  Setting this to "auto" lets
-      `configure` perform the best decision based on availability of ATF.
-      Setting this to "no" explicitly disables ATF usage.
+- `-DBUILD_EXAMPLES=<ON|OFF>`
+    - **Default**: OFF
 
-      When support for tests is enabled, the build process will generate the
-      test programs and will later install them into the tests tree.
-      Running `make check` or `make installcheck` from within the source
-      directory will cause these tests to be run with Kyua (assuming it is
-      also installed).
+      Enables building of example programs.
 
-- `--with-doxygen`
-    - **Possible values**: "yes", "no", "auto", or a path.
-    - **Default**: "auto".
+# Examples
 
-      Enables usage of Doxygen to generate documentation for internal APIs.
+Build with tests enabled:
 
-      Setting this to "yes" causes the `configure` script to look for Doxygen
-      unconditionally and abort if not found.  Setting this to "auto" lets
-      `configure` perform the best decision based on availability of Doxygen.
-      Setting this to "no" explicitly disables Doxygen usage.  And, lastly,
-      setting this to a path forces `configure` to use a specific Doxygen
-      binary, which must exist.
+```shell
+$ cmake -B build -S . -DBUILD_TESTING=ON
+$ cmake --build build
+$ ctest --test-dir build
+```
 
-      When support for Doxygen is enabled, the build process will generate
-      HTML documentation for the Lutok API.  This documentation will later
-      be installed in the HTML directory specified by the `configure` script.
-      You can change the location of the HTML documents by providing your
-      desired override with the `--htmldir` flag to the `configure` script.
+Build with documentation:
 
+```shell
+$ cmake -B build -S . -DBUILD_DOCS=ON
+$ cmake --build build
+$ cmake --build build --target docs
+$ open build/api-docs/html/index.html  # View docs
+```
 
-Run the tests!
-==============
+Build in debug mode with examples:
 
-Lastly, after a successful installation (and assuming you built the
-sources with support for ATF), you should periodically run the tests
-from the final location to ensure things remain stable.  Do so as
-follows:
+```shell
+$ cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -DBUILD_EXAMPLES=ON
+$ cmake --build build
+```
+
+# Testing
+
+After a successful installation (assuming you built with `-DBUILD_TESTING=ON`),
+you can run the installed tests:
 
 ```shell
 $ kyua test -k /usr/local/tests/lutok/Kyuafile
 ```
 
-And if you see any tests fail, do not hesitate to report them in:
+If you see any tests fail, please report them at:
 
     https://github.com/freebsd/lutok/issues/
 

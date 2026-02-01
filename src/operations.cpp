@@ -30,10 +30,10 @@
 
 #include <lua.hpp>
 
-#include "exceptions.hpp"
-#include "operations.hpp"
-#include "stack_cleaner.hpp"
-#include "state.hpp"
+#include <lutok/exceptions.hpp>
+#include <lutok/operations.hpp>
+#include <lutok/stack_cleaner.hpp>
+#include <lutok/state.hpp>
 
 
 /// Creates a module: i.e. a table with a set of methods in it.

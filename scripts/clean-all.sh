@@ -29,61 +29,29 @@
 
 Prog_Name=${0##*/}
 
-if [ ! -f ./state.hpp ]; then
+if [ ! -f ./CMakeLists.txt ]; then
     echo "${Prog_Name}: must be run from the source top directory" 1>&2
     exit 1
 fi
 
-if [ ! -f configure ]; then
-    echo "${Prog_Name}: configure not found; nothing to clean?" 1>&2
-    exit 1
-fi
+# Remove CMake build directory
+rm -rf build
 
-[ -f Makefile ] || ./configure
-make distclean
+# Remove CMake cache and generated files
+rm -rf CMakeCache.txt
+rm -rf CMakeFiles
+rm -rf cmake_install.cmake
+rm -f compile_commands.json
 
-# Top-level directory.
-rm -f Makefile.in
-rm -f aclocal.m4
-rm -rf autom4te.cache
-rm -f config.h.in
-rm -f configure
-rm -f mkinstalldirs
+# Remove release artifacts
 rm -f lutok-*.tar.gz
 
-# admin directory.
-rm -f admin/compile
-rm -f admin/config.guess
-rm -f admin/config.sub
-rm -f admin/depcomp
-rm -f admin/install-sh
-rm -f admin/ltmain.sh
-rm -f admin/mdate-sh
-rm -f admin/missing
-rm -f admin/texinfo.tex
+# Files and directories spread all around the tree
+find . -name '#*' -exec rm -rf {} + 2>/dev/null || true
+find . -name '*~' -exec rm -rf {} + 2>/dev/null || true
+find . -name .gdb_history -exec rm -rf {} + 2>/dev/null || true
 
-# bootstrap directory.
-rm -f bootstrap/package.m4
-rm -f bootstrap/testsuite
-
-# doc directory.
-rm -f doc/*.info
-rm -f doc/stamp-vti
-rm -f doc/version.texi
-
-# m4 directory.
-rm -f m4/libtool.m4
-rm -f m4/lt*.m4
-
-# Files and directories spread all around the tree.
-find . -name '#*' | xargs rm -rf
-find . -name '*~' | xargs rm -rf
-find . -name .deps | xargs rm -rf
-find . -name .gdb_history | xargs rm -rf
-find . -name .libs | xargs rm -rf
-find . -name .tmp | xargs rm -rf
-
-# Show remaining files.
+# Show remaining files
 if [ -n "${GIT}" ]; then
     echo ">>> untracked and ignored files"
     "${GIT}" status --porcelain --ignored | grep -E '^(\?\?|!!)' || true

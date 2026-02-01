@@ -33,9 +33,9 @@ extern "C" {
 #include <cassert>
 #include <cstring>
 
-#include "c_gate.hpp"
-#include "exceptions.hpp"
-#include "state.ipp"
+#include <lutok/c_gate.hpp>
+#include <lutok/exceptions.hpp>
+#include <lutok/state.ipp>
 
 
 namespace {

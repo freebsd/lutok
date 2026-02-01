@@ -29,8 +29,8 @@
 #include <cassert>
 #include <cstring>
 
-#include "stack_cleaner.hpp"
-#include "state.ipp"
+#include <lutok/stack_cleaner.hpp>
+#include <lutok/state.ipp>
 
 
 /// Internal implementation for lutok::stack_cleaner.

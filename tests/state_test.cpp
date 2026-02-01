@@ -26,7 +26,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "state.ipp"
+#include <lutok/state.ipp>
 
 #include <cstring>
 #include <fstream>
@@ -36,9 +36,9 @@
 #include <atf-c++.hpp>
 #include <lua.hpp>
 
-#include "c_gate.hpp"
-#include "exceptions.hpp"
-#include "test_utils.hpp"
+#include <lutok/c_gate.hpp>
+#include <lutok/exceptions.hpp>
+#include <lutok/test_utils.hpp>
 
 
 // A note about the lutok::state tests.

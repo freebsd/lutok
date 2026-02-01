@@ -3,7 +3,7 @@
 # Create release artifacts from a release tag.
 #
 # Example:
-# 	./scripts/make-release.sh atf-0.23
+# 	./scripts/make-release.sh lutok-0.6.3
 
 readonly REPO=freebsd/lutok
 
@@ -30,10 +30,16 @@ rm -Rf "${release_dir}"
 mkdir -p "${release_dir}"
 git archive "${tag}" | tar xzvf - -C "${release_dir}"
 cd "${release_dir}"
-autoreconf -isv
-./configure --enable-atf
-make dist
-mv -- *.tar.gz "${release_root}/${tag}.tar.gz"
+
+# Build with CMake to verify everything works
+cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_DOCS=ON
+cmake --build build
+cmake --build build --target docs
+
+# Create source tarball
+cd ..
+tar czf "${tag}.tar.gz" "${tag}"
+
 cd "${release_root}"
 sha256 "${release_artifact##*/}" > "${release_artifact_checksum_file}"
 

@@ -26,13 +26,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "exceptions.hpp"
+#include <lutok/exceptions.hpp>
 
 #include <cstring>
 
 #include <atf-c++.hpp>
 
-#include "state.ipp"
+#include <lutok/state.ipp>
 
 
 ATF_TEST_CASE_WITHOUT_HEAD(error);

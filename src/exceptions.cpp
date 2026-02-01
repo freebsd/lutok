@@ -30,9 +30,9 @@
 
 #include <lua.hpp>
 
-#include "c_gate.hpp"
-#include "exceptions.hpp"
-#include "state.ipp"
+#include <lutok/c_gate.hpp>
+#include <lutok/exceptions.hpp>
+#include <lutok/state.ipp>
 
 
 /// Constructs a new error with a plain-text message.

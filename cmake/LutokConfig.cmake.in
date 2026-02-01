@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find Lua dependency
+find_dependency(Lua 5.3)
+
+# Include the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/LutokTargets.cmake")
+
+check_required_components(Lutok)

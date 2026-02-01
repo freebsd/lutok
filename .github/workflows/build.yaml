@@ -52,30 +52,24 @@ jobs:
                       compiler: clang-19
                       pkgs:
                           - atf
-                          - autoconf
-                          - automake
+                          - cmake
                           - doxygen
                           - kyua
-                          - libtool
                           - llvm@19
                           - lua
-                          - pkgconf
                       llvm-bindir: /opt/homebrew/opt/llvm@19/bin
                     - build-os: ubuntu-latest
                       compiler: clang-18
                       pkgs:
                           - atf-sh
-                          - autoconf
-                          - automake
+                          - cmake
                           - doxygen
                           - graphviz
                           - kyua
                           - libatf-dev
                           - liblua5.4-dev
-                          - libtool
                           - llvm-18
                           - lua5.4
-                          - pkgconf
                       llvm-bindir: /usr/lib/llvm-18/bin
         steps:
             - name: Install packages (macOS)
@@ -97,17 +91,14 @@ jobs:
             - name: Sanity checks
               run: |
                   which -a kyua
-            - name: Build
+            - name: Configure
               run: |
                   cd "${LUTOK_SRCDIR}"
                   ./scripts/ci-build/01_configure.sh
-            - name: Distcheck (builds and tests)
+            - name: Build and Test
               run: |
-                  CFG_ARGS="--disable-dependency-tracking --enable-developer"
-                  CFG_ARGS="${CFG_ARGS} --enable-atf"
                   cd "${LUTOK_SRCDIR}"
-                  env "EXTRA_DISTCHECK_CONFIGURE_ARGS=${CFG_ARGS}" \
-                      ./scripts/ci-build/02_distcheck.sh
+                  ./scripts/ci-build/02_build_and_test.sh
             - name: Gather/Archive Logs and Reports
               run: |
                   REPORTS_DIR="${LUTOK_OBJDIR}/reports"
@@ -115,15 +106,13 @@ jobs:
                   (
                     cd "${REPORTS_DIR}"
                     mkdir -p build_logs
-                    # Gather the distcheck failure log if the target failed.
-                    # It's easier to ignore the failure than create yet another
-                    # conditional variable step.
-                    cp -a "${LUTOK_SRCDIR}"/lutok-*/_build/sub/*.log \
+                    # Gather CMake configuration logs if they exist
+                    cp -a "${LUTOK_SRCDIR}"/build/CMakeFiles/*.log \
                         build_logs/ 2>/dev/null || true
                     # Include the raw kyua logs.
-                    cp -a ~/.kyua/logs kyua_logs
+                    cp -a ~/.kyua/logs kyua_logs 2>/dev/null || true
                     # Include the raw kyua results DBs.
-                    cp -a ~/.kyua/store kyua_store
+                    cp -a ~/.kyua/store kyua_store 2>/dev/null || true
                   )
                   # Create an archive of the reports.
                   job_name_encoded=$(echo "${JOB_NAME}" | tr ' ' '_')
