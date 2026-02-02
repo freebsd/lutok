@@ -1,4 +1,4 @@
-// Copyright 2012 Google Inc.
+// Copyright 2011 Google Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -26,58 +26,63 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// \file examples/interpreter.cpp
-/// Implementation of a basic command-line Lua interpreter.
-
-#include <cstdlib>
-#include <iostream>
-#include <string>
-
 #include <lutok/exceptions.hpp>
-#include <lutok/operations.hpp>
+
+#include <cstring>
+
+#include <atf-c++.hpp>
+
 #include <lutok/state.hpp>
 
 
-/// Executes a Lua statement provided by the user with error checking.
-///
-/// \param state The Lua state in which to process the statement.
-/// \param line The textual statement provided by the user.
-static void
-run_statement(lutok::state& state, const std::string& line)
+ATF_TEST_CASE_WITHOUT_HEAD(error);
+ATF_TEST_CASE_BODY(error)
 {
-    try {
-        // This utility function allows us to feed a given piece of Lua code to
-        // the interpreter and process it.  The piece of code can include
-        // multiple statements separated by a semicolon or by a newline
-        // character.
-        lutok::do_string(state, line, 0, 0, 0);
-    } catch (const lutok::error& error) {
-        std::cerr << "ERROR: " << error.what() << '\n';
-    }
+    const lutok::error e("Some text");
+    ATF_REQUIRE(std::strcmp("Some text", e.what()) == 0);
 }
 
 
-/// Program's entry point.
-///
-/// \return A system exit code.
-int
-main(void)
+ATF_TEST_CASE_WITHOUT_HEAD(api_error__explicit);
+ATF_TEST_CASE_BODY(api_error__explicit)
 {
-    // Create a new session and load some standard libraries.
+    const lutok::api_error e("some_function", "Some text");
+    ATF_REQUIRE(std::strcmp("Some text", e.what()) == 0);
+    ATF_REQUIRE_EQ("some_function", e.api_function());
+}
+
+
+ATF_TEST_CASE_WITHOUT_HEAD(api_error__from_stack);
+ATF_TEST_CASE_BODY(api_error__from_stack)
+{
     lutok::state state;
-    state.open_base();
-    state.open_string();
-    state.open_table();
+    state.push_integer(123);
+    state.push_string("The error message");
+    const lutok::api_error e = lutok::api_error::from_stack(state,
+                                                            "the_function");
+    ATF_REQUIRE_EQ(1, state.get_top());
+    ATF_REQUIRE_EQ(123, state.to_integer(-1));
+    state.pop(1);
+    ATF_REQUIRE(std::strcmp("The error message", e.what()) == 0);
+    ATF_REQUIRE_EQ("the_function", e.api_function());
+}
 
-    for (;;) {
-        std::cout << "lua> ";
-        std::cout.flush();
 
-        std::string line;
-        if (!std::getline(std::cin, line).good())
-            break;
-        run_statement(state, line);
-    }
+ATF_TEST_CASE_WITHOUT_HEAD(file_not_found_error);
+ATF_TEST_CASE_BODY(file_not_found_error)
+{
+    const lutok::file_not_found_error e("missing-file");
+    ATF_REQUIRE(std::strcmp("File 'missing-file' not found", e.what()) == 0);
+    ATF_REQUIRE_EQ("missing-file", e.filename());
+}
 
-    return EXIT_SUCCESS;
+
+ATF_INIT_TEST_CASES(tcs)
+{
+    ATF_ADD_TEST_CASE(tcs, error);
+
+    ATF_ADD_TEST_CASE(tcs, api_error__explicit);
+    ATF_ADD_TEST_CASE(tcs, api_error__from_stack);
+
+    ATF_ADD_TEST_CASE(tcs, file_not_found_error);
 }

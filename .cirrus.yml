@@ -38,15 +38,14 @@ task:
     # yamllint disable-line rule:line-length
     - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
     - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
-    - pkg install -y autoconf automake doxygen libtool kyua pkgconf
+    - pkg install -y cmake doxygen kyua
   script:
-    - ./admin/ci-build/01_configure.sh
-    - env EXTRA_DISTCHECK_CONFIGURE_ARGS="--enable-atf --enable-developer"
-          JUNIT_OUTPUT="$(pwd)/test-results.xml"
-          ./admin/ci-build/02_distcheck.sh
+    - ./scripts/ci-build/01_configure.sh
+    - ./scripts/ci-build/02_build_and_test.sh
   on_failure:
-    dump_distcheck_logs:
-      - cat atf-*/_build/sub/config.log
+    dump_build_logs:
+      - cat build/CMakeFiles/CMakeError.log || true
+      - cat build/CMakeFiles/CMakeOutput.log || true
   always:
     junit_artifacts:
       path: "test-results.xml"

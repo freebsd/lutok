@@ -26,46 +26,43 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// \file c_gate.hpp
-/// Provides direct access to the C state of the Lua wrappers.
+#include <lutok/debug.hpp>
 
-#if !defined(LUTOK_C_GATE_HPP)
-#define LUTOK_C_GATE_HPP
-
+#include <atf-c++.hpp>
 #include <lua.hpp>
 
-namespace lutok {
+#include <lutok/state.hpp>
+#include <lutok/test_utils.hpp>
 
 
-class state;
+ATF_TEST_CASE_WITHOUT_HEAD(get_info);
+ATF_TEST_CASE_BODY(get_info)
+{
+    lutok::state state;
+    ATF_REQUIRE(luaL_dostring(raw(state), "\n\nfunction hello() end\n"
+                              "return hello") == 0);
+    lutok::debug debug;
+    debug.get_info(state, ">S");
+    ATF_REQUIRE_EQ(3, debug.line_defined());
+}
 
 
-/// Gateway to the raw C state of Lua.
-///
-/// This class provides a mechanism to muck with the internals of the state
-/// wrapper class.  Client code may wish to do so if Lutok is missing some
-/// features of the performance of Lutok in a particular situation is not
-/// reasonable.
-///
-/// \warning The use of this class is discouraged.  By using this class, you are
-/// entering the world of unsafety.  Anything you do through the objects exposed
-/// through this class will not be controlled by RAII patterns not validated in
-/// any other way, so you can end up corrupting the Lua state and later get
-/// crashes on otherwise perfectly-valid C++ code.
-class state_c_gate {
-    /// The C++ state that this class wraps.
-    state& _state;
-
-public:
-    state_c_gate(state&);
-    ~state_c_gate(void);
-
-    static state connect(lua_State*);
-
-    lua_State* c_state(void);
-};
+ATF_TEST_CASE_WITHOUT_HEAD(get_stack);
+ATF_TEST_CASE_BODY(get_stack)
+{
+    lutok::state state;
+    ATF_REQUIRE(luaL_dostring(raw(state), "error('Hello')") == 1);
+    lutok::debug debug;
+    debug.get_stack(state, 0);
+    lua_pop(raw(state), 1);
+    // Not sure if we can actually validate anything here, other than we did not
+    // crash... (because get_stack only is supposed to update internal values of
+    // the debug structure).
+}
 
 
-}  // namespace lutok
-
-#endif  // !defined(LUTOK_C_GATE_HPP)
+ATF_INIT_TEST_CASES(tcs)
+{
+    ATF_ADD_TEST_CASE(tcs, get_info);
+    ATF_ADD_TEST_CASE(tcs, get_stack);
+}

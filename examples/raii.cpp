@@ -47,7 +47,7 @@
 
 #include <lutok/operations.hpp>
 #include <lutok/stack_cleaner.hpp>
-#include <lutok/state.ipp>
+#include <lutok/state.hpp>
 
 
 /// Prints the string-typed field of a table.

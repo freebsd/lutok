@@ -26,46 +26,51 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/// \file c_gate.hpp
-/// Provides direct access to the C state of the Lua wrappers.
-
-#if !defined(LUTOK_C_GATE_HPP)
-#define LUTOK_C_GATE_HPP
-
-#include <lua.hpp>
-
-namespace lutok {
+#include <lutok/c_gate.hpp>
+#include <lutok/state.hpp>
 
 
-class state;
-
-
-/// Gateway to the raw C state of Lua.
+/// Creates a new gateway to an existing C++ Lua state.
 ///
-/// This class provides a mechanism to muck with the internals of the state
-/// wrapper class.  Client code may wish to do so if Lutok is missing some
-/// features of the performance of Lutok in a particular situation is not
-/// reasonable.
+/// \param state_ The state to connect to.  This object must remain alive while
+///     the newly-constructed state_c_gate is alive.
+lutok::state_c_gate::state_c_gate(state& state_) :
+    _state(state_)
+{
+}
+
+
+/// Destructor.
 ///
-/// \warning The use of this class is discouraged.  By using this class, you are
-/// entering the world of unsafety.  Anything you do through the objects exposed
-/// through this class will not be controlled by RAII patterns not validated in
-/// any other way, so you can end up corrupting the Lua state and later get
-/// crashes on otherwise perfectly-valid C++ code.
-class state_c_gate {
-    /// The C++ state that this class wraps.
-    state& _state;
-
-public:
-    state_c_gate(state&);
-    ~state_c_gate(void);
-
-    static state connect(lua_State*);
-
-    lua_State* c_state(void);
-};
+/// Destroying this object has no implications on the life cycle of the Lua
+/// state.  Only the corresponding state object controls when the Lua state is
+/// closed.
+lutok::state_c_gate::~state_c_gate(void)
+{
+}
 
 
-}  // namespace lutok
+/// Creates a C++ state for a C Lua state.
+///
+/// \warning The created state object does NOT own the C state.  You must take
+/// care to properly destroy the input lua_State when you are done with it to
+/// not leak resources.
+///
+/// \param raw_state The raw state to wrap temporarily.
+///
+/// \return The wrapped state without strong ownership on the input state.
+lutok::state
+lutok::state_c_gate::connect(lua_State* raw_state)
+{
+    return state(static_cast< void* >(raw_state));
+}
 
-#endif  // !defined(LUTOK_C_GATE_HPP)
+
+/// Returns the C native Lua state.
+///
+/// \return A native lua_State object holding the Lua C API state.
+lua_State*
+lutok::state_c_gate::c_state(void)
+{
+    return static_cast< lua_State* >(_state.raw_state());
+}
