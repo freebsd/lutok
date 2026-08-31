@@ -46,7 +46,6 @@ need the following tools:
 * GNU Automake 1.9 (or later).
 * GNU Libtool.
 
-
 # Regenerating the build system
 
 This is not necessary if you are building from a formal release
@@ -102,66 +101,94 @@ To build and install the source package, you must follow these steps:
 The most common, standard flags given to `configure` are:
 
 - `--prefix=directory`
-    - **Possible values**: any path
-    - **Default**: "/usr/local"
 
-      Specifies where the library (binaries and all associated files) will
-      be installed.
+  **Possible values**: any path
+  **Default**: "/usr/local"
 
-- `--help`
-      Shows information about all available flags and exits immediately,
-      without running any configuration tasks.
+  Specifies where the library (binaries and all associated files) will be
+  installed.
 
 The following flags are specific to Lutok's `configure` script:
 
-- `--enable-developer`
-    - **Possible values**: "yes", "no"
-    - **Default**: "yes" in Git HEAD builds; "no" in formal releases.
+- `--enable-developer`:
 
-      Enables several features useful for development, such as the inclusion
-      of debugging symbols in all objects or the enforcement of compilation
-      warnings.
+  **Default:** `yes` in HEAD builds; `no` in release builds.
 
-      The compiler will be executed with an exhaustive collection of warning
-      detection features regardless of the value of this flag.  However, such
-      warnings are only fatal when `--enable-developer` is set to "yes".
+  Enables several features useful for development, such as the inclusion
+  of debugging symbols in all objects or the enforcement of compilation
+  warnings.
+
+  The compiler will be executed with an exhaustive collection of warning
+  detection features regardless of the value of this flag. However, such
+  warnings are only fatal when `--enable-developer` is `yes`.
+
+- `--enable-asan`
+
+  **Default:** `no`.
+
+  Enables ASAN (Address Sanitizer) compiler support in the toolchain.
+
+  Platform-specific support varies depending on the toolchain and OS.
 
 - `--enable-atf`
-    - **Possible values**: "yes", "no", "auto".
-    - **Default**: "auto"
 
-      Enables usage of ATF to build (and later install) the tests.
+  **Possible values**: "yes", "no", "auto".
+  **Default**: "auto"
 
-      Setting this to "yes" causes the `configure` script to look for ATF
-      unconditionally and abort if not found.  Setting this to "auto" lets
-      `configure` perform the best decision based on availability of ATF.
-      Setting this to "no" explicitly disables ATF usage.
+  Enables usage of ATF to build (and later install) the tests.
 
-      When support for tests is enabled, the build process will generate the
-      test programs and will later install them into the tests tree.
-      Running `make check` or `make installcheck` from within the source
-      directory will cause these tests to be run with Kyua (assuming it is
-      also installed).
+  Setting this to "yes" causes the `configure` script to look for ATF
+  unconditionally and abort if not found.  Setting this to "auto" lets
+  `configure` perform the best decision based on availability of ATF.
+  Setting this to "no" explicitly disables ATF usage.
+
+  When support for tests is enabled, the build process will generate the
+  test programs and will later install them into the tests tree.
+  Running `make check` or `make installcheck` from within the source
+  directory will cause these tests to be run with Kyua (assuming it is
+  also installed).
+
+- `--enable-lsan`
+
+  **Default:** `no`.
+
+  Enables LSAN (Leak Sanitizer) compiler support in the toolchain.
+
+  Platform-specific support varies depending on the toolchain and OS.
+
+  **Important:**
+  * llvm support is only available in Linux and macOS at time of writing.
+  * The test suite does not currently pass with this option enabled. See
+    [Issue #77](https://github.com/freebsd/atf/issues/77) for more details.
+
+- `--enable-ubsan`
+
+  **Default:** `no`.
+
+  Enables UBSAN (Undefined Behavior Sanitizier) compiler support in the
+  toolchain.
+
+  Platform-specific support varies depending on the toolchain and OS.
 
 - `--with-doxygen`
-    - **Possible values**: "yes", "no", "auto", or a path.
-    - **Default**: "auto".
 
-      Enables usage of Doxygen to generate documentation for internal APIs.
+  **Possible values**: "yes", "no", "auto", or a path.
+  **Default**: "auto".
 
-      Setting this to "yes" causes the `configure` script to look for Doxygen
-      unconditionally and abort if not found.  Setting this to "auto" lets
-      `configure` perform the best decision based on availability of Doxygen.
-      Setting this to "no" explicitly disables Doxygen usage.  And, lastly,
-      setting this to a path forces `configure` to use a specific Doxygen
-      binary, which must exist.
+  Enables usage of Doxygen to generate documentation for internal APIs.
 
-      When support for Doxygen is enabled, the build process will generate
-      HTML documentation for the Lutok API.  This documentation will later
-      be installed in the HTML directory specified by the `configure` script.
-      You can change the location of the HTML documents by providing your
-      desired override with the `--htmldir` flag to the `configure` script.
+  Setting this to "yes" causes the `configure` script to look for Doxygen
+  unconditionally and abort if not found.  Setting this to "auto" lets
+  `configure` perform the best decision based on availability of Doxygen.
+  Setting this to "no" explicitly disables Doxygen usage.  And, lastly,
+  setting this to a path forces `configure` to use a specific Doxygen
+  binary, which must exist.
 
+  When support for Doxygen is enabled, the build process will generate
+  HTML documentation for the Lutok API.  This documentation will later
+  be installed in the HTML directory specified by the `configure` script.
+  You can change the location of the HTML documents by providing your
+  desired override with the `--htmldir` flag to the `configure` script.
 
 Run the tests!
 ==============
