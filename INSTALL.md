@@ -29,7 +29,7 @@ $ make installcheck
 
 To build and use Lutok successfully you need:
 
-* A C++-11 standards-compliant compiler.
+* A C++-20 standards-compliant compiler.
 * Lua 5.1 or greater.
 * pkg-config or an equivalent tool, e.g., pkgconf.
 
@@ -110,7 +110,7 @@ The most common, standard flags given to `configure` are:
 
 The following flags are specific to Lutok's `configure` script:
 
-- `--enable-developer`:
+- `--enable-developer`
 
   **Default:** `yes` in HEAD builds; `no` in release builds.
 
