@@ -13,6 +13,7 @@ set -eux
 
 : "${AS_ROOT=no}"
 : "${CC=cc}"
+: "${CODE_COVERAGE_OUTPUT_DIR=build/code_coverage}"
 : "${CXX=c++}"
 : "${EXTRA_DISTCHECK_CONFIGURE_ARGS=}"
 
@@ -43,6 +44,7 @@ if [ "${AS_ROOT}" = yes ]; then
     sudo="sudo -H"
 fi
 ${sudo} env PATH="${PATH}" make distcheck -j"${NPROC}" \
+    CODE_COVERAGE_OUTPUT_DIR="${CODE_COVERAGE_OUTPUT_DIR}" \
     DISTCHECK_CONFIGURE_FLAGS="${f}" \
     KYUA_TEST_CONFIG_FILE="${kyua_conf}"
 
