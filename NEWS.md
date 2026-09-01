@@ -2,9 +2,28 @@
 
 ## Changes in version 0.6.3
 
-Released on 2026/XX/YY.
+Released on 2026/09/01.
 
-*
+This release contains [mostly] developer-workflow related changes. Many of these changes were ported over from
+the [freebsd/atf](https://github.com/freebsd/atf) repository.
+
+### Developer Workflow Changes
+
+* Automate uploading release assets by @ngie-eign in https://github.com/freebsd/lutok/pull/40
+
+* Port over CI work from freebsd/atf by @ngie-eign in https://github.com/freebsd/lutok/pull/41
+
+* chore: remove .travis.yml by @mchoo7 in https://github.com/freebsd/lutok/pull/44
+
+* Add sanitizer functionality (ASAN, LSAN, UBSAN) support by @ngie-eign in https://github.com/freebsd/lutok/pull/46
+
+* Add runtime code coverage support by @ngie-eign in https://github.com/freebsd/lutok/pull/47
+
+* Add freebsd vmactions by @ngie-eign in https://github.com/freebsd/lutok/pull/48
+
+* Add pre-commit config by @ngie-eign in https://github.com/freebsd/lutok/pull/49
+
+**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.2...lutok-0.6.3-rc1
 
 ## Changes in version 0.6.2
 
