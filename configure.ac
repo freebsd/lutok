@@ -1,4 +1,5 @@
-dnl Copyright 2011 Google Inc.
+dnl Copyright 2011-2014 Google Inc.
+dnl Copyright 2024-2026 Enji Cooper <ngie@FreeBSD.org>
 dnl All rights reserved.
 dnl
 dnl Redistribution and use in source and binary forms, with or without
@@ -26,7 +27,7 @@ dnl THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 dnl (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 dnl OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT([Lutok], [0.6.3],
+AC_INIT([Lutok], [0.6.4],
         [testing@FreeBSD.org], [lutok],
         [https://github.com/freebsd/lutok/])
 AC_PREREQ([2.68])

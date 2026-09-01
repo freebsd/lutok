@@ -1,5 +1,11 @@
 # Major changes between releases
 
+## Changes in version 0.6.4
+
+Released on 20XX/YY/ZZ.
+
+**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.6.4
+
 ## Changes in version 0.6.3
 
 Released on 2026/09/01.
@@ -23,7 +29,7 @@ the [freebsd/atf](https://github.com/freebsd/atf) repository.
 
 * Add pre-commit config by @ngie-eign in https://github.com/freebsd/lutok/pull/49
 
-**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.2...lutok-0.6.3-rc1
+**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.2...lutok-0.6.3
 
 ## Changes in version 0.6.2
 
