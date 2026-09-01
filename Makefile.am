@@ -26,6 +26,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+CODE_COVERAGE_DIRS =
+
 #
 # Supporting logic to run our custom testsuite.
 #
@@ -198,6 +200,23 @@ installcheck-kyua:
 	cd $(testsdir) && $(TESTS_ENVIRONMENT) \
 		$(KYUA) --config='$(KYUA_TEST_CONFIG_FILE)' report --verbose; \
 	exit $$ret
+
+if CODE_COVERAGE
+CODE_COVERAGE_EXCLUDES = '/usr/include/*' '/usr/local/include/*'
+CODE_COVERAGE_OUTPUT_DIR ?= code_coverage
+EXTRA_GENHTML_ARGS ?=
+INSTALLCHECK_TARGETS+=	installcheck-kyua-lcov
+
+installcheck-kyua-lcov: installcheck-kyua
+	mkdir -p $(CODE_COVERAGE_OUTPUT_DIR)/html
+	$(LCOV) --capture --directory $(srcdir) \
+	    --output-file $(CODE_COVERAGE_OUTPUT_DIR)/lcov.info
+	$(LCOV) --remove $(CODE_COVERAGE_OUTPUT_DIR)/lcov.info \
+	    $(CODE_COVERAGE_EXCLUDES) \
+	    --output-file $(CODE_COVERAGE_OUTPUT_DIR)/lcov-filtered.info
+	$(GENHTML) -o $(CODE_COVERAGE_OUTPUT_DIR)/html $(EXTRA_GENHTML_ARGS) \
+	    $(CODE_COVERAGE_OUTPUT_DIR)/lcov-filtered.info
+endif
 endif
 else
 DIST_HOOKS += dist-no-atf
@@ -207,6 +226,16 @@ dist-no-atf:
 	@false
 endif
 
+if CODE_COVERAGE
+PHONY_TARGETS += mostlyclean-code-coverage
+mostlyclean-local: mostlyclean-code-coverage
+mostlyclean-code-coverage:
+	-for dir in $(CODE_COVERAGE_DIRS); do \
+	    find $$dir \( -name \*.gcda -or -name \*.gcno \) -delete -print; \
+	done
+endif
+
+installcheck-local: $(INSTALLCHECK_TARGETS)
 if WITH_DOXYGEN
 # This should probably be html-local, but it seems better to generate the
 # documentation in all cases to get warnings about missing documentation every
