@@ -26,6 +26,28 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#
+# Supporting logic to run our custom testsuite.
+#
+
+TESTS_ENVIRONMENT = PKG_CONFIG_PATH=$(prefix)/lib/pkgconfig
+
+if HAVE_ASAN
+# NB: the trailing comma is intentional. I hate automake not allowing `:=` use on subsequent lines.
+if HAVE_LSAN
+LSAN_OPTIONS = detect_leaks=1,
+else
+LSAN_OPTIONS =
+endif
+# Some of the testcases trigger false positives as they pass
+# `SIZE_MAX - 1`, etc, to malloc(3).
+ASAN_OPTIONS = ${LSAN_OPTIONS}allocator_may_return_null=1
+TESTS_ENVIRONMENT+= ASAN_OPTIONS=${ASAN_OPTIONS}
+endif
+if HAVE_UBSAN
+TESTS_ENVIRONMENT+= UBSAN_OPTIONS=print_stacktrace=1:halt_on_error=1
+endif
+
 ACLOCAL_AMFLAGS = -I m4
 
 doc_DATA = AUTHORS COPYING NEWS README.md
@@ -80,6 +102,8 @@ lutok.pc: $(srcdir)/lutok.pc.in Makefile
 	    -e 's#__LIBDIR__#$(libdir)#g' \
 	    -e 's#__LUA_CFLAGS__#$(LUA_CFLAGS)#g' \
 	    -e 's#__LUA_LIBS__#$(LUA_LIBS)#g' \
+	    -e 's#__PC_CXXFLAGS__#$(pc_cxxflags)#g' \
+	    -e 's#__PC_LDFLAGS__#$(pc_ldflags)#g' \
 	    -e 's#__VERSION__#$(PACKAGE_VERSION)#g' \
 	    <$(srcdir)/lutok.pc.in >lutok.pc.tmp; \
 	mv lutok.pc.tmp lutok.pc
@@ -143,19 +167,37 @@ state_test_SOURCES = state_test.cpp test_utils.hpp
 state_test_CXXFLAGS = $(LUTOK_CFLAGS) $(ATF_CXX_CFLAGS)
 state_test_LDADD = $(LUTOK_LIBS) $(ATF_CXX_LIBS)
 
-if HAVE_KYUA
-TESTS_ENVIRONMENT = PKG_CONFIG_PATH=$(prefix)/lib/pkgconfig
-
 check-local: check-kyua
 PHONY_TARGETS += check-kyua
 check-kyua:
 	$(TESTS_ENVIRONMENT) kyua test \
 	    --kyuafile='$(top_srcdir)/Kyuafile' --build-root='$(top_builddir)'
 
+INSTALLCHECK_TARGETS =
+
+testsdir = $(exec_prefix)/tests/$(PACKAGE)
+
 installcheck-local: installcheck-kyua
 PHONY_TARGETS += installcheck-kyua
+if HAVE_KYUA
+
+INSTALLCHECK_TARGETS += installcheck-kyua
+
 installcheck-kyua:
-	cd $(testsdir) && $(TESTS_ENVIRONMENT) kyua test
+	set +e; cd $(testsdir) && $(TESTS_ENVIRONMENT) \
+	    $(KYUA) --config='$(KYUA_TEST_CONFIG_FILE)' test; \
+	ret=$$?; \
+	echo $$ret; \
+	if [ -n "$$JUNIT_OUTPUT" ]; then \
+	    cd $(testsdir) && $(TESTS_ENVIRONMENT) \
+		    $(KYUA) --config='$(KYUA_TEST_CONFIG_FILE)' \
+		    report-junit --output="$$JUNIT_OUTPUT"; \
+	    sed -i '.orig' 's/encoding="iso-8859-1"/encoding="utf-8"/' "$$JUNIT_OUTPUT"; \
+	    rm -f "$$JUNIT_OUTPUT.orig"; \
+	fi; \
+	cd $(testsdir) && $(TESTS_ENVIRONMENT) \
+		$(KYUA) --config='$(KYUA_TEST_CONFIG_FILE)' report --verbose; \
+	exit $$ret
 endif
 else
 DIST_HOOKS += dist-no-atf
@@ -220,4 +262,6 @@ clean-all:
 
 dist-hook: $(DIST_HOOKS)
 
-.PHONY: ${PHONY_TARGETS}
+.PHONY: $(PHONY_TARGETS)
+
+# vim: syntax=make:noexpandtab:shiftwidth=8:softtabstop=8

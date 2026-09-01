@@ -39,15 +39,78 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([state.hpp])
 
+AC_USE_SYSTEM_EXTENSIONS
 
 AM_INIT_AUTOMAKE([1.9 check-news foreign subdir-objects -Wall])
 
 AM_PROG_AR
 LT_INIT
 
+pc_cflags=
+pc_cxxflags=
+pc_ldflags=
 
-AC_LANG([C++])
+AC_ARG_ENABLE([asan],
+AS_HELP_STRING([--enable-asan], [Turn on AddressSanitizer]),,
+[enable_asan=no])
+
+if test ${enable_asan} = yes; then
+    AC_MSG_NOTICE([building with AddressSanitizer (ASAN)])
+    enable_developer=yes
+    CXXFLAGS="${CXXFLAGS} -fsanitize=address"
+    pc_cxxflags="${pc_cxxflags} -fsanitize=address"
+    LDFLAGS="${LDFLAGS} -fsanitize=address"
+    pc_ldflags="${pc_ldflags} -fsanitize=address"
+fi
+AM_CONDITIONAL([HAVE_ASAN], [test "${enable_asan}" = yes])
+
+AC_ARG_ENABLE([lsan],
+AS_HELP_STRING([--enable-lsan], [Turn on LeakSanitizer]),,
+[enable_lsan=no])
+
+if test ${enable_lsan} = yes; then
+    AC_MSG_NOTICE([building with LeakSanitizer (LSAN)])
+    enable_developer=yes
+    CXXFLAGS="${CXXFLAGS} -fsanitize=leak"
+    pc_cxxflags="${pc_cxxflags} -fsanitize=leak"
+    LDFLAGS="${LDFLAGS} -fsanitize=leak"
+    pc_ldflags="${pc_ldflags} -fsanitize=leak"
+fi
+AM_CONDITIONAL([HAVE_LSAN], [test "${enable_lsan}" = yes])
+
+AC_ARG_ENABLE([ubsan],
+AS_HELP_STRING([--enable-ubsan], [Turn on UndefinedBehaviourSanitizer]),,
+[enable_ubsan=no])
+
+if test ${enable_ubsan} = yes; then
+    AC_MSG_NOTICE([building with UndefinedBehaviourSanitizer (UBSAN)])
+    enable_developer=yes
+    CXXFLAGS="${CXXFLAGS} -fsanitize=undefined"
+    pc_cxxflags="${pc_cxxflags} -fsanitize=undefined"
+    LDFLAGS="${LDFLAGS} -fsanitize=undefined"
+    pc_ldflags="${pc_ldflags} -fsanitize=undefined"
+fi
+AM_CONDITIONAL([HAVE_UBSAN], [test "${enable_ubsan}" = yes])
+
+AC_SUBST([pc_cflags])
+AC_SUBST([pc_cxxflags])
+AC_SUBST([pc_ldflags])
+
+
+dnl -----------------------------------------------------------------------
+dnl Check for the C and C++ compilers and required features.
+dnl -----------------------------------------------------------------------
+
+AC_LANG(C)
+AC_PROG_CC
+AM_PROG_CC_C_O
+AC_PROG_CPP
+dnl The C compiler check automatically aborts if the compiler does not work.
+dnl Nothing to do here.
+
 AC_PROG_CXX
+AC_LANG_COMPILER(C++)
+AC_PROG_CPP
 AX_CXX_COMPILE_STDCXX(20, noext, mandatory)
 KYUA_DEVELOPER_MODE([C++])
 
@@ -72,13 +135,12 @@ KYUA_LUA
 # Check for Kyua
 AC_PATH_PROG([KYUA], [kyua])
 AM_CONDITIONAL([HAVE_KYUA], [test -n "${KYUA}"])
-
-# Check for Git
 AC_PATH_PROG([GIT], [git])
 
 # Define pkg-config and tests directory
 AC_SUBST(pkgconfigdir, \${libdir}/pkgconfig)
-AC_SUBST(testsdir, \${exec_prefix}/tests/lutok)
+AC_SUBST(testsdir, \${exec_prefix}/tests)
 
-# Output configuration
 AC_OUTPUT
+
+dnl vim: syntax=m4:expandtab:shiftwidth=4:softtabstop=4

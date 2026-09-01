@@ -1,8 +1,10 @@
+# Lutok pkg-config file
+
 includedir=__INCLUDEDIR__
 libdir=__LIBDIR__
 
 Name: lutok
 Description: Lightweight C++ API for Lua
 Version: __VERSION__
-Cflags: __LUA_CFLAGS__ -I${includedir}
-Libs: __LUA_LIBS__ -L${libdir} -llutok
+Cflags: __LUA_CFLAGS__ -I${includedir} __PC_CXXFLAGS__
+Libs: __LUA_LIBS__ -L${libdir} -llutok __PC_LDFLAGS__
