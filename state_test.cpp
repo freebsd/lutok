@@ -109,8 +109,8 @@ static int
 c_get_upvalues(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
-    const int i1 = lua_tointeger(raw_state, state.upvalue_index(1));
-    const int i2 = lua_tointeger(raw_state, state.upvalue_index(2));
+    const int i1 = lua_tointeger(raw_state, lutok::state::upvalue_index(1));
+    const int i2 = lua_tointeger(raw_state, lutok::state::upvalue_index(2));
     lua_pushinteger(raw_state, i1);
     lua_pushinteger(raw_state, i2);
     return 2;
@@ -158,7 +158,7 @@ cxx_divide(lutok::state& state)
     if (divisor == 0)
         throw std::runtime_error("Divisor is 0");
     if (dividend < 0 || divisor < 0)
-        throw std::string("Cannot divide negative numbers");
+        throw std::runtime_error("Cannot divide negative numbers");
     state.push_integer(dividend / divisor);
     state.push_integer(dividend % divisor);
     return 2;
@@ -802,7 +802,7 @@ ATF_TEST_CASE_BODY(push_cxx_function__fail_anything)
     lua_setglobal(raw(state), "cxx_divide");
 
     ATF_REQUIRE(luaL_dostring(raw(state), "return cxx_divide(-3, -1)") != 0);
-    ATF_REQUIRE_MATCH("Unhandled exception", lua_tostring(raw(state), -1));
+    ATF_REQUIRE_MATCH("Cannot divide negative numbers", lua_tostring(raw(state), -1));
     lua_pop(raw(state), 1);
 }
 
