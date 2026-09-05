@@ -137,7 +137,7 @@ protected_settable(lua_State* state)
 /// function.
 static int
 call_cxx_function_from_c(lutok::cxx_function function,
-                         lua_State* raw_state) throw()
+                         lua_State* raw_state) noexcept
 {
     char error_buf[1024];
 
@@ -239,10 +239,10 @@ struct lutok::state::impl {
 ///
 /// You must share the same state object alongside the lifetime of your Lua
 /// session.  As soon as the object is destroyed, the session is terminated.
-lutok::state::state(void)
+lutok::state::state()
 {
     lua_State* lua = luaL_newstate();
-    if (lua == NULL)
+    if (lua == nullptr)
         throw lutok::error("lua open failed");
     _pimpl.reset(new impl(lua, true));
 }
@@ -265,9 +265,9 @@ lutok::state::state(void* raw_state_) :
 /// Closes the session unless it has already been closed by calling the
 /// close() method.  It is recommended to explicitly close the session in the
 /// code.
-lutok::state::~state(void)
+lutok::state::~state()
 {
-    if (_pimpl->owned && _pimpl->lua_state != NULL)
+    if (_pimpl->owned && _pimpl->lua_state != nullptr)
         close();
 }
 
@@ -281,12 +281,12 @@ lutok::state::~state(void)
 /// \pre The Lua stack is empty.  This is not truly necessary but ensures that
 ///     our code is consistent and clears the stack explicitly.
 void
-lutok::state::close(void)
+lutok::state::close() const
 {
-    assert(_pimpl->lua_state != NULL);
+    assert(_pimpl->lua_state != nullptr);
     assert(lua_gettop(_pimpl->lua_state) == 0);
     lua_close(_pimpl->lua_state);
-    _pimpl->lua_state = NULL;
+    _pimpl->lua_state = nullptr;
 }
 
 
@@ -315,7 +315,7 @@ lutok::state::get_global(const std::string& name)
 ///
 /// \post state(-1) Contains the reference to the globals table.
 void
-lutok::state::get_global_table(void)
+lutok::state::get_global_table() const
 {
 #if LUA_VERSION_NUM >= 502
     lua_pushvalue(_pimpl->lua_state, registry_index);
@@ -338,7 +338,7 @@ lutok::state::get_global_table(void)
 /// \warning Terminates execution if there is not enough memory to manipulate
 /// the Lua stack.
 bool
-lutok::state::get_metafield(const int index, const std::string& name)
+lutok::state::get_metafield(const int index, const std::string& name) const
 {
     return luaL_getmetafield(_pimpl->lua_state, index, name.c_str()) != 0;
 }
@@ -350,7 +350,7 @@ lutok::state::get_metafield(const int index, const std::string& name)
 ///
 /// \return The return value of lua_getmetatable.
 bool
-lutok::state::get_metatable(const int index)
+lutok::state::get_metatable(const int index) const
 {
     return lua_getmetatable(_pimpl->lua_state, index) != 0;
 }
@@ -381,7 +381,7 @@ lutok::state::get_table(const int index)
 ///
 /// \return The return value of lua_gettop.
 int
-lutok::state::get_top(void)
+lutok::state::get_top() const
 {
     return lua_gettop(_pimpl->lua_state);
 }
@@ -391,7 +391,7 @@ lutok::state::get_top(void)
 ///
 /// \param index The second parameter to lua_insert.
 void
-lutok::state::insert(const int index)
+lutok::state::insert(const int index) const
 {
     lua_insert(_pimpl->lua_state, index);
 }
@@ -403,7 +403,7 @@ lutok::state::insert(const int index)
 ///
 /// \return The return value of lua_isboolean.
 bool
-lutok::state::is_boolean(const int index)
+lutok::state::is_boolean(const int index) const
 {
     return lua_isboolean(_pimpl->lua_state, index);
 }
@@ -415,7 +415,7 @@ lutok::state::is_boolean(const int index)
 ///
 /// \return The return value of lua_isfunction.
 bool
-lutok::state::is_function(const int index)
+lutok::state::is_function(const int index) const
 {
     return lua_isfunction(_pimpl->lua_state, index);
 }
@@ -427,7 +427,7 @@ lutok::state::is_function(const int index)
 ///
 /// \return The return value of lua_isnil.
 bool
-lutok::state::is_nil(const int index)
+lutok::state::is_nil(const int index) const
 {
     return lua_isnil(_pimpl->lua_state, index);
 }
@@ -439,7 +439,7 @@ lutok::state::is_nil(const int index)
 ///
 /// \return The return value of lua_isnumber.
 bool
-lutok::state::is_number(const int index)
+lutok::state::is_number(const int index) const
 {
     return lua_isnumber(_pimpl->lua_state, index);
 }
@@ -451,7 +451,7 @@ lutok::state::is_number(const int index)
 ///
 /// \return The return value of lua_isstring.
 bool
-lutok::state::is_string(const int index)
+lutok::state::is_string(const int index) const
 {
     return lua_isstring(_pimpl->lua_state, index);
 }
@@ -463,7 +463,7 @@ lutok::state::is_string(const int index)
 ///
 /// \return The return value of lua_istable.
 bool
-lutok::state::is_table(const int index)
+lutok::state::is_table(const int index) const
 {
     return lua_istable(_pimpl->lua_state, index);
 }
@@ -475,7 +475,7 @@ lutok::state::is_table(const int index)
 ///
 /// \return The return value of lua_isuserdata.
 bool
-lutok::state::is_userdata(const int index)
+lutok::state::is_userdata(const int index) const
 {
     return lua_isuserdata(_pimpl->lua_state, index);
 }
@@ -518,7 +518,7 @@ lutok::state::load_string(const std::string& str)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::new_table(void)
+lutok::state::new_table() const
 {
     lua_newtable(_pimpl->lua_state);
 }
@@ -535,7 +535,7 @@ lutok::state::new_table(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void*
-lutok::state::new_userdata_voidp(const size_t size)
+lutok::state::new_userdata_voidp(const size_t size) const
 {
     return lua_newuserdata(_pimpl->lua_state, size);
 }
@@ -574,7 +574,7 @@ lutok::state::next(const int index)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_all(void)
+lutok::state::open_all() const
 {
     luaL_openlibs(_pimpl->lua_state);
 }
@@ -586,7 +586,7 @@ lutok::state::open_all(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_base(void)
+lutok::state::open_base()
 {
     lua_pushcfunction(_pimpl->lua_state, luaopen_base);
     if (lua_pcall(_pimpl->lua_state, 0, 0, 0) != 0)
@@ -600,7 +600,7 @@ lutok::state::open_base(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_string(void)
+lutok::state::open_string() const
 {
 #if LUA_VERSION_NUM >= 502
     luaL_requiref(_pimpl->lua_state, LUA_STRLIBNAME, luaopen_string, 1);
@@ -619,7 +619,7 @@ lutok::state::open_string(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::open_table(void)
+lutok::state::open_table() const
 {
 #if LUA_VERSION_NUM >= 502
     luaL_requiref(_pimpl->lua_state, LUA_TABLIBNAME, luaopen_table, 1);
@@ -651,7 +651,7 @@ lutok::state::pcall(const int nargs, const int nresults, const int errfunc)
 ///
 /// \param count The second parameter to lua_pop.
 void
-lutok::state::pop(const int count)
+lutok::state::pop(const int count) const
 {
     assert(count <= lua_gettop(_pimpl->lua_state));
     lua_pop(_pimpl->lua_state, count);
@@ -663,7 +663,7 @@ lutok::state::pop(const int count)
 ///
 /// \param value The second parameter to lua_pushboolean.
 void
-lutok::state::push_boolean(const bool value)
+lutok::state::push_boolean(const bool value) const
 {
     lua_pushboolean(_pimpl->lua_state, value ? 1 : 0);
 }
@@ -677,7 +677,7 @@ lutok::state::push_boolean(const bool value)
 /// \param function The C++ function to be pushed as a closure.
 /// \param nvalues The number of upvalues that the function receives.
 void
-lutok::state::push_cxx_closure(cxx_function function, const int nvalues)
+lutok::state::push_cxx_closure(cxx_function function, const int nvalues) const
 {
     cxx_function *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
@@ -693,7 +693,7 @@ lutok::state::push_cxx_closure(cxx_function function, const int nvalues)
 ///
 /// \param function The C++ function to be pushed.
 void
-lutok::state::push_cxx_function(cxx_function function)
+lutok::state::push_cxx_function(cxx_function function) const
 {
     cxx_function *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
@@ -706,7 +706,7 @@ lutok::state::push_cxx_function(cxx_function function)
 ///
 /// \param value The second parameter to lua_pushinteger.
 void
-lutok::state::push_integer(const int value)
+lutok::state::push_integer(const int value) const
 {
     lua_pushinteger(_pimpl->lua_state, value);
 }
@@ -714,7 +714,7 @@ lutok::state::push_integer(const int value)
 
 /// Wrapper around lua_pushnil.
 void
-lutok::state::push_nil(void)
+lutok::state::push_nil() const
 {
     lua_pushnil(_pimpl->lua_state);
 }
@@ -726,7 +726,7 @@ lutok::state::push_nil(void)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void
-lutok::state::push_string(const std::string& str)
+lutok::state::push_string(const std::string& str) const
 {
     lua_pushstring(_pimpl->lua_state, str.c_str());
 }
@@ -736,7 +736,7 @@ lutok::state::push_string(const std::string& str)
 ///
 /// \param index The second parameter to lua_pushvalue.
 void
-lutok::state::push_value(const int index)
+lutok::state::push_value(const int index) const
 {
     lua_pushvalue(_pimpl->lua_state, index);
 }
@@ -746,7 +746,7 @@ lutok::state::push_value(const int index)
 ///
 /// \param index The second parameter to lua_rawget.
 void
-lutok::state::raw_get(const int index)
+lutok::state::raw_get(const int index) const
 {
     lua_rawget(_pimpl->lua_state, index);
 }
@@ -759,7 +759,7 @@ lutok::state::raw_get(const int index)
 /// \warning Terminates execution if there is not enough memory to manipulate
 /// the Lua stack.
 void
-lutok::state::raw_set(const int index)
+lutok::state::raw_set(const int index) const
 {
     lua_rawset(_pimpl->lua_state, index);
 }
@@ -789,7 +789,7 @@ lutok::state::set_global(const std::string& name)
 ///
 /// \param index The second parameter to lua_setmetatable.
 void
-lutok::state::set_metatable(const int index)
+lutok::state::set_metatable(const int index) const
 {
     lua_setmetatable(_pimpl->lua_state, index);
 }
@@ -822,7 +822,7 @@ lutok::state::set_table(const int index)
 ///
 /// \return The return value of lua_toboolean.
 bool
-lutok::state::to_boolean(const int index)
+lutok::state::to_boolean(const int index) const
 {
     assert(is_boolean(index));
     return lua_toboolean(_pimpl->lua_state, index);
@@ -835,7 +835,7 @@ lutok::state::to_boolean(const int index)
 ///
 /// \return The return value of lua_tointeger.
 long
-lutok::state::to_integer(const int index)
+lutok::state::to_integer(const int index) const
 {
     assert(is_number(index));
     return lua_tointeger(_pimpl->lua_state, index);
@@ -853,7 +853,7 @@ lutok::state::to_integer(const int index)
 ///
 /// \warning Terminates execution if there is not enough memory.
 void*
-lutok::state::to_userdata_voidp(const int index)
+lutok::state::to_userdata_voidp(const int index) const
 {
     return lua_touserdata(_pimpl->lua_state, index);
 }
@@ -868,7 +868,7 @@ lutok::state::to_userdata_voidp(const int index)
 ///
 /// \warning Terminates execution if there is not enough memory.
 std::string
-lutok::state::to_string(const int index)
+lutok::state::to_string(const int index) const
 {
     assert(is_string(index));
     const char *raw_string = lua_tostring(_pimpl->lua_state, index);
@@ -898,7 +898,7 @@ lutok::state::upvalue_index(const int index)
 /// to call this method is by using the c_gate module, and c_gate takes care of
 /// casting this object to the appropriate type.
 void*
-lutok::state::raw_state(void)
+lutok::state::raw_state() const
 {
     return _pimpl->lua_state;
 }

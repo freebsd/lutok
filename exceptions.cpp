@@ -29,6 +29,7 @@
 #include <cassert>
 
 #include <lua.hpp>
+#include <utility>
 
 #include "c_gate.hpp"
 #include "exceptions.hpp"
@@ -45,27 +46,23 @@ lutok::error::error(const std::string& message) :
 
 
 /// Destructor for the error.
-lutok::error::~error(void) throw()
-{
-}
+lutok::error::~error() noexcept = default;
 
 
 /// Constructs a new error.
 ///
 /// \param api_function_ The name of the API function that caused the error.
 /// \param message The plain-text error message provided by Lua.
-lutok::api_error::api_error(const std::string& api_function_,
+lutok::api_error::api_error(std::string api_function_,
                             const std::string& message) :
     error(message),
-    _api_function(api_function_)
+    _api_function(std::move(api_function_))
 {
 }
 
 
 /// Destructor for the error.
-lutok::api_error::~api_error(void) throw()
-{
-}
+lutok::api_error::~api_error() noexcept = default;
 
 
 /// Constructs a new api_error with the message on the top of the Lua stack.
@@ -93,7 +90,7 @@ lutok::api_error::from_stack(state& state_, const std::string& api_function_)
 ///
 /// \return The name of the function.
 const std::string&
-lutok::api_error::api_function(void) const
+lutok::api_error::api_function() const
 {
     return _api_function;
 }
@@ -111,16 +108,14 @@ lutok::file_not_found_error::file_not_found_error(
 
 
 /// Destructor for the error.
-lutok::file_not_found_error::~file_not_found_error(void) throw()
-{
-}
+lutok::file_not_found_error::~file_not_found_error() noexcept = default;
 
 
 /// Gets the name of the file that could not be found.
 ///
 /// \return The name of the file.
 const std::string&
-lutok::file_not_found_error::filename(void) const
+lutok::file_not_found_error::filename() const
 {
     return _filename;
 }
