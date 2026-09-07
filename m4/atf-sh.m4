@@ -26,35 +26,24 @@ dnl THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 dnl (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 dnl OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+dnl ATF_CHECK_SH([version-spec])
 dnl
-dnl KYUA_LUA
+dnl Checks if atf-sh is present.  If version-spec is provided, ensures that
+dnl the installed version of atf-sh matches the required version.  This
+dnl argument must be something like '>= 0.14' and accepts any version
+dnl specification supported by pkg-config.
 dnl
-dnl Helper macro to detect Lua in a variety of systems.
-dnl
-AC_DEFUN([KYUA_LUA], [
-    lua_found=no
-    for lua_release in ${LUA_VERSION:-5.4 5.3}; do
-        PKG_CHECK_MODULES([LUA], [lua-${lua_release} >= ${lua_release}],
-            [lua_found="lua-${lua_release}"],[
-        PKG_CHECK_MODULES([LUA], [lua${lua_release} >= ${lua_release}],
-            [lua_found="lua${lua_release}"],[
-        PKG_CHECK_MODULES([LUA], [lua >= ${lua_release}],
-            [lua_found="lua"],[])
-        ])])
-        if test "${lua_found}" != no; then
-            break
-        fi
-    done
-
-    AS_IF([test "${lua_found}" = no],[],[
-        AC_SUBST([LUA_CFLAGS], [$(${PKG_CONFIG} --cflags ${lua_found})])
-        AC_SUBST([LUA_LIBS], [$(${PKG_CONFIG} --libs ${lua_found})])
-        ])
-
-    AS_IF([test "${lua_found}" = no],
-        [AC_MSG_ERROR([lua (5.3 or newer) is required])],
-        [
-AC_MSG_NOTICE([using LUA_CFLAGS = ${LUA_CFLAGS}])
-AC_MSG_NOTICE([using LUA_LIBS = ${LUA_LIBS}])
-    ])
+dnl Defines and substitutes ATF_SH with the full path to the atf-sh interpreter.
+AC_DEFUN([ATF_CHECK_SH], [
+    spec="atf-sh[]m4_default_nblank([ $1], [])"
+    _ATF_CHECK_ARG_WITH(
+        [AC_MSG_CHECKING([for ${spec}])
+         PKG_CHECK_EXISTS([${spec}], [found=yes], [found=no])
+         if test "${found}" = yes; then
+             ATF_SH="$(${PKG_CONFIG} --variable=interpreter atf-sh)"
+             AC_SUBST([ATF_SH], [${ATF_SH}])
+             found_atf_sh=yes
+         fi
+         AC_MSG_RESULT([${ATF_SH}])],
+        [required ${spec} not found])
 ])
