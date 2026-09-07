@@ -47,10 +47,9 @@ lutok::create_module(state& s, const std::string& name,
 {
     stack_cleaner cleaner(s);
     s.new_table();
-    for (std::map< std::string, cxx_function >::const_iterator
-         iter = members.begin(); iter != members.end(); iter++) {
-        s.push_string((*iter).first);
-        s.push_cxx_function((*iter).second);
+    for (const auto & member : members) {
+        s.push_string(member.first);
+        s.push_cxx_function(member.second);
         s.set_table(-3);
     }
     s.set_global(name);

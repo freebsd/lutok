@@ -81,10 +81,10 @@ class stack_cleaner {
     stack_cleaner& operator=(const stack_cleaner&) = delete;
 
 public:
-    stack_cleaner(state&);
+    explicit stack_cleaner(state&);
     ~stack_cleaner(void);
 
-    void forget(void);
+    void forget(void) const;
 };
 
 
