@@ -4,6 +4,8 @@
 *_test
 *~
 
+.DS_Store
+
 .deps
 .libs
 
@@ -21,4 +23,5 @@ config.status
 configure
 libtool
 lutok.pc
+releases
 stamp-h1

@@ -1,7 +1,63 @@
 # Major changes between releases
 
-## Changes in version 0.6 (UNRELEASED)
+## Changes in version 0.6.4
 
+Released on 20XX/YY/ZZ.
+
+**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.6.4
+
+## Changes in version 0.6.3
+
+Released on 2026/09/01.
+
+This release contains [mostly] developer-workflow related changes. Many of these changes were ported over from
+the [freebsd/atf](https://github.com/freebsd/atf) repository.
+
+### Developer Workflow Changes
+
+* Automate uploading release assets by @ngie-eign in https://github.com/freebsd/lutok/pull/40
+
+* Port over CI work from freebsd/atf by @ngie-eign in https://github.com/freebsd/lutok/pull/41
+
+* chore: remove .travis.yml by @mchoo7 in https://github.com/freebsd/lutok/pull/44
+
+* Add sanitizer functionality (ASAN, LSAN, UBSAN) support by @ngie-eign in https://github.com/freebsd/lutok/pull/46
+
+* Add runtime code coverage support by @ngie-eign in https://github.com/freebsd/lutok/pull/47
+
+* Add freebsd vmactions by @ngie-eign in https://github.com/freebsd/lutok/pull/48
+
+* Add pre-commit config by @ngie-eign in https://github.com/freebsd/lutok/pull/49
+
+**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.2...lutok-0.6.3
+
+## Changes in version 0.6.2
+
+Released on 2025/12/27.
+
+* Update the minimum C++ standard to C++-20.
+
+## Changes in version 0.6.1
+
+Released on 2025/03/28.
+
+* Issue 37: fix release tarball by relying on `make dist`.
+
+## Changes in version 0.6
+
+Released on 2025/01/04.
+
+* Remove lingering C++-11 support. The project now requires a C++14 compliant toolchain to build.
+
+* Fix a Doxygen warning by deleting the `stack_cleaner` copy/assignment operator.
+
+* Vendor the ATF m4 files from freebsd/atf@atf-0.22 ,
+
+* `m4/lua.m4`: remove legacy `lua-config` support in favor of `pkg_config`.
+
+* Fix a benign buffer overrun complaint from gcc 13.2.
+
+* Rename `--with-atf` to `--enable-atf`.
 
 ## Changes in version 0.5
 
