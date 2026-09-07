@@ -43,7 +43,7 @@ namespace lutok {
 /// \warning Terminates execution if there is not enough memory.
 template< typename Type >
 Type*
-state::new_userdata(void)
+state::new_userdata()
 {
     return static_cast< Type* >(new_userdata_voidp(sizeof(Type)));
 }
