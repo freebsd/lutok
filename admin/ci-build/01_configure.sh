@@ -17,6 +17,7 @@ fi
 # shellcheck disable=SC2086
 autoreconf ${autoreconf_args}
 
+# shellcheck disable=SC2048,SC2086
 if ! ./configure $*; then
     cat config.log || true
     exit 1

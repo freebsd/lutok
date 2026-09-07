@@ -58,7 +58,7 @@ jobs:
                     # The macOS runner uses a homebrew provided compiler as the
                     # system compiler lacks ASAN/LSAN/UBSAN support.
                     - build-os: macos-latest
-                      compiler: clang-19
+                      compiler: clang-20
                       pkgs:
                           - atf
                           - autoconf
@@ -69,7 +69,7 @@ jobs:
                           - llvm@19
                           - lua
                           - pkgconf
-                      llvm-bindir: /opt/homebrew/opt/llvm@19/bin
+                      llvm-bindir: /opt/homebrew/opt/llvm@20/bin
                     - build-os: ubuntu-latest
                       compiler: clang-18
                       pkgs:
