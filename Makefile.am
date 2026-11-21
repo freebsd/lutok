@@ -52,6 +52,10 @@ endif
 
 ACLOCAL_AMFLAGS = -I m4
 
+AM_CFLAGS=	$(pc_cflags)
+AM_CXXFLAGS=	$(pc_cxxflags)
+AM_LDFLAGS=	$(pc_ldflags)
+
 doc_DATA = AUTHORS COPYING NEWS README.md
 noinst_DATA = INSTALL.md README.md
 EXTRA_DIST = $(doc_DATA) INSTALL.md README.md

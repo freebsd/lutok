@@ -1,5 +1,5 @@
-dnl Copyright 2011-2014 Google Inc.
-dnl Copyright 2024-2026 Enji Cooper <ngie@FreeBSD.org>
+dnl Copyright (c) 2011-2014 Google Inc.
+dnl Copyright (c) 2024-2026 Enji Cooper <ngie@FreeBSD.org>.
 dnl All rights reserved.
 dnl
 dnl Redistribution and use in source and binary forms, with or without
@@ -58,9 +58,8 @@ AS_HELP_STRING([--enable-asan], [Turn on AddressSanitizer]),,
 if test ${enable_asan} = yes; then
     AC_MSG_NOTICE([building with AddressSanitizer (ASAN)])
     enable_developer=yes
-    CXXFLAGS="${CXXFLAGS} -fsanitize=address"
+    pc_cflags="${pc_cflags} -fsanitize=address"
     pc_cxxflags="${pc_cxxflags} -fsanitize=address"
-    LDFLAGS="${LDFLAGS} -fsanitize=address"
     pc_ldflags="${pc_ldflags} -fsanitize=address"
 fi
 AM_CONDITIONAL([HAVE_ASAN], [test "${enable_asan}" = yes])
@@ -72,9 +71,8 @@ AS_HELP_STRING([--enable-code-coverage], [Turn on runtime code coverage]),,
 if test ${enable_code_coverage} = yes; then
     AC_MSG_NOTICE([building with code coverage])
     enable_developer=yes
-    CXXFLAGS="${CXXFLAGS} --coverage"
+    pc_cflags="${pc_cflags} --coverage"
     pc_cxxflags="${pc_cxxflags} --coverage"
-    LDFLAGS="${LDFLAGS} --coverage"
     pc_ldflags="${pc_ldflags} --coverage"
 fi
 AM_CONDITIONAL([CODE_COVERAGE], [test "${enable_code_coverage}" = yes])
@@ -86,9 +84,8 @@ AS_HELP_STRING([--enable-lsan], [Turn on LeakSanitizer]),,
 if test ${enable_lsan} = yes; then
     AC_MSG_NOTICE([building with LeakSanitizer (LSAN)])
     enable_developer=yes
-    CXXFLAGS="${CXXFLAGS} -fsanitize=leak"
+    pc_cflags="${pc_cflags} -fsanitize=leak"
     pc_cxxflags="${pc_cxxflags} -fsanitize=leak"
-    LDFLAGS="${LDFLAGS} -fsanitize=leak"
     pc_ldflags="${pc_ldflags} -fsanitize=leak"
 fi
 AM_CONDITIONAL([HAVE_LSAN], [test "${enable_lsan}" = yes])
@@ -100,9 +97,8 @@ AS_HELP_STRING([--enable-ubsan], [Turn on UndefinedBehaviourSanitizer]),,
 if test ${enable_ubsan} = yes; then
     AC_MSG_NOTICE([building with UndefinedBehaviourSanitizer (UBSAN)])
     enable_developer=yes
-    CXXFLAGS="${CXXFLAGS} -fsanitize=undefined"
+    pc_cflags="${pc_cflags} -fsanitize=undefined"
     pc_cxxflags="${pc_cxxflags} -fsanitize=undefined"
-    LDFLAGS="${LDFLAGS} -fsanitize=undefined"
     pc_ldflags="${pc_ldflags} -fsanitize=undefined"
 fi
 AM_CONDITIONAL([HAVE_UBSAN], [test "${enable_ubsan}" = yes])
