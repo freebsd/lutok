@@ -1,6 +1,13 @@
 ---
 fail_fast: true
 repos:
+  - repo: https://github.com/commit-check/commit-check
+    rev: v2.19.5
+    hooks:
+      - id: check-author-name
+      - id: check-author-email
+      - id: check-message
+        args: [--config, commit-check.toml]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
