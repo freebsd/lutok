@@ -834,7 +834,7 @@ lutok::state::to_boolean(const int index)
 /// \param index The second parameter to lua_tointeger.
 ///
 /// \return The return value of lua_tointeger.
-long
+lua_Integer
 lutok::state::to_integer(const int index)
 {
     assert(is_number(index));
