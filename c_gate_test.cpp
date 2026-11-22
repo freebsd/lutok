@@ -26,14 +26,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "c_gate.hpp"
-
 #include <atf-c++.hpp>
 #include <lua.hpp>
 
+#include "c_gate.hpp"
 #include "state.ipp"
 #include "test_utils.hpp"
-
 
 ATF_TEST_CASE_WITHOUT_HEAD(connect);
 ATF_TEST_CASE_BODY(connect)
@@ -52,7 +50,6 @@ ATF_TEST_CASE_BODY(connect)
     lua_close(raw_state);
 }
 
-
 ATF_TEST_CASE_WITHOUT_HEAD(c_state);
 ATF_TEST_CASE_BODY(c_state)
 {
@@ -65,7 +62,6 @@ ATF_TEST_CASE_BODY(c_state)
     }
     state.pop(1);
 }
-
 
 ATF_INIT_TEST_CASES(tcs)
 {

@@ -32,14 +32,12 @@
 #if !defined(LUTOK_DEBUG_HPP)
 #define LUTOK_DEBUG_HPP
 
-#include <string>
 #include <memory>
+#include <string>
 
 namespace lutok {
 
-
 class state;
-
 
 /// A model for the Lua debug state.
 ///
@@ -55,7 +53,7 @@ class debug {
     struct impl;
 
     /// Pointer to the shared internal implementation.
-    std::shared_ptr< impl > _pimpl;
+    std::shared_ptr<impl> _pimpl;
 
 public:
     debug(void);
@@ -76,7 +74,6 @@ public:
     [[nodiscard]] std::string short_src(void) const;
 };
 
+} // namespace lutok
 
-}  // namespace lutok
-
-#endif  // !defined(LUTOK_DEBUG_HPP)
+#endif // !defined(LUTOK_DEBUG_HPP)
