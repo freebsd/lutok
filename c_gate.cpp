@@ -62,7 +62,7 @@ lutok::state_c_gate::~state_c_gate(void)
 lutok::state
 lutok::state_c_gate::connect(lua_State* raw_state)
 {
-    return state(static_cast< void* >(raw_state));
+    return state(raw_state);
 }
 
 
