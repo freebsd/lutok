@@ -50,7 +50,7 @@ namespace {
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_getglobal(lua_State* state)
 {
     lua_getglobal(state, lua_tostring(state, -1));
@@ -67,7 +67,7 @@ protected_getglobal(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_gettable(lua_State* state)
 {
     lua_gettable(state, -2);
@@ -84,7 +84,7 @@ protected_gettable(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_next(lua_State* state)
 {
     const int more = lua_next(state, -2) != 0;
@@ -101,7 +101,7 @@ protected_next(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_setglobal(lua_State* state)
 {
     lua_setglobal(state, lua_tostring(state, -2));
@@ -118,7 +118,7 @@ protected_setglobal(lua_State* state)
 /// \param state The Lua C API state.
 ///
 /// \return The number of return values pushed onto the stack.
-static int
+int
 protected_settable(lua_State* state)
 {
     lua_settable(state, -3);
@@ -136,8 +136,8 @@ protected_settable(lua_State* state)
 ///
 /// \return The number of return values pushed onto the Lua stack by the
 /// function.
-static int
-call_cxx_function_from_c(lutok::cxx_function function,
+int
+call_cxx_function_from_c(const lutok::cxx_function function,
                          lua_State* raw_state) noexcept
 {
     char error_buf[1024];
@@ -171,7 +171,7 @@ call_cxx_function_from_c(lutok::cxx_function function,
 /// \param raw_state The Lua C API state.
 ///
 /// \return The number of return values of the called closure.
-static int
+int
 cxx_closure_trampoline(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
@@ -185,7 +185,7 @@ cxx_closure_trampoline(lua_State* raw_state)
     }
 
     auto* function = state.to_userdata< lutok::cxx_function >(
-        state.upvalue_index(nupvalues));
+        lutok::state::upvalue_index(nupvalues));
     return call_cxx_function_from_c(*function, raw_state);
 }
 
@@ -200,12 +200,12 @@ cxx_closure_trampoline(lua_State* raw_state)
 /// \param raw_state The Lua C API state.
 ///
 /// \return The number of return values of the called function.
-static int
+int
 cxx_function_trampoline(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
     auto* function = state.to_userdata< lutok::cxx_function >(
-        state.upvalue_index(1));
+        lutok::state::upvalue_index(1));
     return call_cxx_function_from_c(*function, raw_state);
 }
 
@@ -228,7 +228,7 @@ struct lutok::state::impl {
     ///
     /// \param lua_ The Lua internal state.
     /// \param owned_ Whether we own the state or not.
-    impl(lua_State* lua_, bool owned_) :
+    impl(lua_State* lua_, const bool owned_) :
         lua_state(lua_),
         owned(owned_)
     {
@@ -678,7 +678,7 @@ lutok::state::push_boolean(const bool value) const
 /// \param function The C++ function to be pushed as a closure.
 /// \param nvalues The number of upvalues that the function receives.
 void
-lutok::state::push_cxx_closure(cxx_function function, const int nvalues) const
+lutok::state::push_cxx_closure(const cxx_function function, const int nvalues) const
 {
     auto *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
@@ -694,7 +694,7 @@ lutok::state::push_cxx_closure(cxx_function function, const int nvalues) const
 ///
 /// \param function The C++ function to be pushed.
 void
-lutok::state::push_cxx_function(cxx_function function) const
+lutok::state::push_cxx_function(const cxx_function function) const
 {
     auto *data = static_cast< cxx_function* >(
         lua_newuserdata(_pimpl->lua_state, sizeof(cxx_function)));
@@ -876,7 +876,7 @@ lutok::state::to_string(const int index) const
     // Note that the creation of a string object below (explicit for clarity)
     // implies that the raw string is duplicated and, henceforth, the string is
     // safe even if the corresponding element is popped from the Lua stack.
-    return std::string(raw_string);
+    return {raw_string};
 }
 
 

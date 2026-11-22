@@ -109,8 +109,8 @@ static int
 c_get_upvalues(lua_State* raw_state)
 {
     lutok::state state = lutok::state_c_gate::connect(raw_state);
-    const int i1 = lua_tointeger(raw_state, state.upvalue_index(1));
-    const int i2 = lua_tointeger(raw_state, state.upvalue_index(2));
+    const int i1 = lua_tointeger(raw_state, lutok::state::upvalue_index(1));
+    const int i2 = lua_tointeger(raw_state, lutok::state::upvalue_index(2));
     lua_pushinteger(raw_state, i1);
     lua_pushinteger(raw_state, i2);
     return 2;
