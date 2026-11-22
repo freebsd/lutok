@@ -35,6 +35,8 @@
 #include <memory>
 #include <string>
 
+#include <lua.hpp>
+
 namespace lutok {
 
 
@@ -124,7 +126,7 @@ public:
     void set_metatable(const int);
     void set_table(const int);
     bool to_boolean(const int);
-    long to_integer(const int);
+    lua_Integer to_integer(const int);
     template< typename Type > Type* to_userdata(const int);
     std::string to_string(const int);
     int upvalue_index(const int);
