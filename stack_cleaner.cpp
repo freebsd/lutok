@@ -31,7 +31,6 @@
 #include "stack_cleaner.hpp"
 #include "state.ipp"
 
-
 /// Internal implementation for lutok::stack_cleaner.
 struct lutok::stack_cleaner::impl {
     /// Reference to the Lua state this stack_cleaner refers to.
@@ -51,7 +50,6 @@ struct lutok::stack_cleaner::impl {
     }
 };
 
-
 /// Creates a new stack cleaner.
 ///
 /// This gathers the current height of the stack so that extra elements can be
@@ -62,7 +60,6 @@ lutok::stack_cleaner::stack_cleaner(state& state_) :
     _pimpl(new impl(state_, state_.get_top()))
 {
 }
-
 
 /// Pops any values from the stack not known at construction time.
 ///
@@ -76,7 +73,6 @@ lutok::stack_cleaner::~stack_cleaner(void)
     if (diff > 0)
         _pimpl->state_ref.pop(static_cast<int>(diff));
 }
-
 
 /// Forgets about any elements currently in the stack.
 ///

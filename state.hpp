@@ -32,17 +32,14 @@
 #if !defined(LUTOK_STATE_HPP)
 #define LUTOK_STATE_HPP
 
+#include <lua.hpp>
 #include <memory>
 #include <string>
 
-#include <lua.hpp>
-
 namespace lutok {
-
 
 class debug;
 class state;
-
 
 /// The type of a C++ function that can be bound into Lua.
 ///
@@ -51,10 +48,8 @@ class state;
 /// as a Lua error and their type will be lost.
 typedef int (*cxx_function)(state&);
 
-
 /// Stack index constant pointing to the registry table.
 extern const int registry_index;
-
 
 /// A RAII model for the Lua state.
 ///
@@ -74,7 +69,7 @@ class state {
     struct impl;
 
     /// Pointer to the shared internal implementation.
-    std::shared_ptr< impl > _pimpl;
+    std::shared_ptr<impl> _pimpl;
 
     [[nodiscard]] void* new_userdata_voidp(size_t) const;
     [[nodiscard]] void* to_userdata_voidp(int) const;
@@ -105,7 +100,7 @@ public:
     void load_file(const std::string&);
     void load_string(const std::string&);
     void new_table(void) const;
-    template< typename Type > Type* new_userdata(void);
+    template <typename Type> Type* new_userdata(void);
     bool next(int);
     void open_all(void) const;
     void open_base(void);
@@ -127,12 +122,11 @@ public:
     void set_table(int);
     [[nodiscard]] bool to_boolean(int) const;
     [[nodiscard]] lua_Integer to_integer(int) const;
-    template< typename Type > Type* to_userdata(int);
+    template <typename Type> Type* to_userdata(int);
     [[nodiscard]] std::string to_string(int) const;
     static int upvalue_index(int);
 };
 
+} // namespace lutok
 
-}  // namespace lutok
-
-#endif  // !defined(LUTOK_STATE_HPP)
+#endif // !defined(LUTOK_STATE_HPP)

@@ -27,26 +27,21 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cassert>
-
 #include <lua.hpp>
 
 #include "c_gate.hpp"
 #include "exceptions.hpp"
 #include "state.ipp"
 
-
 /// Constructs a new error with a plain-text message.
 ///
 /// \param message The plain-text error message.
-lutok::error::error(const std::string& message) :
-    std::runtime_error(message)
+lutok::error::error(const std::string& message) : std::runtime_error(message)
 {
 }
 
-
 /// Destructor for the error.
 lutok::error::~error(void) noexcept = default;
-
 
 /// Constructs a new error.
 ///
@@ -59,10 +54,8 @@ lutok::api_error::api_error(const std::string& api_function_,
 {
 }
 
-
 /// Destructor for the error.
 lutok::api_error::~api_error(void) noexcept = default;
-
 
 /// Constructs a new api_error with the message on the top of the Lua stack.
 ///
@@ -84,7 +77,6 @@ lutok::api_error::from_stack(state& state_, const std::string& api_function_)
     return lutok::api_error(api_function_, message);
 }
 
-
 /// Gets the name of the Lua API function that caused this error.
 ///
 /// \return The name of the function.
@@ -93,7 +85,6 @@ lutok::api_error::api_function(void) const
 {
     return _api_function;
 }
- 
 
 /// Constructs a new error.
 ///
@@ -105,10 +96,8 @@ lutok::file_not_found_error::file_not_found_error(
 {
 }
 
-
 /// Destructor for the error.
 lutok::file_not_found_error::~file_not_found_error(void) noexcept = default;
-
 
 /// Gets the name of the file that could not be found.
 ///

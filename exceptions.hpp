@@ -37,9 +37,7 @@
 
 namespace lutok {
 
-
 class state;
-
 
 /// Base exception for lua errors.
 class error : public std::runtime_error {
@@ -47,7 +45,6 @@ public:
     explicit error(const std::string&);
     ~error(void) noexcept override;
 };
-
 
 /// Exception for errors raised by the Lua API library.
 class api_error final : public error {
@@ -63,7 +60,6 @@ public:
     [[nodiscard]] const std::string& api_function(void) const;
 };
 
-
 /// File not found error.
 class file_not_found_error final : public error {
     /// Name of the not-found file.
@@ -76,8 +72,6 @@ public:
     [[nodiscard]] const std::string& filename(void) const;
 };
 
+} // namespace lutok
 
-}  // namespace lutok
-
-
-#endif  // !defined(LUTOK_EXCEPTIONS_HPP)
+#endif // !defined(LUTOK_EXCEPTIONS_HPP)
