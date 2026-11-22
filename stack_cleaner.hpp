@@ -84,7 +84,7 @@ public:
     explicit stack_cleaner(state&);
     ~stack_cleaner(void);
 
-    void forget(void);
+    void forget(void) const;
 };
 
 
