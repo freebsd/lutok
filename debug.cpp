@@ -51,9 +51,7 @@ lutok::debug::debug(void) :
 
 
 /// Destructor.
-lutok::debug::~debug(void)
-{
-}
+lutok::debug::~debug(void) = default;
 
 
 /// Wrapper around lua_getinfo.
