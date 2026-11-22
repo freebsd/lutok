@@ -243,7 +243,7 @@ struct lutok::state::impl {
 lutok::state::state(void)
 {
     lua_State* lua = luaL_newstate();
-    if (lua == nullptr)
+    if (!lua)
         throw lutok::error("lua open failed");
     _pimpl = std::make_shared<impl>(lua, true);
 }
@@ -835,7 +835,7 @@ lutok::state::to_boolean(const int index) const
 /// \param index The second parameter to lua_tointeger.
 ///
 /// \return The return value of lua_tointeger.
-int
+lua_Integer
 lutok::state::to_integer(const int index) const
 {
     assert(is_number(index));

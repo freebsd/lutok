@@ -39,7 +39,7 @@ ATF_TEST_CASE_WITHOUT_HEAD(connect);
 ATF_TEST_CASE_BODY(connect)
 {
     lua_State* raw_state = luaL_newstate();
-    ATF_REQUIRE(raw_state != NULL);
+    ATF_REQUIRE(raw_state);
 
     {
         lutok::state state = lutok::state_c_gate::connect(raw_state);

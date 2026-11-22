@@ -108,7 +108,7 @@ public:
     ///     to ensure that already-existing items are not removed from the stack
     ///     by the code under test.
     explicit stack_balance_checker(lutok::state& state_,
-                          const bool with_sentinel_ = true) :
+                                   const bool with_sentinel_ = true) :
         _state(state_),
         _with_sentinel(with_sentinel_),
         _old_count(_state.get_top())
