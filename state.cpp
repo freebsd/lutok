@@ -166,8 +166,6 @@ call_cxx_function_from_c(const lutok::cxx_function function,
 int
 cxx_closure_trampoline(lua_State* raw_state)
 {
-    lutok::state state = lutok::state_c_gate::connect(raw_state);
-
     int nupvalues;
     {
         lua_Debug debug;
@@ -176,9 +174,14 @@ cxx_closure_trampoline(lua_State* raw_state)
         nupvalues = debug.nups;
     }
 
-    auto* function = state.to_userdata<lutok::cxx_function>(
-        lutok::state::upvalue_index(nupvalues));
-    return call_cxx_function_from_c(*function, raw_state);
+    lutok::cxx_function function;
+    {
+        lutok::state state = lutok::state_c_gate::connect(raw_state);
+        function = *state.to_userdata<lutok::cxx_function>(
+            lutok::state::upvalue_index(nupvalues));
+    }
+    // Destroy the wrapper before the call can raise a Lua error via longjmp.
+    return call_cxx_function_from_c(function, raw_state);
 }
 
 /// Lua glue to call a C++ function.
@@ -194,10 +197,14 @@ cxx_closure_trampoline(lua_State* raw_state)
 int
 cxx_function_trampoline(lua_State* raw_state)
 {
-    lutok::state state = lutok::state_c_gate::connect(raw_state);
-    auto* function =
-        state.to_userdata<lutok::cxx_function>(lutok::state::upvalue_index(1));
-    return call_cxx_function_from_c(*function, raw_state);
+    lutok::cxx_function function;
+    {
+        lutok::state state = lutok::state_c_gate::connect(raw_state);
+        function = *state.to_userdata<lutok::cxx_function>(
+            lutok::state::upvalue_index(1));
+    }
+    // Destroy the wrapper before the call can raise a Lua error via longjmp.
+    return call_cxx_function_from_c(function, raw_state);
 }
 
 } // anonymous namespace

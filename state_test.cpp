@@ -713,6 +713,32 @@ ATF_TEST_CASE_BODY(push_cxx_closure)
     lua_pop(raw(state), 1);
 }
 
+ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_closure__fail_exception);
+ATF_TEST_CASE_BODY(push_cxx_closure__fail_exception)
+{
+    lutok::state state;
+    state.push_integer(15);
+    state.push_cxx_closure(cxx_divide, 1);
+    lua_setglobal(raw(state), "cxx_divide");
+
+    ATF_REQUIRE(luaL_dostring(raw(state), "return cxx_divide(15, 0)") != 0);
+    ATF_REQUIRE_MATCH("Divisor is 0", lua_tostring(raw(state), -1));
+    lua_pop(raw(state), 1);
+}
+
+ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_closure__fail_anything);
+ATF_TEST_CASE_BODY(push_cxx_closure__fail_anything)
+{
+    lutok::state state;
+    state.push_integer(15);
+    state.push_cxx_closure(cxx_divide, 1);
+    lua_setglobal(raw(state), "cxx_divide");
+
+    ATF_REQUIRE(luaL_dostring(raw(state), "return cxx_divide(-3, -1)") != 0);
+    ATF_REQUIRE_MATCH("Unhandled exception", lua_tostring(raw(state), -1));
+    lua_pop(raw(state), 1);
+}
+
 ATF_TEST_CASE_WITHOUT_HEAD(push_cxx_function__ok);
 ATF_TEST_CASE_BODY(push_cxx_function__ok)
 {
@@ -1066,6 +1092,8 @@ ATF_INIT_TEST_CASES(tcs)
     ATF_ADD_TEST_CASE(tcs, pop__many);
     ATF_ADD_TEST_CASE(tcs, push_boolean);
     ATF_ADD_TEST_CASE(tcs, push_cxx_closure);
+    ATF_ADD_TEST_CASE(tcs, push_cxx_closure__fail_exception);
+    ATF_ADD_TEST_CASE(tcs, push_cxx_closure__fail_anything);
     ATF_ADD_TEST_CASE(tcs, push_cxx_function__ok);
     ATF_ADD_TEST_CASE(tcs, push_cxx_function__fail_exception);
     ATF_ADD_TEST_CASE(tcs, push_cxx_function__fail_anything);
