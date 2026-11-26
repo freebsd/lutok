@@ -2,9 +2,40 @@
 
 ## Changes in version 0.7.0
 
-Released on 2026/11/XX.
+Released on 2026/11/26.
+
+This is a major cleanup release. A lot of credit goes to @mchoo7 for all of the
+hard work submitted in #13 🎉.
+
+The API should not change in a noticeable way to consumers, e.g., a number of
+"transparent" changes like `const` poisoning was done with methods, etc, but to
+the major version for the library was bumped from 3 to 4 to be safe.
 
 ### Bugfixes
+
+* #55: chore(build): port fix from ATF repo
+* #57: fix: correct return type for`lutok::state::to_integer`
+* #59: fix: Avoid implicit conversions in initializers
+* #60: fix: Remove redundant `std::static_cast` call
+* #61: chore: Replace `NULL` with `nullptr`
+* #62: Use auto when initializing with a cast
+* #63: Use default destructors instead of empty ones
+* #64: Employ modern C++ idioms
+* #65: General interface cleanup
+* #66: fix: Swap lutok and lua CFLAGS/LDFLAGS around
+* #67: Prefer `override` instead of `virtual` in C++ method declarations
+* #68: Make code more explicit and safe (final)
+
+### Developer Workflow Changes
+
+* #51: Miscellaneous cleanup
+* #53: chore(ci): sync CI fixes/enhancements from ATF
+* #54: chore: run pre-commit autoupdate
+* #56: feat: Port commit-check integration from the ATF project
+* #69: Port over clang-format changes from ATF project
+
+**Full Changelog**:
+https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.7.0
 
 ### Developer Workflow Changes
 
