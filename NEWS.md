@@ -1,14 +1,14 @@
 # Major changes between releases
 
-## Changes in version 0.6.4
+## Changes in version 0.7.0
 
-Released on 2026/12/ZZ.
+Released on 2026/11/XX.
 
 ### Bugfixes
 
 ### Developer Workflow Changes
 
-**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.6.4
+**Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.7.0
 
 ## Changes in version 0.6.3
 
