@@ -111,7 +111,7 @@ jobs:
                       --no-install-recommends install \
                       ${{ join(matrix.pkgs, ' ') }}
             - name: Checking out source (Lutok)
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
               with:
                   path: "${{ env.LUTOK_SRCDIR }}"
             - name: Build Environment Dump
@@ -164,7 +164,7 @@ jobs:
                       -C "${REPORTS_DIR}" .
               if: ${{ ! cancelled() }}
             - name: Archive Build Artifacts
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: Test Report for ${{ env.JOB_NAME }}
                   path: lutok-test-reports-*.tar
@@ -239,7 +239,7 @@ jobs:
 
         steps:
             - name: Checking out source (Lutok)
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
               with:
                   path: "${{ env.LUTOK_SRCDIR }}"
             - name: Start FreeBSD ${{ matrix.release }} VM
@@ -322,7 +322,7 @@ jobs:
                       -C "${REPORTS_DIR}" .
               if: ${{ ! cancelled() }}
             - name: Archive Build Artifacts
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: Test Report for ${{ env.JOB_NAME }}
                   path: lutok-test-reports-*.tar
