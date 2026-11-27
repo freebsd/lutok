@@ -1,5 +1,22 @@
 # Major changes between releases
 
+## Changes in version 0.7.1
+
+Released on 2026/12/XX.
+
+This is a targeted bugfix release.
+
+### Bugfixes
+
+
+
+### Developer Workflow Changes
+
+
+
+**Full Changelog**:
+https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.7.0
+
 ## Changes in version 0.7.0
 
 Released on 2026/11/26.
@@ -33,11 +50,6 @@ major version for the library was bumped from 3 to 4 just to be safe.
 * #54: chore: run pre-commit autoupdate
 * #56: feat: Port commit-check integration from the ATF project
 * #69: Port over clang-format changes from ATF project
-
-**Full Changelog**:
-https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.7.0
-
-### Developer Workflow Changes
 
 **Full Changelog**: https://github.com/freebsd/lutok/compare/lutok-0.6.3...lutok-0.7.0
 
