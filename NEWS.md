@@ -8,8 +8,8 @@ This is a major cleanup release. A lot of credit goes to @mchoo7 for all of the
 hard work submitted in #13 🎉.
 
 The API should not change in a noticeable way to consumers, e.g., a number of
-"transparent" changes like `const` poisoning was done with methods, etc, but to
-the major version for the library was bumped from 3 to 4 to be safe.
+"transparent" changes like `const` poisoning was done with methods, etc. The
+major version for the library was bumped from 3 to 4 just to be safe.
 
 ### Bugfixes
 
