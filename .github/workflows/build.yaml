@@ -19,6 +19,13 @@
 # On MacOS we build with:
 # * latest clang from brew (system provided clang lacks sanitizers).
 # * ld from system
+#
+env:
+    ATF_REPO: freebsd/atf
+    ATF_REF: atf-0.26.1
+    KYUA_REPO: freebsd/kyua
+    KYUA_REF: kyua-0.15.2
+
 name: build
 "on":
     pull_request:
@@ -43,8 +50,14 @@ jobs:
             OBJDUMP: ${{ matrix.compiler-bindir }}/llvm-objdump
             RANLIB: ${{ matrix.compiler-bindir }}/llvm-ranlib
             STRIP: ${{ matrix.compiler-bindir }}/llvm-strip
+            ATF_SRCDIR: ${{ github.workspace }}/atf-src
+            ATF_OBJDIR: ${{ github.workspace }}/atf-obj
+            KYUA_SRCDIR: ${{ github.workspace }}/kyua-src
+            KYUA_OBJDIR: ${{ github.workspace }}/kyua-obj
             LUTOK_SRCDIR: ${{ github.workspace }}/lutok-src
             LUTOK_OBJDIR: ${{ github.workspace }}/lutok-obj
+            PREFIX: ${{ github.workspace }}/root
+            PROJECT_SRCDIR: ${{ github.workspace }}/lutok-src
             JOB_NAME: ${{ matrix.build-os }} ${{ matrix.compiler }} ${{ join(matrix.sanitize, '+') }}
         # yamllint enable rule:line-length
         runs-on: "${{ matrix.build-os }}"
@@ -64,28 +77,31 @@ jobs:
                           - autoconf
                           - automake
                           - doxygen
+                          - graphviz
                           - kyua
                           - libtool
                           - llvm@22
                           - lua
                           - pkgconf
                       compiler-bindir: /opt/homebrew/opt/llvm@22/bin
+                      build-dependencies-from-source: false
                     - build-os: ubuntu-26.04
                       compiler: clang-22
                       pkgs:
-                          - atf-sh
                           - autoconf
                           - automake
                           - clang-22
                           - doxygen
                           - graphviz
-                          - kyua
-                          - libatf-dev
-                          - liblua5.4-dev
+                          - libclang-rt-22-dev  # sanitizer libs
                           - libtool
+                          - llvm-22
                           - lua5.4
+                          - liblua5.4-dev
                           - pkgconf
+                          - libsqlite3-dev
                       compiler-bindir: /usr/lib/llvm-22/bin
+                      build-dependencies-from-source: true
                 sanitize:
                     - ""
                     # TODO(ngie,77): tests currently fail when these options
@@ -110,34 +126,69 @@ jobs:
                   sudo apt --quiet -y --no-install-suggests \
                       --no-install-recommends install \
                       ${{ join(matrix.pkgs, ' ') }}
+
+            - name: Checking out source (ATF)
+              if: ${{ matrix.build-dependencies-from-source }}
+              uses: actions/checkout@v7
+              with:
+                  repository: "${{ env.ATF_REPO }}"
+                  ref: "${{ env.ATF_REF }}"
+                  path: "${{ env.ATF_SRCDIR }}"
+
+            - name: Checking out source (Kyua)
+              if: ${{ matrix.build-dependencies-from-source }}
+              uses: actions/checkout@v7
+              with:
+                  repository: "${{ env.KYUA_REPO }}"
+                  ref: "${{ env.KYUA_REF }}"
+                  path: "${{ env.KYUA_SRCDIR }}"
+
             - name: Checking out source (Lutok)
               uses: actions/checkout@v7
               with:
                   path: "${{ env.LUTOK_SRCDIR }}"
+
             - name: Build Environment Dump
               run: |
                   echo "uname -a: $(uname -a)"
                   echo "uname -m: $(uname -m)"
                   echo "uname -p: $(uname -p)"
 
+            - name: Build and install Dependencies From Source
+              timeout-minutes: 20
+              if: ${{ matrix.build-dependencies-from-source }}
+              run: |
+                  export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
+
+                  for d in "${ATF_SRCDIR}" "${LUTOK_SRCDIR}" "${KYUA_SRCDIR}"; do
+                      cd "${d}"
+                      "${PROJECT_SRCDIR}/admin/ci-build/00_build_and_install_dep.sh"
+                      test "${d}" = "${PROJECT_SRCDIR}" || rm -Rf "${d}"
+                  done
+
             - name: Configure
               timeout-minutes: 10
               run: |
+                  export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
+
                   CFG_ARGS="--enable-atf --enable-developer"
                   for i in ${{ join(matrix.sanitize, ' ') }}; do
                       CFG_ARGS="${CFG_ARGS} --enable-${i}"
                   done
-                  cd "${LUTOK_SRCDIR}"
+                  cd "${PROJECT_SRCDIR}"
                   admin/ci-build/01_configure.sh ${CFG_ARGS}
 
             - name: Distcheck (builds and tests)
               timeout-minutes: 30
               run: |
-                  CFG_ARGS="--disable-dependency-tracking --enable-developer"
+                  export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
+                  export PATH="${PREFIX}/bin:${PATH}"
+
+                  CFG_ARGS="--enable-developer"
                   for i in ${{ join(matrix.sanitize, ' ') }}; do
                       CFG_ARGS="${CFG_ARGS} --enable-${i}"
                   done
-                  cd "${LUTOK_SRCDIR}"
+                  cd "${PROJECT_SRCDIR}"
                   env "EXTRA_DISTCHECK_CONFIGURE_ARGS=${CFG_ARGS}" \
                       admin/ci-build/02_distcheck.sh
 
@@ -151,8 +202,8 @@ jobs:
                     # Gather the distcheck failure log if the target failed.
                     # It's easier to ignore the failure than create yet another
                     # conditional variable step.
-                    cp -a "${LUTOK_SRCDIR}"/lutok-*/_build/sub/*.log \
-                        build_logs/ 2>/dev/null || true
+                    cp -a "${PROJECT_SRCDIR}"/lutok-*/_build/sub/*.log build_logs/ \
+                        2>/dev/null || true
                     # Include the raw kyua logs.
                     cp -a ~/.kyua/logs kyua_logs
                     # Include the raw kyua results DBs.
@@ -185,8 +236,14 @@ jobs:
             OBJDUMP: ${{ matrix.compiler-bindir }}/llvm-objdump${{ matrix.compiler-suffix }}
             RANLIB: ${{ matrix.compiler-bindir }}/llvm-ranlib${{ matrix.compiler-suffix }}
             STRIP: ${{ matrix.compiler-bindir }}/llvm-strip${{ matrix.compiler-suffix }}
+            ATF_SRCDIR: ${{ github.workspace }}/atf-src
+            ATF_OBJDIR: ${{ github.workspace }}/atf-obj
+            KYUA_SRCDIR: ${{ github.workspace }}/kyua-src
+            KYUA_OBJDIR: ${{ github.workspace }}/kyua-obj
             LUTOK_SRCDIR: ${{ github.workspace }}/lutok-src
             LUTOK_OBJDIR: ${{ github.workspace }}/lutok-obj
+            PROJECT_SRCDIR: ${{ github.workspace }}/lutok-src
+            PREFIX: ${{ github.workspace }}/root
             JOB_NAME: FreeBSD ${{ matrix.release }} ${{ matrix.compiler }} ${{ join(matrix.sanitize, '+') }}
         # yamllint enable rule:line-length
         runs-on: ubuntu-latest
@@ -194,12 +251,35 @@ jobs:
             fail-fast: false
             matrix:
                 include:
+                    # NOTE(ngie):
+                    #
+                    # (This comment is regarding
+                    # `build-dependencies-from-source == "true"`)
+                    #
+                    # Due to conflicts with artifacts shipped with the
+                    # base system vs artifacts available with the images
+                    # provided by vmactions, all dependencies must be built
+                    # from source. This is due to the rate of change, legacy
+                    # code deprecation, and how tightly coupled the
+                    # atf/kyua/lutok projects are, as well as the rate at which
+                    # new metadata and features are being submitted upstream
+                    # without bumping the ATF TP versions and Kyuafile syntax
+                    # versions.
+                    #
+                    # A large part of the pain incurred is due to past
+                    # "laziness"/pragmatism on my part not keeping the software
+                    # in the base system up-to-date with the versions released
+                    # on GitHub. In my defense I was being conservative due to
+                    # https://github.com/freebsd/atf/issues/77 , had less free
+                    # time when cutting past releases, and am technically the
+                    # sole active maintainer of these projects (for better or
+                    # worse *sigh*).
                     - release: 14.5
+                      build-dependencies-from-source: true
                       compiler: clang-22
                       compiler-bindir: /usr/local/bin
                       compiler-suffix: 22
                       pkgs:
-                          - atf
                           - autoconf
                           - automake
                           - doxygen
@@ -209,16 +289,14 @@ jobs:
                           - lua55
                           - m4
                           - pkgconf
+                          - sqlite3
                           - sudo
-                          # kyua is distributed in the FreeBSD-tests package
-                          # on 14.x.
-                          - FreeBSD-tests
                     - release: 15.1
+                      build-dependencies-from-source: true
                       compiler: clang-22
                       compiler-bindir: /usr/local/bin
                       compiler-suffix: 22
                       pkgs:
-                          - atf
                           - autoconf
                           - automake
                           - doxygen
@@ -228,8 +306,8 @@ jobs:
                           - lua55
                           - m4
                           - pkgconf
+                          - sqlite3
                           - sudo
-                          - FreeBSD-kyua
                 release:
                     - 14.5
                     - 15.1
@@ -238,25 +316,40 @@ jobs:
                     - ubsan
 
         steps:
+            - name: Checking out source (ATF)
+              if: ${{ matrix.build-dependencies-from-source }}
+              uses: actions/checkout@v7
+              with:
+                  repository: "${{ env.ATF_REPO }}"
+                  ref: "${{ env.ATF_REF }}"
+                  path: "${{ env.ATF_SRCDIR }}"
+
+            - name: Checking out source (Kyua)
+              if: ${{ matrix.build-dependencies-from-source }}
+              uses: actions/checkout@v7
+              with:
+                  repository: "${{ env.KYUA_REPO }}"
+                  ref: "${{ env.KYUA_REF }}"
+                  path: "${{ env.KYUA_SRCDIR }}"
+
             - name: Checking out source (Lutok)
               uses: actions/checkout@v7
               with:
                   path: "${{ env.LUTOK_SRCDIR }}"
+
             - name: Start FreeBSD ${{ matrix.release }} VM
               # yamllint disable-line rule:line-length
               uses: vmactions/freebsd-vm@811efaaac0668df8bfb8308c3ec997b5ab50037b  # v1.6.0
               with:
                   # yamllint disable rule:line-length
-                  envs: 'LUTOK_SRCDIR AR CC CPP CXX NM OBJDUMP RANLIB STRIP JOB_NAME'
+                  envs: 'ATF_SRCDIR KYUA_SRCDIR LUTOK_SRCDIR PREFIX PROJECT_SRCDIR AR CC CPP CXX NM OBJDUMP RANLIB STRIP JOB_NAME'
+                  # yamllint enable rule:line-length
                   prepare: |
-                      cd "${LUTOK_SRCDIR}"
-                      admin/ci-build/00_prepare_freebsd_image.sh
                       pkg update
                       pkg install -y ${{ join(matrix.pkgs, ' ') }}
                       # Set up sudo no password for :wheel.
                       echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > \
                           /usr/local/etc/sudoers.d/wheel-no-password
-                  # yamllint enable rule:line-length
                   release: "${{ matrix.release }}"
                   # NB: I tried nfs (failed when running chflags) and sshfs
                   # (could not find files/directories when running configure)
@@ -265,36 +358,52 @@ jobs:
                   # - ngie (2026-08-16)
                   sync: rsync
                   sync-time: true
+
             - name: Build Environment Dump
               shell: freebsd {0}
               run: |
                   echo "uname -a: $(uname -a)"
                   echo "uname -m: $(uname -m)"
                   echo "uname -p: $(uname -p)"
-                  echo "Build environment:"
-                  kyua about | head -1
-                  env
+
+            - name: Build and install Dependencies From Source
+              timeout-minutes: 20
+              shell: freebsd {0}
+              if: ${{ matrix.build-dependencies-from-source }}
+              run: |
+                  set -e
+                  export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
+
+                  for d in "${ATF_SRCDIR}" "${LUTOK_SRCDIR}" "${KYUA_SRCDIR}"; do
+                      cd "${d}"
+                      "${PROJECT_SRCDIR}/admin/ci-build/00_build_and_install_dep.sh"
+                      test "${d}" = "${PROJECT_SRCDIR}" || rm -Rf "${d}"
+                  done
 
             - name: Configure
               timeout-minutes: 10
               shell: freebsd {0}
               run: |
+                  export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
                   CFG_ARGS="--enable-atf --enable-developer"
                   for i in ${{ join(matrix.sanitize, ' ') }}; do
                       CFG_ARGS="${CFG_ARGS} --enable-${i}"
                   done
-                  cd "${LUTOK_SRCDIR}"
+                  cd "${PROJECT_SRCDIR}"
                   admin/ci-build/01_configure.sh ${CFG_ARGS}
 
             - name: Distcheck (builds and tests)
               timeout-minutes: 30
               shell: freebsd {0}
               run: |
-                  CFG_ARGS="--disable-dependency-tracking --enable-developer"
+                  export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
+                  export PATH="${PREFIX}/bin:${PATH}"
+
+                  CFG_ARGS="--enable-developer"
                   for i in ${{ join(matrix.sanitize, ' ') }}; do
                       CFG_ARGS="${CFG_ARGS} --enable-${i}"
                   done
-                  cd "${LUTOK_SRCDIR}"
+                  cd "${PROJECT_SRCDIR}"
                   env "EXTRA_DISTCHECK_CONFIGURE_ARGS=${CFG_ARGS}" \
                       admin/ci-build/02_distcheck.sh
 
@@ -309,7 +418,7 @@ jobs:
                     # Gather the distcheck failure log if the target failed.
                     # It's easier to ignore the failure than create yet another
                     # conditional variable step.
-                    cp -a "${LUTOK_SRCDIR}"/lutok-*/_build/sub/*.log \
+                    cp -a "${PROJECT_SRCDIR}"/lutok-*/_build/sub/*.log \
                         build_logs/ 2>/dev/null || true
                     # Include the raw kyua logs.
                     cp -a ~/.kyua/logs kyua_logs
