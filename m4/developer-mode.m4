@@ -55,7 +55,7 @@ AC_DEFUN([KYUA_DEVELOPER_MODE], [
     AC_ARG_ENABLE(
         [developer],
         AS_HELP_STRING([--enable-developer], [enable developer features]),,
-        [if test -d ${srcdir}/.git; then
+        [if test -d "${srcdir}/.git"; then
              AC_MSG_NOTICE([building from HEAD; developer mode autoenabled])
              enable_developer=yes
          else
@@ -67,11 +67,10 @@ AC_DEFUN([KYUA_DEVELOPER_MODE], [
     # Reasons given below.
     #
     # -Wold-style-cast: Raises errors when using TIOCGWINSZ, at least under
-    #                   Mac OS X.  This is due to the way _IOR is defined.
+    #                   macOS.  This is due to the way _IOR is defined.
     #
 
-    try_c_cxx_flags="-D_FORTIFY_SOURCE=2 \
-                     -Wall \
+    try_c_cxx_flags="-Wall \
                      -Wcast-qual \
                      -Wextra \
                      -Wpointer-arith \
@@ -81,6 +80,17 @@ AC_DEFUN([KYUA_DEVELOPER_MODE], [
                      -Wsign-compare \
                      -Wswitch \
                      -Wwrite-strings"
+
+    # llvm (at least) sets -D_FORTIFY_SOURCE=0 when ASAN is enabled, which
+    # results in build failures due to conflicting definitions:
+    # https://github.com/llvm/llvm-project/blob/f24773d94e88a040d1a5953bc7643b341bfff562/clang/lib/Basic/Targets/OSTargets.cpp#L28-L31
+    #
+    # Only try using this flag if ASAN is not being enabled.
+    #
+    # TODO(ngie): revisit this with !macOS / GCC using `ax_compiler_vendor.m4`, et al.
+    if test "${enable_asan}" = no; then
+        try_c_cxx_flags="${try_c_cxx_flags} -D_FORTIFY_SOURCE=2"
+    fi
 
     try_c_flags="-Wmissing-prototypes \
                  -Wno-traditional \
